@@ -174,6 +174,9 @@ namespace LatestChatty.Pages
 					}
 					if (displayComment != null) this.thread.SelectComment(displayComment);
 				}
+
+				//Didn't find one, wrap to beginning.
+				if (displayComment == null) displayComment = this.thread.FlatComments.First();
 				if (displayComment != null) this.thread.SelectComment(displayComment);
 			}
 		}
@@ -196,8 +199,11 @@ namespace LatestChatty.Pages
 					{
 						displayComment = this.thread.FlatComments[currentIndex - 1];
 					}
-					if (displayComment != null) this.thread.SelectComment(displayComment);
 				}
+
+				//Didn't find one, wrap to end.
+				if (displayComment == null) displayComment = this.thread.FlatComments.Last();
+				if (displayComment != null) this.thread.SelectComment(displayComment);
 			}
 		}
 
