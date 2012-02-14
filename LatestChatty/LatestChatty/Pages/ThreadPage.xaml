@@ -33,21 +33,25 @@
 							</Grid.ColumnDefinitions>
 							<Rectangle Grid.Column="0" Width="{Binding Depth, Converter={StaticResource IndentConverter}}" />
 							<Rectangle Grid.Column="1" 
-									   Grid.ColumnSpan="2"
-									   Fill="{StaticResource PhoneAccentBrush}" 
-									   DataContext="{TemplateBinding IsSelected}" 
-									   Visibility="{Binding Converter={StaticResource BoolToVisConverter}}"/>
-							<Rectangle Grid.Column="1" 
 									   Margin="0,4,0,4" 
 									   Fill="{StaticResource PhoneAccentBrush}" 
 									   Visibility="{Binding myPost, Converter={StaticResource BoolToVisConverter}}" />
 							<TextBlock Grid.Column="2" 
 									   Margin="2,2,0,2" 
-									   x:Name="ContentText" 
 									   Text="{Binding preview}" 
 									   TextWrapping="NoWrap" 
 									   Style="{StaticResource PhoneTextNormalStyle}" 
 									   Foreground="{Binding New, Converter={StaticResource NewReplyConverter}}" />
+							<Grid Grid.Column="1"
+								  Grid.ColumnSpan="2"
+								  Background="{StaticResource PhoneAccentBrush}" 
+								  Visibility="{Binding RelativeSource={RelativeSource TemplatedParent},Path=IsSelected,Converter={StaticResource BoolToVisConverter}}">
+							<TextBlock Margin="6,2,0,2" 
+									   Text="{Binding preview}" 
+									   TextWrapping="NoWrap" 
+									   Style="{StaticResource PhoneTextNormalStyle}" 
+									   Foreground="White"/>
+							</Grid>
 						</Grid>
 					</ControlTemplate>
 				</Setter.Value>
@@ -82,7 +86,7 @@
 
 		<Border Grid.Row="2" Padding="0,3,0,0" Background="{Binding SelectedComment.category, Converter={StaticResource CategoryConverter}}">
 			<Border Background="#222222" Grid.Row="2">
-				<phone:WebBrowser x:Name="commentBrowser" Opacity="0" Margin="10,5,10,5" chattyClasses:WebBrowserBinding.Html="{Binding SelectedComment.body}" Navigating="ContentText_Navigating" Background="Black" IsScriptEnabled="True"/>
+				<phone:WebBrowser x:Name="commentBrowser" Opacity="0" Margin="10,5,10,5" chattyClasses:WebBrowserBinding.Html="{Binding SelectedComment.body}" Navigating="BrowserNavigating" Background="Black" IsScriptEnabled="True"/>
 			</Border>
 		</Border>
 

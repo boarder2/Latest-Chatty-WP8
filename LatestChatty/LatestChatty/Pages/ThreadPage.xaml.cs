@@ -119,7 +119,7 @@ namespace LatestChatty.Pages
 			base.OnNavigatedFrom(e);
 		}
 
-		void ContentText_Navigating(object sender, NavigatingEventArgs e)
+		void BrowserNavigating(object sender, NavigatingEventArgs e)
 		{
 			System.Diagnostics.Debug.WriteLine("Thread - Navigating");
 
