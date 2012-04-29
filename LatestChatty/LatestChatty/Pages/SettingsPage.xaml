@@ -46,6 +46,12 @@
 					<toolkit:ListPickerItem Tag="True">By Date</toolkit:ListPickerItem>
 					<toolkit:ListPickerItem Tag="False">Top Down</toolkit:ListPickerItem>
 				</toolkit:ListPicker>
+				<TextBlock Text="Show Embedded Images"/>
+				<toolkit:ListPicker x:Name="showEmbeddedImagesPicker" SelectionChanged="ShowEmbeddedImagesPickerChanged">
+					<toolkit:ListPickerItem Tag="Always">Always</toolkit:ListPickerItem>
+					<toolkit:ListPickerItem Tag="OnWiFi">Only on WiFi</toolkit:ListPickerItem>
+					<toolkit:ListPickerItem Tag="Never">Never</toolkit:ListPickerItem>
+				</toolkit:ListPicker>
 			</StackPanel>
 		</Grid>
 	</Grid>

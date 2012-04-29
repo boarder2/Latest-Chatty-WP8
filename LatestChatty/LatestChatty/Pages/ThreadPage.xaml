@@ -103,12 +103,13 @@
 	<!--Sample code showing usage of ApplicationBar-->
 	<phone:PhoneApplicationPage.ApplicationBar>
 		<shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
-			<shell:ApplicationBarIconButton IconUri="/Images/RefreshIcon.png" Text="Refresh" Click="RefreshClick"/>
 			<shell:ApplicationBarIconButton IconUri="/Images/PostIcon.png" Text="Reply" Click="ReplyClick"/>
+			<shell:ApplicationBarIconButton IconUri="/Images/TimeIcon.png" Text="Time Navigation" Click="ToggleThreadMode"/>
 			<shell:ApplicationBarIconButton IconUri="/Images/LeftArrow.png" Text="Previous" Click="PreviousClick" />
 			<shell:ApplicationBarIconButton IconUri="/Images/RightArrow.png" Text="Next" Click="NextClick" />
 			<shell:ApplicationBar.MenuItems>
 				<!--<shell:ApplicationBarMenuItem Text="{Binding Path=IsWatched, Converter={StaticResource BooleanToPinnedTextConverter}}" Click="PinClick"/>-->
+				<shell:ApplicationBarMenuItem Text="refresh" Click="RefreshClick"/>
 				<shell:ApplicationBarMenuItem Text="pin thread" Click="PinClick"/>
 				<shell:ApplicationBarMenuItem Text="share ..." Click="ShareThreadClick"/>
 				<shell:ApplicationBarMenuItem Text="open in browser" Click="OpenInBrowserClick" />

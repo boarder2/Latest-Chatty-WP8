@@ -10,6 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Shapes;
 using LatestChatty.Classes;
 using LatestChatty.ViewModels;
+using Microsoft.Phone.Net.NetworkInformation;
 
 namespace LatestChatty
 {
@@ -22,11 +23,11 @@ namespace LatestChatty
 			LoadReplyCounts();
 			LoadSettings();
 		}
-
+		
 		~CoreServices()
 		{
 		}
-
+		
 		#region Singleton
 		private static CoreServices _coreServices = null;
 		public static CoreServices Instance
@@ -53,6 +54,33 @@ namespace LatestChatty
 			if (!this.Settings.Contains(SettingsConstants.ThreadNavigationByDate))
 			{
 				this.Settings.Add(SettingsConstants.ThreadNavigationByDate, true);
+			}
+			if (!this.Settings.Contains(SettingsConstants.ShowInlineImages))
+			{
+				this.Settings.Add(SettingsConstants.ShowInlineImages, ShowInlineImages.Always);
+			}
+		}
+
+		public bool ShouldShowInlineImages
+		{
+			get
+			{
+				ShowInlineImages showInlineImages;
+				CoreServices.Instance.Settings.TryGetValue<ShowInlineImages>(SettingsConstants.ShowInlineImages, out showInlineImages);
+				if (showInlineImages == ShowInlineImages.Never)
+				{
+					return false;
+				}
+
+				if (showInlineImages == ShowInlineImages.OnWiFi)
+				{
+					var type = NetworkInterface.NetworkInterfaceType;
+					return type == NetworkInterfaceType.Ethernet ||
+						type == NetworkInterfaceType.Wireless80211;
+				}
+
+				//Always.
+				return true;
 			}
 		}
 		#endregion
@@ -485,7 +513,7 @@ namespace LatestChatty
 			//There's probably a faster way to do this...  I'll figure this out at some point, because loading these takes a long time.
 			if (this.knownReplyCounts.Count > 2000)
 			{
-                System.Diagnostics.Debug.WriteLine("Trimming reply counts.");
+					 System.Diagnostics.Debug.WriteLine("Trimming reply counts.");
 				var keepCounts = this.knownReplyCounts.OrderByDescending(r => r.Key).Take(2000).ToList();
 				this.knownReplyCounts.Clear();
 				foreach (var item in keepCounts)
@@ -555,6 +583,7 @@ namespace LatestChatty
 		}
 
 		#endregion
+
 		#region MyPosts
 		public MyPostsList MyPosts = new MyPostsList();
 		public MyRepliesList MyReplies = new MyRepliesList();

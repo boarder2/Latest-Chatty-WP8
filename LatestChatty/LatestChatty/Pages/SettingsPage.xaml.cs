@@ -45,6 +45,21 @@ namespace LatestChatty.Pages
 					break;
 			}
 
+			ShowInlineImages showInlineImages;
+			CoreServices.Instance.Settings.TryGetValue<ShowInlineImages>(SettingsConstants.ShowInlineImages, out showInlineImages);
+			switch(showInlineImages)
+			{
+				case ShowInlineImages.OnWiFi:
+					this.showEmbeddedImagesPicker.SelectedIndex = 1;
+					break;
+				case ShowInlineImages.Never:
+					this.showEmbeddedImagesPicker.SelectedIndex = 2;
+					break;
+				default:
+					this.showEmbeddedImagesPicker.SelectedIndex = 0;
+					break;
+			}
+
 			bool byDate;
 			CoreServices.Instance.Settings.TryGetValue<bool>(SettingsConstants.ThreadNavigationByDate, out byDate);
 			this.navigationPicker.SelectedIndex = byDate ? 0 : 1;
@@ -130,6 +145,30 @@ namespace LatestChatty.Pages
 
 					default:
 						CoreServices.Instance.Settings[SettingsConstants.CommentSize] = CommentViewSize.Small;
+						break;
+				}
+			}
+			CoreServices.Instance.Settings.Save();
+		}
+
+		private void ShowEmbeddedImagesPickerChanged(object sender, SelectionChangedEventArgs e)
+		{
+			if (!this.loaded) return;
+
+			var picker = sender as ListPicker;
+			if (picker != null)
+			{
+				var tagText = ((ListPickerItem)picker.SelectedItem).Tag as string;
+				switch (tagText)
+				{
+					case "OnWiFi":
+						CoreServices.Instance.Settings[SettingsConstants.ShowInlineImages] = ShowInlineImages.OnWiFi;
+						break;
+					case "Never":
+						CoreServices.Instance.Settings[SettingsConstants.ShowInlineImages] = ShowInlineImages.Never;
+						break;
+					default:
+						CoreServices.Instance.Settings[SettingsConstants.ShowInlineImages] = ShowInlineImages.Always;
 						break;
 				}
 			}

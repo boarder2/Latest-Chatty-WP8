@@ -25,12 +25,20 @@ namespace LatestChatty.Pages
 		public Rectangle SelectedFill = null;
 		private CommentThread thread;
 		private ApplicationBarMenuItem pinMenuItem;
+		private ApplicationBarIconButton navigationModeButton;
+		private bool navigateByDate;
 
 		public ThreadPage()
 		{
 			System.Diagnostics.Debug.WriteLine("Thread - ctor");
 			InitializeComponent();
-			this.pinMenuItem = ApplicationBar.MenuItems[0] as ApplicationBarMenuItem;
+			this.pinMenuItem = ApplicationBar.MenuItems[1] as ApplicationBarMenuItem;
+			this.navigationModeButton = ApplicationBar.Buttons[1] as ApplicationBarIconButton;
+
+			bool byDate;
+			CoreServices.Instance.Settings.TryGetValue<bool>(SettingsConstants.ThreadNavigationByDate, out byDate);
+			this.SetNavigationModeIcon();
+			this.navigateByDate = byDate;
 			this.commentBrowser.NavigateToString(CoreServices.Instance.CommentBrowserString);
 		}
 
@@ -154,14 +162,18 @@ namespace LatestChatty.Pages
 			}
 		}
 
+		private void ToggleThreadMode(object sender, EventArgs e)
+		{
+			this.navigateByDate = !this.navigateByDate;
+			this.SetNavigationModeIcon();
+		}
+
 		private void NextClick(object sender, EventArgs e)
 		{
 			if (this.thread.SelectedComment != null)
 			{
 				Comment displayComment = null;
-				bool byDate;
-				CoreServices.Instance.Settings.TryGetValue<bool>(SettingsConstants.ThreadNavigationByDate, out byDate);
-				if (byDate)
+				if (this.navigateByDate)
 				{
 					displayComment = this.thread.FlatComments.OrderBy(c => c.id).FirstOrDefault(c => c.id > this.thread.SelectedComment.id);
 				}
@@ -186,9 +198,7 @@ namespace LatestChatty.Pages
 			if (this.thread.SelectedComment != null)
 			{
 				Comment displayComment = null;
-				bool byDate;
-				CoreServices.Instance.Settings.TryGetValue<bool>(SettingsConstants.ThreadNavigationByDate, out byDate);
-				if (byDate)
+				if (this.navigateByDate)
 				{
 					displayComment = this.thread.FlatComments.OrderBy(c => c.id).LastOrDefault(c => c.id < this.thread.SelectedComment.id);
 				}
@@ -230,6 +240,12 @@ namespace LatestChatty.Pages
 				Uri = new Uri("http://www.shacknews.com/chatty/?id=" + thread.SeedCommentId.ToString(), UriKind.Absolute)
 			};
 			browserTask.Show();
+		}
+
+		private void SetNavigationModeIcon()
+		{
+			this.navigationModeButton.Text = this.navigateByDate ? "top down" : "by date";
+			this.navigationModeButton.IconUri = new Uri(this.navigateByDate ? @"Images/TimeIcon.png" : @"Images/TopDownIcon.png", UriKind.Relative);
 		}
 	}
 }

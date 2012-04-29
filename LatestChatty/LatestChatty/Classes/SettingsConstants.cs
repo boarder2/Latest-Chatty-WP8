@@ -15,5 +15,20 @@ namespace LatestChatty.Classes
 	{
 		public static readonly string CommentSize = "CommentSize";
 		public static readonly string ThreadNavigationByDate = "ThreadNavigationByDate";
+		public static readonly string ShowInlineImages = "ShowInline";
+	}
+
+	public enum CommentViewSize
+	{
+		Small,
+		Half,
+		Huge
+	}
+
+	public enum ShowInlineImages
+	{
+		Always,
+		OnWiFi,
+		Never
 	}
 }

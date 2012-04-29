@@ -125,33 +125,38 @@ namespace LatestChatty.ViewModels
 		{
 			try
 			{
-				XElement x = response.Elements("comments").Elements("comment").First();
-				var storyId = int.Parse(response.Element("comments").Attribute("story_id").Value);
-				//Don't save the counts when we load these posts.
-				var comment = new Comment(x, storyId, false, 0);
-				var insertAt = 0;
-				//Sort them the same all the time.
-				for (insertAt = 0; insertAt < this.Comments.Count; insertAt++)
+				//Don't throw an exception if we didn't get anything.
+				//I found this can happen when you pin a post that later gets nuked.  Ultimately it should be removed from the list of stuff to retrieve, probably, but for now we just won't error.
+				if (response != null)
 				{
-					//Keep looking
-					if (comment.id > this.Comments[insertAt].id)
+					XElement x = response.Elements("comments").Elements("comment").First();
+					var storyId = int.Parse(response.Element("comments").Attribute("story_id").Value);
+					//Don't save the counts when we load these posts.
+					var comment = new Comment(x, storyId, false, 0);
+					var insertAt = 0;
+					//Sort them the same all the time.
+					for (insertAt = 0; insertAt < this.Comments.Count; insertAt++)
 					{
-						continue;
+						//Keep looking
+						if (comment.id > this.Comments[insertAt].id)
+						{
+							continue;
+						}
+						//Already exists... don't add it twice.  (This could happen if they click refresh fast)
+						if (comment.id == this.Comments[insertAt].id)
+						{
+							return;
+						}
+						//We belong before this one.
+						if (comment.id < this.Comments[insertAt].id)
+						{
+							break;
+						}
 					}
-					//Already exists... don't add it twice.  (This could happen if they click refresh fast)
-					if (comment.id == this.Comments[insertAt].id)
-					{
-						return;
-					}
-					//We belong before this one.
-					if (comment.id < this.Comments[insertAt].id)
-					{
-						break;
-					}
+					this.Comments.Insert(insertAt, comment);
 				}
-				this.Comments.Insert(insertAt, comment);
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
 				MessageBox.Show("Problem refreshing pinned comments.");
 			}

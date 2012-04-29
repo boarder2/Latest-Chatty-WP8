@@ -61,7 +61,7 @@ namespace LatestChatty.Classes
 			this.dateText = (string)x.Attribute("date");
 			this.id = (int)x.Attribute("id");
 			this.author = (string)x.Attribute("author");
-			this.body = StripHTML(((string)x.Element("body")).Trim());
+			this.body = RewriteEmbeddedImage(StripHTML(((string)x.Element("body")).Trim()));
 			this.category = (PostCategory)Enum.Parse(typeof(PostCategory), ((string)x.Attribute("category")).Trim(), true);
 			this.preview = ((string)x.Attribute("preview")).Trim();
 			this.storyid = thisstoryid;
@@ -92,6 +92,17 @@ namespace LatestChatty.Classes
 		private string StripHTML(string s)
 		{
 			return Regex.Replace(s, " target=\"_blank\"", string.Empty);
+		}
+
+		private string RewriteEmbeddedImage(string s)
+		{
+			if (CoreServices.Instance.ShouldShowInlineImages)
+			{
+				//I assume the compiler handles making this a single object and not something that gets compiled every time this method gets called.
+				//I reeeeeally hope so
+				return Regex.Replace(s, @">(?<link>https?://.*?\.(?:jpe?g|png|gif)).*?<", "><br/><img border=\"0\" style=\"vertical-align: middle; max-height: 100px; height: 100px;\" src=\"${link}\"/><");
+			}
+			return s;
 		}
 
 		public Comment GetChild(int searchid)

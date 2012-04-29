@@ -73,7 +73,6 @@
     <Compile Include="Classes\API Helper.cs" />
     <Compile Include="Classes\BooleanToValueConverter.cs" />
     <Compile Include="Classes\Comment.cs" />
-    <Compile Include="Classes\CommentViewSize.cs" />
     <Compile Include="Classes\MultiplicationConverter.cs" />
     <Compile Include="Classes\NotifyPropertyChangeBase.cs" />
     <Compile Include="Classes\POSTHandler.cs" />
@@ -271,6 +270,8 @@
     <Content Include="Images\RefreshIcon.png" />
     <Content Include="Images\RightArrow.png" />
     <Content Include="Images\sticky_notes.png" />
+    <Content Include="Images\TimeIcon.png" />
+    <Content Include="Images\TopDownIcon.png" />
     <Content Include="stylesheet.css" />
     <Content Include="Images\MainBackground.png" />
     <Content Include="SplashScreenImage.jpg" />
