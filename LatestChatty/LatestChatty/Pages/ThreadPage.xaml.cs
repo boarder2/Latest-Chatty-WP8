@@ -37,8 +37,9 @@ namespace LatestChatty.Pages
 
 			bool byDate;
 			CoreServices.Instance.Settings.TryGetValue<bool>(SettingsConstants.ThreadNavigationByDate, out byDate);
-			this.SetNavigationModeIcon();
 			this.navigateByDate = byDate;
+			this.SetNavigationModeIcon();
+			
 			this.commentBrowser.NavigateToString(CoreServices.Instance.CommentBrowserString);
 		}
 
