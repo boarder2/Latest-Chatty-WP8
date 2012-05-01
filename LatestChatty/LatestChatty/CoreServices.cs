@@ -59,6 +59,14 @@ namespace LatestChatty
 			{
 				this.Settings.Add(SettingsConstants.ShowInlineImages, ShowInlineImages.Always);
 			}
+			if (!this.Settings.Contains(SettingsConstants.LastInAppReplyCount))
+			{
+				this.Settings.Add(SettingsConstants.LastInAppReplyCount, 0);
+			}
+			if (!this.Settings.Contains(SettingsConstants.LastTileReplyCount))
+			{
+				this.Settings.Add(SettingsConstants.LastTileReplyCount, 0);
+			}
 		}
 
 		public bool ShouldShowInlineImages

@@ -16,109 +16,107 @@ using System.ComponentModel;
 using System.Runtime.Serialization;
 using System.IO.IsolatedStorage;
 using System.IO;
+using Microsoft.Phone.Shell;
 
 namespace LatestChatty.ViewModels
 {
-    public class MyRepliesList : INotifyPropertyChanged
-    {
-        public ObservableCollection<SearchResult> SearchResults { get; set; }
+	public class MyRepliesList : INotifyPropertyChanged
+	{
+		public ObservableCollection<SearchResult> SearchResults { get; set; }
 
-        public MyRepliesList()
-        {
-            LoadMyReplies();
-        }
+		public MyRepliesList()
+		{
+			LoadMyReplies();
+		}
 
-        ~MyRepliesList()
-        {
-            SaveMyReplies();
-        }
+		~MyRepliesList()
+		{
+			SaveMyReplies();
+		}
 
-        void GetCommentsCallback(XDocument response)
-        {
-            try
-            {
-                bool updatedSetting = false;
-                var ObjChatty = from x in response.Descendants("result")
-                                select new SearchResult(x);
+		void GetCommentsCallback(XDocument response)
+		{
+			try
+			{
+				var results = from x in response.Descendants("result")
+								  select new SearchResult(x);
 
-                SearchResults.Clear();
-                foreach (SearchResult singleResult in ObjChatty)
-                {
-                    if (!updatedSetting)
-                    {
-                        IsolatedStorageSettings settings = IsolatedStorageSettings.ApplicationSettings;
-                        if (settings.Contains("lastReplySeen"))
-                        {
-                            settings["lastReplySeen"] = singleResult.id;
-                        }
-                        else
-                        {
-                            settings.Add("lastReplySeen", singleResult.id);
-                        }
-                        updatedSetting = true;
-                    }
+				var totalReplies = int.Parse(response.Element("results").Attribute("total_results").Value);
 
-                    SearchResults.Add(singleResult);
-                }
+				CoreServices.Instance.Settings[SettingsConstants.LastInAppReplyCount] = totalReplies;
+				CoreServices.Instance.Settings.Save();
 
-                if (PropertyChanged != null)
-                {
-                    PropertyChanged(this, new PropertyChangedEventArgs("SearchResults"));
-                }
-            }
-            catch (Exception)
-            {
-                MessageBox.Show("Cannot load comments posted by author " + CoreServices.Instance.Credentials.UserName + ".");
-            }
-        }
+				var tileToUpdate =
+					ShellTile.ActiveTiles.FirstOrDefault(x => x.NavigationUri.ToString().Contains("ChattyPage"))
+					?? ShellTile.ActiveTiles.FirstOrDefault();
 
-        public void Refresh()
-        {
-            if (CoreServices.Instance.LoginVerified)
-            {
-                string request = CoreServices.Instance.ServiceHost + "Search/?ParentAuthor=" + CoreServices.Instance.Credentials.UserName;
-								CoreServices.Instance.QueueDownload(request, GetCommentsCallback);
-            }
-        }
+				//Get rid of tile data that's now old.
+				tileToUpdate.Update(new StandardTileData());
 
-        public void SaveMyReplies()
-        {
-            DataContractSerializer ser = new DataContractSerializer(typeof(ObservableCollection<SearchResult>));
+				SearchResults.Clear();
+				foreach (SearchResult singleResult in results)
+				{
+					SearchResults.Add(singleResult);
+				}
 
-            using (IsolatedStorageFile isf = IsolatedStorageFile.GetUserStoreForApplication())
-            {
-                using (IsolatedStorageFileStream stream = new IsolatedStorageFileStream("myreplies.txt", FileMode.Create, isf))
-                {
-                    ser.WriteObject(stream, SearchResults);
-                }
-            }
-        }
+				if (PropertyChanged != null)
+				{
+					PropertyChanged(this, new PropertyChangedEventArgs("SearchResults"));
+				}
+			}
+			catch (Exception)
+			{
+				MessageBox.Show("Cannot load comments posted by author " + CoreServices.Instance.Credentials.UserName + ".");
+			}
+		}
 
-        public void LoadMyReplies()
-        {
-            try
-            {
-                SearchResults = new ObservableCollection<SearchResult>();
-                DataContractSerializer ser = new DataContractSerializer(typeof(ObservableCollection<SearchResult>));
+		public void Refresh()
+		{
+			if (CoreServices.Instance.LoginVerified)
+			{
+				string request = CoreServices.Instance.ServiceHost + "Search/?ParentAuthor=" + CoreServices.Instance.Credentials.UserName;
+				CoreServices.Instance.QueueDownload(request, GetCommentsCallback);
+			}
+		}
 
-                using (IsolatedStorageFile isf = IsolatedStorageFile.GetUserStoreForApplication())
-                {
-                    using (IsolatedStorageFileStream stream = new IsolatedStorageFileStream("myreplies.txt", FileMode.OpenOrCreate, isf))
-                    {
-                        SearchResults = ser.ReadObject(stream) as ObservableCollection<SearchResult>;
-                    }
-                }
+		public void SaveMyReplies()
+		{
+			DataContractSerializer ser = new DataContractSerializer(typeof(ObservableCollection<SearchResult>));
 
-                if (PropertyChanged != null)
-                {
-                    PropertyChanged(this, new PropertyChangedEventArgs("SearchResults"));
-                }
-            }
-            catch
-            {
-            }
-        }
+			using (IsolatedStorageFile isf = IsolatedStorageFile.GetUserStoreForApplication())
+			{
+				using (IsolatedStorageFileStream stream = new IsolatedStorageFileStream("myreplies.txt", FileMode.Create, isf))
+				{
+					ser.WriteObject(stream, SearchResults);
+				}
+			}
+		}
 
-        public event PropertyChangedEventHandler PropertyChanged;
-    }
+		public void LoadMyReplies()
+		{
+			try
+			{
+				SearchResults = new ObservableCollection<SearchResult>();
+				DataContractSerializer ser = new DataContractSerializer(typeof(ObservableCollection<SearchResult>));
+
+				using (IsolatedStorageFile isf = IsolatedStorageFile.GetUserStoreForApplication())
+				{
+					using (IsolatedStorageFileStream stream = new IsolatedStorageFileStream("myreplies.txt", FileMode.OpenOrCreate, isf))
+					{
+						SearchResults = ser.ReadObject(stream) as ObservableCollection<SearchResult>;
+					}
+				}
+
+				if (PropertyChanged != null)
+				{
+					PropertyChanged(this, new PropertyChangedEventArgs("SearchResults"));
+				}
+			}
+			catch
+			{
+			}
+		}
+
+		public event PropertyChangedEventHandler PropertyChanged;
+	}
 }

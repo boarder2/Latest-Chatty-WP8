@@ -16,6 +16,8 @@ namespace LatestChatty.Classes
 		public static readonly string CommentSize = "CommentSize";
 		public static readonly string ThreadNavigationByDate = "ThreadNavigationByDate";
 		public static readonly string ShowInlineImages = "ShowInline";
+		public static readonly string LastInAppReplyCount = "LastInAppReplyCount";
+		public static readonly string LastTileReplyCount = "LastTileReplyCount";
 	}
 
 	public enum CommentViewSize
