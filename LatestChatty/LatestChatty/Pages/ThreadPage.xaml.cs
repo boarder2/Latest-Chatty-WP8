@@ -17,6 +17,7 @@ using LatestChatty.ViewModels;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Tasks;
 using Microsoft.Phone.Shell;
+using LatestChatty.Common;
 
 namespace LatestChatty.Pages
 {
@@ -34,10 +35,7 @@ namespace LatestChatty.Pages
 			InitializeComponent();
 			this.pinMenuItem = ApplicationBar.MenuItems[1] as ApplicationBarMenuItem;
 			this.navigationModeButton = ApplicationBar.Buttons[1] as ApplicationBarIconButton;
-
-			bool byDate;
-			CoreServices.Instance.Settings.TryGetValue<bool>(SettingsConstants.ThreadNavigationByDate, out byDate);
-			this.navigateByDate = byDate;
+			this.navigateByDate = LatestChattySettings.Instance.ThreadNavigationByDate;
 			this.SetNavigationModeIcon();
 			
 			this.commentBrowser.NavigateToString(CoreServices.Instance.CommentBrowserString);
@@ -87,10 +85,7 @@ namespace LatestChatty.Pages
 
 		private void SizeBrowser()
 		{
-			CommentViewSize browserSize;
-			CoreServices.Instance.Settings.TryGetValue<CommentViewSize>(SettingsConstants.CommentSize, out browserSize);
-
-			switch (browserSize)
+			switch (LatestChattySettings.Instance.CommentSize)
 			{
 				case CommentViewSize.Half:
 					this.commentBrowser.Height = 350;

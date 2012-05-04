@@ -8,11 +8,69 @@ using System.Linq;
 using System.Xml.Linq;
 using System.Windows;
 using System.Text.RegularExpressions;
+using System.Windows.Media.Imaging;
+using System.Windows.Media;
+using LatestChatty.Common;
 
 namespace RepliesAgent
 {
+	public static class Scheduler
+	{
+		/// <summary>
+		/// Removes the agent from the services.
+		/// </summary>
+		public static void RemoveTask()
+		{
+			if (ScheduledActionService.Find(ScheduledAgent.TaskName) != null)
+				ScheduledActionService.Remove(ScheduledAgent.TaskName);
+		}
+
+		/// <summary>
+		/// Refreshes timeout on the task, only if it's already in the scheduled services.
+		/// </summary>
+		public static void RefreshTask()
+		{
+			//Only refresh if it's already added.
+			if (ScheduledActionService.Find(ScheduledAgent.TaskName) != null)
+			{
+				Scheduler.RemoveTask();
+				Scheduler.AddTask();
+			}
+		}
+
+		/// <summary>
+		/// Adds the agent to the services.
+		/// </summary>
+		public static void AddTask()
+		{
+			//TODO: Detect 256MB devices.
+			if (ScheduledActionService.Find(ScheduledAgent.TaskName) == null)
+			{
+				PeriodicTask task = new PeriodicTask(ScheduledAgent.TaskName);
+				task.Description = "Periodically checks for replies to threads you posted in LatestChatty.  Updates LiveTile with results.";
+
+				task.ExpirationTime = DateTime.Now.AddDays(14);
+				try
+				{
+					ScheduledActionService.Add(task);
+#if DEBUG
+					ScheduledActionService.LaunchForTest("LatestChatty", TimeSpan.FromSeconds(10));
+#endif
+
+				}
+				catch (InvalidOperationException)
+				{
+					MessageBox.Show("Can't schedule agent; either there are too many other agents scheduled or you have disabled this agent in Settings.");
+					return;
+				}
+			}
+		}
+	}
 	public class ScheduledAgent : ScheduledTaskAgent
 	{
+
+		public static string TaskName = "LatestChatty";
+
 		/// <summary>
 		/// Agent that runs a scheduled task
 		/// </summary>
@@ -29,10 +87,14 @@ namespace RepliesAgent
 		{
 			string username;
 
-			IsolatedStorageSettings settings = IsolatedStorageSettings.ApplicationSettings;
-			if (settings.Contains("username"))
+#if DEBUG
+			ScheduledActionService.LaunchForTest("LatestChatty", TimeSpan.FromSeconds(10));
+#endif
+
+			//IsolatedStorageSettings settings = IsolatedStorageSettings.ApplicationSettings;
+			if (!string.IsNullOrWhiteSpace(LatestChattySettings.Instance.Username))
 			{
-				username = settings["username"].ToString();
+				username = LatestChattySettings.Instance.Username;
 			}
 			else
 			{
@@ -45,21 +107,13 @@ namespace RepliesAgent
 				return;
 			}
 
-			//Clean up old persisted id.
-			if (settings.Contains("lastReplySeen"))
-			{
-				settings.Remove("lastReplySeen");
-			}
-
-			if (settings.Contains("LastInAppReplyCount"))
-			{
-				this.lastInAppReplyCount = int.Parse(settings["LastInAppReplyCount"].ToString());
-			}
-
-			if (settings.Contains("LastTileReplyCount"))
-			{
-				this.lastTileReplyCount = int.Parse(settings["LastInAppReplyCount"].ToString());
-			}
+			this.lastInAppReplyCount = LatestChattySettings.Instance.LastInAppReplyCount;
+			this.lastTileReplyCount = LatestChattySettings.Instance.LastTileReplyCount;
+			
+#if DEBUG
+			var rand = new Random();
+			this.lastInAppReplyCount -= rand.Next(99);
+#endif
 
 			var uri = "http://shackapi.stonedonkey.com/Search/?ParentAuthor=" + username;
 			var request = (HttpWebRequest)HttpWebRequest.Create(uri);
@@ -71,9 +125,11 @@ namespace RepliesAgent
 
 		public void ResponseCallback(IAsyncResult result)
 		{
+			var wait = new System.Threading.ManualResetEvent(true);
+
 			try
 			{
-				var settings = IsolatedStorageSettings.ApplicationSettings;
+				//var settings = IsolatedStorageSettings.ApplicationSettings;
 				var response = ((HttpWebRequest)result.AsyncState).EndGetResponse(result);
 				var reader = new StreamReader(response.GetResponseStream());
 				var responseString = reader.ReadToEnd();
@@ -82,55 +138,106 @@ namespace RepliesAgent
 				var totalReplies = int.Parse(XMLResponse.Element("results").Attribute("total_results").Value);
 
 				//Do nothing, there aren't any new replies that we don't already know about.
-				if (totalReplies <= this.lastInAppReplyCount) return;
+				if (totalReplies <= this.lastInAppReplyCount) goto notifyComplete;
 
 				//Ok, so we've got a new reply
 				var latestReply = XMLResponse.Descendants("result").FirstOrDefault();
 
 				//This shouldn't happen, but... yeah.
-				if (latestReply == null) return;
+				if (latestReply == null) goto notifyComplete;
 
 				//Parse the body and author (I don't see any _target in the xml, so we'll take this out to save as much battery as possible.)
 				var replyText = latestReply.Element("body").Value;
 				var replyAuthor = latestReply.Attribute("author").Value;
 
 				//Find the right tile to update.  If they've got the shortcut to chatty pinned, use it.  If not, use the default tile.
-				var tileToUpdate = 
+				var tileToUpdate =
 					ShellTile.ActiveTiles.FirstOrDefault(x => x.NavigationUri.ToString().Contains("ChattyPage"))
 					?? ShellTile.ActiveTiles.FirstOrDefault();
 
 				//If they don't have it pinned at all there won't be any tile
-				if (tileToUpdate != null)
+				if (tileToUpdate != null && (LatestChattySettings.Instance.NotificationType == NotificationType.Tile || LatestChattySettings.Instance.NotificationType == NotificationType.TileAndToast))
 				{
-					var tileData = new StandardTileData();
+					//If there's a tile to update, we need to block NotifyComplete until the image is fully loaded.
+					wait.Reset();
+					Deployment.Current.Dispatcher.BeginInvoke(() =>
+						{
+							var newTilePath = "/Shared/ShellContent/LCFrontTileImage.jpg";
 
-					tileData.Count = totalReplies - this.lastInAppReplyCount;
-					tileData.BackTitle = replyText;
-					tileData.BackContent = replyAuthor;
+							var newTileImage = new BitmapImage(new Uri("ApplicationIcon-NoLamp.png", UriKind.Relative));
+							newTileImage.CreateOptions = BitmapCreateOptions.None;
+							newTileImage.ImageOpened += (sender, e) =>
+							{
+								try
+								{
+									var textToWrite = new System.Windows.Controls.TextBlock()
+									{
+										Width = 80,
+										Height = 80,
+										FontSize = 80,
+										VerticalAlignment = VerticalAlignment.Center,
+										Foreground = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.White),
+										TextAlignment = TextAlignment.Right,
+										Text = (totalReplies - this.lastInAppReplyCount).ToString(),
+									};
 
-					tileToUpdate.Update(tileData);
+									var backgroundImage = new System.Windows.Controls.Image();
+									backgroundImage.Source = newTileImage;
+
+									using (var isoStore = IsolatedStorageFile.GetUserStoreForApplication())
+									{
+										var finalBitmap = new WriteableBitmap(173, 173);
+										finalBitmap.Render(backgroundImage, new TranslateTransform());
+										finalBitmap.Render(textToWrite, new TranslateTransform() { X = 85, Y = 2 });
+										if (isoStore.FileExists(newTilePath)) { isoStore.DeleteFile(newTilePath); }
+										using (var writeStream = isoStore.CreateFile(newTilePath))
+										{
+											//Draws the bitmap
+											finalBitmap.Invalidate();
+											finalBitmap.SaveJpeg(writeStream, finalBitmap.PixelWidth, finalBitmap.PixelHeight, 0, 100);
+											writeStream.Close();
+										}
+									}
+
+									var tileData = new StandardTileData();
+									tileData.BackgroundImage = new Uri(string.Format("isostore:{0}", newTilePath), UriKind.Absolute);
+									tileData.BackTitle = replyAuthor;
+									tileData.BackContent = replyText;
+
+									tileToUpdate.Update(tileData);
+								}
+								finally
+								{
+									wait.Set();
+								}
+							};
+						});
 				}
 
 				//If we don't have any more replies that we haven't toasted, bail now.  Otherwise let's toast!
-				if (totalReplies < this.lastTileReplyCount) return;
+				if (totalReplies <= this.lastTileReplyCount) goto notifyComplete;
 
 				//Update the last reply count.
-				if (settings.Contains("LastTileReplyCount"))
+				LatestChattySettings.Instance.LastTileReplyCount = totalReplies;
+
+				if (LatestChattySettings.Instance.NotificationType == NotificationType.TileAndToast)
 				{
-					settings["LastInAppReplyCount"] = totalReplies;
-					settings.Save();
+					var toast = new ShellToast();
+					toast.Title = replyAuthor + " replied:";
+					toast.Content = replyText;
+					toast.NavigationUri = new Uri("/Pages/ThreadPage.xaml?Comment=" + int.Parse(latestReply.Attribute("id").Value) + "&Story=" + int.Parse(latestReply.Attribute("story_id").Value), UriKind.Relative);
+					toast.Show();
 				}
-
-				var toast = new ShellToast();
-				toast.Title = "LatestChatty: " + replyAuthor;
-				toast.Content = replyText;
-				toast.NavigationUri = new Uri("/Pages/ThreadPage.xaml?Comment=" + int.Parse(latestReply.Attribute("id").Value) + "&Story=" + int.Parse(latestReply.Attribute("story_id").Value), UriKind.Relative);
-				toast.Show();
 			}
-			catch
+			catch (Exception ex)
 			{
+				System.Diagnostics.Debug.WriteLine("Exception: {0}", ex);
 			}
 
+
+notifyComplete:
+
+			wait.WaitOne();
 			NotifyComplete();
 		}
 	}

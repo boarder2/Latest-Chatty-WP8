@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
+using LatestChatty.Common;
 
 namespace LatestChatty.Classes
 {
@@ -96,7 +97,7 @@ namespace LatestChatty.Classes
 
 		private string RewriteEmbeddedImage(string s)
 		{
-			if (CoreServices.Instance.ShouldShowInlineImages)
+			if (LatestChattySettings.Instance.ShouldShowInlineImages)
 			{
 				//I assume the compiler handles making this a single object and not something that gets compiled every time this method gets called.
 				//I reeeeeally hope so

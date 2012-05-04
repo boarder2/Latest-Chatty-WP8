@@ -15,45 +15,45 @@ using System.Xml.Linq;
 
 namespace LatestChatty.ViewModels
 {
-    public class StoryDetail : INotifyPropertyChanged
-    {
-        private int _story;
-        public Story Detail { get; set; }
+	 public class StoryDetail : INotifyPropertyChanged
+	 {
+		  private int _story;
+		  public Story Detail { get; set; }
 
-        public StoryDetail(int id)
-        {
-            _story = id;
-            Refresh();
-        }
+		  public StoryDetail(int id)
+		  {
+				_story = id;
+				Refresh();
+		  }
 
-        void GetStoryDetailCallback(XDocument response)
-        {
-            try
-            {
-                XElement x = response.Elements("story").First();
+		  void GetStoryDetailCallback(XDocument response)
+		  {
+				try
+				{
+					 XElement x = response.Elements("story").First();
 
-                Detail = new Story(x);
+					 Detail = new Story(x);
 
-                if (PropertyChanged != null)
-                {
-                    PropertyChanged(this, new PropertyChangedEventArgs("Stories"));
-                }
-            }
-            catch (Exception)
-            {
-                MessageBox.Show("Cannot load story " + _story + ".");
-            }
-        }
+					 if (PropertyChanged != null)
+					 {
+						  PropertyChanged(this, new PropertyChangedEventArgs("Stories"));
+					 }
+				}
+				catch (Exception)
+				{
+					 MessageBox.Show("Cannot load story " + _story + ".");
+				}
+		  }
 
-        public void Refresh()
-        {
-            string request;
+		  public void Refresh()
+		  {
+				string request;
 
-            request = CoreServices.Instance.ServiceHost + "/stories/" + _story + ".xml";
+				request = CoreServices.Instance.ServiceHost + "/stories/" + _story + ".xml";
 
 						CoreServices.Instance.QueueDownload(request, GetStoryDetailCallback);
-        }
+		  }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-    }
+		  public event PropertyChangedEventHandler PropertyChanged;
+	 }
 }

@@ -60,18 +60,17 @@ namespace LatestChatty.ViewModels
 			try
 			{
 				_story = (int)response.Root.Attribute("story_id");
+				var comments = from x in response.Descendants("comment")
+									where !this.Comments.Any(c => c.id == (int)x.Attribute("id"))
+									select new Comment(x, _story, true, 0);
 
-				var ObjChatty = from x in response.Descendants("comment")
-												select new Comment(x, _story, true, 0);
-
-				foreach (Comment singleComment in ObjChatty)
-				{
-					if (!this.Comments.Any(c => c.id == singleComment.id))
+				Deployment.Current.Dispatcher.BeginInvoke(() =>
 					{
-						//Avoid adding duplicates
-						this.Comments.Add(singleComment);
-					}
-				}
+						foreach (var c in comments)
+						{
+							this.Comments.Add(c);
+						}
+					});
 			}
 			catch (Exception)
 			{

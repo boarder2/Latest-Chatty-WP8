@@ -11,6 +11,7 @@ using System.Windows.Shapes;
 using LatestChatty.Classes;
 using LatestChatty.ViewModels;
 using Microsoft.Phone.Net.NetworkInformation;
+using LatestChatty.Common;
 
 namespace LatestChatty
 {
@@ -21,13 +22,12 @@ namespace LatestChatty
 			SetCommentBrowserString();
 			LoadLoginInformation();
 			LoadReplyCounts();
-			LoadSettings();
 		}
-		
+
 		~CoreServices()
 		{
 		}
-		
+
 		#region Singleton
 		private static CoreServices _coreServices = null;
 		public static CoreServices Instance
@@ -39,56 +39,6 @@ namespace LatestChatty
 					_coreServices = new CoreServices();
 				}
 				return _coreServices;
-			}
-		}
-		#endregion
-
-		#region Settings
-		public readonly IsolatedStorageSettings Settings = IsolatedStorageSettings.ApplicationSettings;
-		private void LoadSettings()
-		{
-			if (!this.Settings.Contains(SettingsConstants.CommentSize))
-			{
-				this.Settings.Add(SettingsConstants.CommentSize, CommentViewSize.Small);
-			}
-			if (!this.Settings.Contains(SettingsConstants.ThreadNavigationByDate))
-			{
-				this.Settings.Add(SettingsConstants.ThreadNavigationByDate, true);
-			}
-			if (!this.Settings.Contains(SettingsConstants.ShowInlineImages))
-			{
-				this.Settings.Add(SettingsConstants.ShowInlineImages, ShowInlineImages.Always);
-			}
-			if (!this.Settings.Contains(SettingsConstants.LastInAppReplyCount))
-			{
-				this.Settings.Add(SettingsConstants.LastInAppReplyCount, 0);
-			}
-			if (!this.Settings.Contains(SettingsConstants.LastTileReplyCount))
-			{
-				this.Settings.Add(SettingsConstants.LastTileReplyCount, 0);
-			}
-		}
-
-		public bool ShouldShowInlineImages
-		{
-			get
-			{
-				ShowInlineImages showInlineImages;
-				CoreServices.Instance.Settings.TryGetValue<ShowInlineImages>(SettingsConstants.ShowInlineImages, out showInlineImages);
-				if (showInlineImages == ShowInlineImages.Never)
-				{
-					return false;
-				}
-
-				if (showInlineImages == ShowInlineImages.OnWiFi)
-				{
-					var type = NetworkInterface.NetworkInterfaceType;
-					return type == NetworkInterfaceType.Ethernet ||
-						type == NetworkInterfaceType.Wireless80211;
-				}
-
-				//Always.
-				return true;
 			}
 		}
 		#endregion
@@ -177,7 +127,7 @@ namespace LatestChatty
 		}
 
 		public void SetCurrentSelectedComment(Comment c)
-		{	
+		{
 			System.Diagnostics.Debug.WriteLine("Setting global selected comment Id {0}", c.id);
 			_selectedCommentId = c.id;
 
@@ -186,7 +136,7 @@ namespace LatestChatty
 			//          Deployment.Current.Dispatcher.BeginInvoke(() => this.SelectedCommentChanged(c));
 			//}
 		}
-		
+
 		public CommentThread GetCommentThread(int comment)
 		{
 			if (_currentCommentThread != null && _currentCommentThread.SeedCommentId == comment)
@@ -331,7 +281,8 @@ namespace LatestChatty
 				_loginCallback(true);
 				_loginCallback = null;
 
-				CoreServices.Instance.SaveLoginInformation();
+				LatestChattySettings.Instance.Username = username;
+				LatestChattySettings.Instance.Password = password;
 			});
 
 			// Removing authentication for now
@@ -364,56 +315,52 @@ namespace LatestChatty
 			});
 		}
 
-		public void SaveLoginInformation()
-		{
-			IsolatedStorageSettings settings = IsolatedStorageSettings.ApplicationSettings;
-			if (settings.Contains("username"))
-			{
-				settings["username"] = _nc.UserName;
-			}
-			else
-			{
-				if (_nc.UserName != "")
-				{
-					settings.Add("username", _nc.UserName);
-				}
-			}
-
-			if (settings.Contains("password"))
-			{
-				settings["password"] = _nc.Password;
-			}
-			else
-			{
-				if (_nc.Password != "")
-				{
-					settings.Add("password", _nc.Password);
-				}
-			}
-			settings.Save();
-		}
-
 		public void LoadLoginInformation()
 		{
-			IsolatedStorageSettings settings = IsolatedStorageSettings.ApplicationSettings;
-			if (settings.Contains("username"))
-			{
-				_nc.UserName = settings["username"].ToString();
-			}
-
-			if (settings.Contains("password"))
-			{
-				_nc.Password = settings["password"].ToString();
-				_loginVerified = true;
-			}
+			Deployment.Current.Dispatcher.BeginInvoke(() =>
+				{
+					_nc.UserName = LatestChattySettings.Instance.Username;
+					_nc.Password = LatestChattySettings.Instance.Password;
+					_loginVerified = !string.IsNullOrWhiteSpace(_nc.Password);
+				});
 		}
+
+		//public void SaveLoginInformation()
+		//{
+		//   IsolatedStorageSettings settings = IsolatedStorageSettings.ApplicationSettings;
+		//   if (settings.Contains("username"))
+		//   {
+		//      settings["username"] = _nc.UserName;
+		//   }
+		//   else
+		//   {
+		//      if (_nc.UserName != "")
+		//      {
+		//         settings.Add("username", _nc.UserName);
+		//      }
+		//   }
+
+		//   if (settings.Contains("password"))
+		//   {
+		//      settings["password"] = _nc.Password;
+		//   }
+		//   else
+		//   {
+		//      if (_nc.Password != "")
+		//      {
+		//         settings.Add("password", _nc.Password);
+		//      }
+		//   }
+		//   settings.Save();
+		//}
 
 		public void Logout()
 		{
 			_nc.UserName = "";
 			_nc.Password = "";
 			_loginVerified = false;
-			SaveLoginInformation();
+			LatestChattySettings.Instance.Username = string.Empty;
+			LatestChattySettings.Instance.Password = string.Empty;
 		}
 		#endregion
 
@@ -521,7 +468,7 @@ namespace LatestChatty
 			//There's probably a faster way to do this...  I'll figure this out at some point, because loading these takes a long time.
 			if (this.knownReplyCounts.Count > 2000)
 			{
-					 System.Diagnostics.Debug.WriteLine("Trimming reply counts.");
+				System.Diagnostics.Debug.WriteLine("Trimming reply counts.");
 				var keepCounts = this.knownReplyCounts.OrderByDescending(r => r.Key).Take(2000).ToList();
 				this.knownReplyCounts.Clear();
 				foreach (var item in keepCounts)

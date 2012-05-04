@@ -17,6 +17,7 @@ using System.Runtime.Serialization;
 using System.IO.IsolatedStorage;
 using System.IO;
 using Microsoft.Phone.Shell;
+using LatestChatty.Common;
 
 namespace LatestChatty.ViewModels
 {
@@ -43,15 +44,8 @@ namespace LatestChatty.ViewModels
 
 				var totalReplies = int.Parse(response.Element("results").Attribute("total_results").Value);
 
-				CoreServices.Instance.Settings[SettingsConstants.LastInAppReplyCount] = totalReplies;
-				CoreServices.Instance.Settings.Save();
-
-				var tileToUpdate =
-					ShellTile.ActiveTiles.FirstOrDefault(x => x.NavigationUri.ToString().Contains("ChattyPage"))
-					?? ShellTile.ActiveTiles.FirstOrDefault();
-
-				//Get rid of tile data that's now old.
-				tileToUpdate.Update(new StandardTileData());
+				LatestChattySettings.Instance.LastInAppReplyCount = totalReplies;
+				LatestChattySettings.Instance.LastTileReplyCount = totalReplies;
 
 				SearchResults.Clear();
 				foreach (SearchResult singleResult in results)

@@ -31,9 +31,12 @@
 		<!--ContentPanel - place additional content here-->
 		<Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
 			<StackPanel>
-				<TextBlock Text="Enable Push for Replies To My Comments" Foreground="{StaticResource PhoneForegroundBrush}"/>
-				<toolkit:ToggleSwitch x:Name="PushEnabled" Checked="TogglePush_Checked" Unchecked="TogglePush_Unchecked"/>
-				<TextBlock Text="Add Shortcuts to Start Menu" Foreground="{StaticResource PhoneForegroundBrush}"/>
+				<TextBlock Text="Reply Notifications" Foreground="{StaticResource PhoneForegroundBrush}"/>
+				<toolkit:ListPicker x:Name="notificationTypePicker" SelectionChanged="NotificationTypePickerChanged">
+					<toolkit:ListPickerItem Tag="None">None</toolkit:ListPickerItem>
+					<toolkit:ListPickerItem Tag="Tile">Tile Only</toolkit:ListPickerItem>
+					<toolkit:ListPickerItem Tag="TileAndToast">Tile and Toasts</toolkit:ListPickerItem>
+				</toolkit:ListPicker><TextBlock Text="Add Shortcuts to Start Menu" Foreground="{StaticResource PhoneForegroundBrush}"/>
 				<Button Content="Shortcut to Chatty" Click="AddChatty_Click"/>
 				<TextBlock Text="Thread View Size" />
 				<toolkit:ListPicker x:Name="sizePicker" SelectionChanged="CommentSizePickerChanged">
