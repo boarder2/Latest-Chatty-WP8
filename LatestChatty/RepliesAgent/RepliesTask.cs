@@ -14,61 +14,8 @@ using LatestChatty.Common;
 
 namespace RepliesAgent
 {
-	public static class Scheduler
+	public class RepliesTask : ScheduledTaskAgent
 	{
-		/// <summary>
-		/// Removes the agent from the services.
-		/// </summary>
-		public static void RemoveTask()
-		{
-			if (ScheduledActionService.Find(ScheduledAgent.TaskName) != null)
-				ScheduledActionService.Remove(ScheduledAgent.TaskName);
-		}
-
-		/// <summary>
-		/// Refreshes timeout on the task, only if it's already in the scheduled services.
-		/// </summary>
-		public static void RefreshTask()
-		{
-			//Only refresh if it's already added.
-			if (ScheduledActionService.Find(ScheduledAgent.TaskName) != null)
-			{
-				Scheduler.RemoveTask();
-				Scheduler.AddTask();
-			}
-		}
-
-		/// <summary>
-		/// Adds the agent to the services.
-		/// </summary>
-		public static void AddTask()
-		{
-			//TODO: Detect 256MB devices.
-			if (ScheduledActionService.Find(ScheduledAgent.TaskName) == null)
-			{
-				PeriodicTask task = new PeriodicTask(ScheduledAgent.TaskName);
-				task.Description = "Periodically checks for replies to threads you posted in LatestChatty.  Updates LiveTile with results.";
-
-				task.ExpirationTime = DateTime.Now.AddDays(14);
-				try
-				{
-					ScheduledActionService.Add(task);
-#if DEBUG
-					ScheduledActionService.LaunchForTest("LatestChatty", TimeSpan.FromSeconds(10));
-#endif
-
-				}
-				catch (InvalidOperationException)
-				{
-					MessageBox.Show("Can't schedule agent; either there are too many other agents scheduled or you have disabled this agent in Settings.");
-					return;
-				}
-			}
-		}
-	}
-	public class ScheduledAgent : ScheduledTaskAgent
-	{
-
 		public static string TaskName = "LatestChatty";
 
 		/// <summary>
@@ -86,44 +33,52 @@ namespace RepliesAgent
 		protected override void OnInvoke(ScheduledTask task)
 		{
 			string username;
-
+			try
+			{
 #if DEBUG
 			ScheduledActionService.LaunchForTest("LatestChatty", TimeSpan.FromSeconds(10));
 #endif
 
-			//IsolatedStorageSettings settings = IsolatedStorageSettings.ApplicationSettings;
-			if (!string.IsNullOrWhiteSpace(LatestChattySettings.Instance.Username))
-			{
-				username = LatestChattySettings.Instance.Username;
-			}
-			else
-			{
-				var toast = new ShellToast();
-				toast.Title = "LatestChatty: ";
-				toast.Content = "Please login to receive reply notifications";
-				toast.NavigationUri = new Uri("/", UriKind.Relative);
-				toast.Show();
-				NotifyComplete();
-				return;
-			}
+				//IsolatedStorageSettings settings = IsolatedStorageSettings.ApplicationSettings;
+				if (!string.IsNullOrWhiteSpace(LatestChattySettings.Instance.Username))
+				{
+					username = LatestChattySettings.Instance.Username;
+				}
+				else
+				{
+					var toast = new ShellToast();
+					toast.Title = "LatestChatty: ";
+					toast.Content = "Please login to receive reply notifications";
+					toast.NavigationUri = new Uri("/", UriKind.Relative);
+					toast.Show();
+					NotifyComplete();
+					return;
+				}
 
-			this.lastInAppReplyCount = LatestChattySettings.Instance.LastInAppReplyCount;
-			this.lastTileReplyCount = LatestChattySettings.Instance.LastTileReplyCount;
-			
+				this.lastInAppReplyCount = LatestChattySettings.Instance.LastInAppReplyCount;
+				this.lastTileReplyCount = LatestChattySettings.Instance.LastTileReplyCount;
+
 #if DEBUG
 			var rand = new Random();
 			this.lastInAppReplyCount -= rand.Next(99);
 #endif
 
-			var uri = "http://shackapi.stonedonkey.com/Search/?ParentAuthor=" + username;
-			var request = (HttpWebRequest)HttpWebRequest.Create(uri);
-			request.Method = "GET";
-			request.Headers[HttpRequestHeader.CacheControl] = "no-cache";
+				var uri = "http://shackapi.stonedonkey.com/Search/?ParentAuthor=" + username;
+				var request = (HttpWebRequest)HttpWebRequest.Create(uri);
+				request.Method = "GET";
+				request.Headers[HttpRequestHeader.CacheControl] = "no-cache";
 
-			var token = request.BeginGetResponse(new AsyncCallback(ResponseCallback), request);
+				var token = request.BeginGetResponse(new AsyncCallback(ResponseCallback), request);
+			}
+			catch (Exception ex)
+			{
+				System.Diagnostics.Debug.WriteLine("Exception: {0}", ex);
+				//Always complete so the tile continues to refresh if the exception can be recovered from.
+				NotifyComplete();
+			}
 		}
 
-		public void ResponseCallback(IAsyncResult result)
+		private void ResponseCallback(IAsyncResult result)
 		{
 			var wait = new System.Threading.ManualResetEvent(true);
 
@@ -232,10 +187,12 @@ namespace RepliesAgent
 			catch (Exception ex)
 			{
 				System.Diagnostics.Debug.WriteLine("Exception: {0}", ex);
+				//If we get an exception, just exit out so the process isn't hung waiting
+				wait.Set();
 			}
 
 
-notifyComplete:
+		notifyComplete:
 
 			wait.WaitOne();
 			NotifyComplete();
