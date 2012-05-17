@@ -17,7 +17,7 @@ using LatestChatty.ViewModels;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Tasks;
 using Microsoft.Phone.Shell;
-using LatestChatty.Common;
+using LatestChatty.Settings;
 
 namespace LatestChatty.Pages
 {
@@ -193,14 +193,22 @@ namespace LatestChatty.Pages
 		{
 			if (this.thread.SelectedComment != null)
 			{
+				var currentIndex = this.thread.FlatComments.IndexOf(this.thread.SelectedComment);
 				Comment displayComment = null;
 				if (this.navigateByDate)
 				{
-					displayComment = this.thread.FlatComments.OrderBy(c => c.id).LastOrDefault(c => c.id < this.thread.SelectedComment.id);
+					if (currentIndex > 0)
+					{
+						displayComment = this.thread.FlatComments.OrderBy(c => c.id).LastOrDefault(c => c.id < this.thread.SelectedComment.id);
+					}
+					else
+					{
+						//At the beginning, so in order to wrap back, we need to take the oldest comment sorted by ID.
+						displayComment = this.thread.FlatComments.OrderBy(c => c.id).Last();
+					}
 				}
 				else
 				{
-					var currentIndex = this.thread.FlatComments.IndexOf(this.thread.SelectedComment);
 					if (currentIndex > 0)
 					{
 						displayComment = this.thread.FlatComments[currentIndex - 1];

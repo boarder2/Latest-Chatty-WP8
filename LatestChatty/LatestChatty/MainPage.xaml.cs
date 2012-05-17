@@ -12,6 +12,7 @@ using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using LatestChatty.Controls;
 using Microsoft.Phone.Shell;
+using LatestChatty.Classes;
 
 namespace LatestChatty
 {
@@ -19,17 +20,18 @@ namespace LatestChatty
 	{
 		LoginControl _login;
 		private int _refreshing = 0;
-		
+
 		// Constructor
 		public MainPage()
 		{
 			InitializeComponent();
+			//There are problems doing this in the background thread, so we'll take it out of there for now.
+			//TODO: Make this able to load in the background.
+			CoreServices.Instance.WatchList.RefreshWatchList();
 
 			var maintenanceWorker = new System.ComponentModel.BackgroundWorker();
 			maintenanceWorker.DoWork += (sender, args) =>
 			{
-				CoreServices.Instance.WatchList.RefreshWatchList();
-
 				//Clear the tile since we're loading everything now.
 				var tileToUpdate =
 					ShellTile.ActiveTiles.FirstOrDefault(x => x.NavigationUri.ToString().Contains("ChattyPage"))
@@ -41,6 +43,7 @@ namespace LatestChatty
 					var tileData = new StandardTileData
 					{
 						BackgroundImage = new Uri("ApplicationIcon.png", UriKind.Relative),
+						Count = 0,
 						BackContent = string.Empty,
 						BackTitle = string.Empty,
 						Title = "LatestChatty"
@@ -48,12 +51,10 @@ namespace LatestChatty
 
 					tileToUpdate.Update(tileData);
 				}
-
-				//Refresh the scheduled task timeout if it's enabled. Otherwise in 2 weeks from when they enabled it, it will stop working.
-				RepliesAgent.Scheduler.RefreshTask();
+				NotificationHelper.RegisterForNotifications();
 			};
 			maintenanceWorker.RunWorkerAsync();
-			
+
 			if (!CoreServices.Instance.LoginVerified)
 			{
 				LoginText.Text = "login";

@@ -7,10 +7,10 @@ Created by: fleabix, boarder2
 > Added wrapping to back/forward button in thread view
 > Fixed error when a pinned post is nuked
 > Changed Icon - Again
-> Added embedded images to posts, can be disabled in settings
+> Added embedded images to posts (unless marked as NWS), can be disabled in settings
 > Moved refreshing of a thread to the navigation menu
 > Added toggle between top/down and date navigation for the forward/back buttons in thread view
-> Massive overhaul of replies agent, live tile, and toast notifications
+> REAL PUSH NOTIFICATIONS!!
 
 [ Version 2.5 ]
 > Added smooth transitions to all pages

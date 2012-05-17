@@ -5,7 +5,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
-using LatestChatty.Common;
+using LatestChatty.Settings;
 
 namespace LatestChatty.Classes
 {
@@ -62,8 +62,8 @@ namespace LatestChatty.Classes
 			this.dateText = (string)x.Attribute("date");
 			this.id = (int)x.Attribute("id");
 			this.author = (string)x.Attribute("author");
-			this.body = RewriteEmbeddedImage(StripHTML(((string)x.Element("body")).Trim()));
 			this.category = (PostCategory)Enum.Parse(typeof(PostCategory), ((string)x.Attribute("category")).Trim(), true);
+			this.body = RewriteEmbeddedImage(StripHTML(((string)x.Element("body")).Trim()));
 			this.preview = ((string)x.Attribute("preview")).Trim();
 			this.storyid = thisstoryid;
 			var element = (from e in x.Elements()
@@ -97,7 +97,7 @@ namespace LatestChatty.Classes
 
 		private string RewriteEmbeddedImage(string s)
 		{
-			if (LatestChattySettings.Instance.ShouldShowInlineImages)
+			if (LatestChattySettings.Instance.ShouldShowInlineImages && this.category != PostCategory.nws)
 			{
 				//I assume the compiler handles making this a single object and not something that gets compiled every time this method gets called.
 				//I reeeeeally hope so

@@ -17,7 +17,7 @@ using System.Runtime.Serialization;
 using System.IO.IsolatedStorage;
 using System.IO;
 using Microsoft.Phone.Shell;
-using LatestChatty.Common;
+using LatestChatty.Settings;
 
 namespace LatestChatty.ViewModels
 {
@@ -41,11 +41,6 @@ namespace LatestChatty.ViewModels
 			{
 				var results = from x in response.Descendants("result")
 								  select new SearchResult(x);
-
-				var totalReplies = int.Parse(response.Element("results").Attribute("total_results").Value);
-
-				LatestChattySettings.Instance.LastInAppReplyCount = totalReplies;
-				LatestChattySettings.Instance.LastTileReplyCount = totalReplies;
 
 				SearchResults.Clear();
 				foreach (SearchResult singleResult in results)

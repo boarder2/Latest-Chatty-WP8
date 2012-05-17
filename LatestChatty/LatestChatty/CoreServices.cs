@@ -11,7 +11,7 @@ using System.Windows.Shapes;
 using LatestChatty.Classes;
 using LatestChatty.ViewModels;
 using Microsoft.Phone.Net.NetworkInformation;
-using LatestChatty.Common;
+using LatestChatty.Settings;
 
 namespace LatestChatty
 {
@@ -21,7 +21,7 @@ namespace LatestChatty
 		{
 			SetCommentBrowserString();
 			LoadLoginInformation();
-			LoadReplyCounts();
+			LoadReplyCounts();	
 		}
 
 		~CoreServices()
@@ -255,7 +255,7 @@ namespace LatestChatty
 		{
 			get
 			{
-				return _loginVerified;
+				return !string.IsNullOrWhiteSpace(LatestChattySettings.Instance.Username) && !string.IsNullOrWhiteSpace(LatestChattySettings.Instance.Password);
 			}
 		}
 
@@ -286,13 +286,12 @@ namespace LatestChatty
 			});
 
 			// Removing authentication for now
-			/*
-			HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create("http://www.shackchatty.com/auth");
-			request.Method = "POST";
+			
+			//HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create("http://www.shackchatty.com/auth");
+			//request.Method = "POST";
 
-			request.Credentials = _nc;
-			IAsyncResult token = request.BeginGetResponse(new AsyncCallback(GetLoginCallback), request);
-			 * */
+			//request.Credentials = _nc;
+			//request.BeginGetResponse(new AsyncCallback(GetLoginCallback), request);
 		}
 
 		public void GetLoginCallback(IAsyncResult result)

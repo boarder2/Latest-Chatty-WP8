@@ -14,13 +14,14 @@ using Microsoft.Phone.Shell;
 using Microsoft.Phone.Scheduler;
 using System.IO.IsolatedStorage;
 using LatestChatty.Classes;
-using LatestChatty.Common;
+using LatestChatty.Settings;
 
 namespace LatestChatty.Pages
 {
 	public partial class SettingsPage : PhoneApplicationPage
 	{
 		private bool loaded = false;
+		NotificationType loadedNotificationType;
 
 		public SettingsPage()
 		{
@@ -37,17 +38,17 @@ namespace LatestChatty.Pages
 			this.notificationTypePicker.SelectedItem = this.notificationTypePicker.Items.First(
 				item => ((ListPickerItem)item).Tag.ToString().Equals(
 					Enum.GetName(typeof(NotificationType), LatestChattySettings.Instance.NotificationType), StringComparison.InvariantCultureIgnoreCase));
+			this.loadedNotificationType = LatestChattySettings.Instance.NotificationType;
 
 			this.navigationPicker.SelectedIndex = LatestChattySettings.Instance.ThreadNavigationByDate ? 0 : 1;
-
-			this.loaded = true;
 		}
 
 		protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
 		{
 			base.OnNavigatedTo(e);
+			this.loaded = true;
 		}
-
+		
 		private void AddChatty_Click(object sender, RoutedEventArgs e)
 		{
 			ShellTile tile = ShellTile.ActiveTiles.FirstOrDefault(x => x.NavigationUri.ToString().Contains("ChattyPage"));
@@ -67,21 +68,27 @@ namespace LatestChatty.Pages
 		private void NotificationTypePickerChanged(object sender, SelectionChangedEventArgs e)
 		{
 			if (!this.loaded) return;
+			
 
 			var picker = sender as ListPicker;
 			if (picker != null)
 			{
 				var notificationType = (NotificationType)Enum.Parse(typeof(NotificationType), ((ListPickerItem)picker.SelectedItem).Tag as string, true);
-				LatestChattySettings.Instance.NotificationType = notificationType;
-				switch(notificationType)
+				if (this.loadedNotificationType != notificationType)
 				{
-					case NotificationType.Tile:
-					case NotificationType.TileAndToast:
-						RepliesAgent.Scheduler.AddTask();
-						break;
-					default:
-						RepliesAgent.Scheduler.RemoveTask();
-						break;
+					LatestChattySettings.Instance.NotificationType = notificationType;
+					//Set it to the current type so we make sure we get back here.
+					this.loadedNotificationType = notificationType;
+					switch (notificationType)
+					{
+						case NotificationType.Tile:
+						case NotificationType.TileAndToast:
+							NotificationHelper.ReRegisterForNotifications();
+							break;
+						default:
+							NotificationHelper.UnRegisterNotifications();
+							break;
+					}
 				}
 			}
 		}
