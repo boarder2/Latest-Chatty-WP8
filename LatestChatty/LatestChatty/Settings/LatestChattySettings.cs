@@ -11,18 +11,17 @@ using System.Windows.Shapes;
 using System.IO.IsolatedStorage;
 using Microsoft.Phone.Net.NetworkInformation;
 
-namespace LatestChatty.Common
+namespace LatestChatty.Settings
 {
 	public class LatestChattySettings
 	{
 		private static readonly string commentSize = "CommentSize";
 		private static readonly string threadNavigationByDate = "ThreadNavigationByDate";
 		private static readonly string showInlineImages = "ShowInline";
-		private static readonly string lastInAppReplyCount = "LastInAppReplyCount";
-		private static readonly string lastTileReplyCount = "LastTileReplyCount";
 		private static readonly string notificationType = "NotificationType";
 		private static readonly string username = "username";
 		private static readonly string password = "password";
+		private static readonly string notificationUID = "notificationid";
 
 		public readonly IsolatedStorageSettings isoStore;
 
@@ -61,14 +60,6 @@ namespace LatestChatty.Common
 			{
 				this.isoStore.Add(showInlineImages, ShowInlineImages.Always);
 			}
-			if (!this.isoStore.Contains(lastInAppReplyCount))
-			{
-				this.isoStore.Add(lastInAppReplyCount, 0);
-			}
-			if (!this.isoStore.Contains(lastTileReplyCount))
-			{
-				this.isoStore.Add(lastTileReplyCount, 0);
-			}
 			if (!this.isoStore.Contains(username))
 			{
 				this.isoStore.Add(username, string.Empty);
@@ -77,6 +68,25 @@ namespace LatestChatty.Common
 			{
 				this.isoStore.Add(password, string.Empty);
 			}
+			if (!this.isoStore.Contains(notificationUID))
+			{
+				this.isoStore.Add(notificationUID, Guid.NewGuid());
+			}
+		}
+
+		public Guid NotificationID
+		{
+			get
+			{
+				Guid v;
+				this.isoStore.TryGetValue<Guid>(notificationUID, out v);
+				return v;
+			}
+			//set
+			//{
+			//   this.isoStore[notificationUID] = value;
+			//   this.isoStore.Save();
+			//}
 		}
 
 		public NotificationType NotificationType
@@ -134,32 +144,6 @@ namespace LatestChatty.Common
 			set
 			{
 				this.isoStore[threadNavigationByDate] = value;
-				this.isoStore.Save();
-			}
-		}
-
-		public int LastInAppReplyCount
-		{
-			get
-			{
-				return (int)this.isoStore[lastInAppReplyCount];
-			}
-			set
-			{
-				this.isoStore[lastInAppReplyCount] = value;
-				this.isoStore.Save();
-			}
-		}
-
-		public int LastTileReplyCount
-		{
-			get
-			{
-				return (int)this.isoStore[lastTileReplyCount];
-			}
-			set
-			{
-				this.isoStore[lastTileReplyCount] = value;
 				this.isoStore.Save();
 			}
 		}
