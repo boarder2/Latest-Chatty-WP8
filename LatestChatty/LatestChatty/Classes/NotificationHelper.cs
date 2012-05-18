@@ -18,7 +18,7 @@ namespace LatestChatty.Classes
 	public static class NotificationHelper
 	{
 		private const string ChannelName = "LatestChattyNotificaiton";
-		private const string ServiceHostName = "boarder2.dyndns.org";
+        private const string ServiceHostName = "ec2-50-112-112-151.us-west-2.compute.amazonaws.com";
 		//Prod
 		private const int ServicePort = 12243;
 		//Dev
