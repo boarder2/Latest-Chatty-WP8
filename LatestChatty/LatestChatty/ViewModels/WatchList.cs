@@ -45,7 +45,7 @@ namespace LatestChatty.ViewModels
 
 		public void Add(Comment c)
 		{
-			if (!this.IsOnWatchList(c)) { this.subscribedComments.Add(c.id); this.DownloadComment(c.id); }
+			if (!this.IsOnWatchList(c)) { this.subscribedComments.Add(c.id); this.DownloadComment(c.id); this.SaveWatchList(); }
 		}
 
 		public void Remove(Comment c)
@@ -53,8 +53,12 @@ namespace LatestChatty.ViewModels
 			if (this.IsOnWatchList(c))
 			{
 				this.subscribedComments.Remove(c.id);
-				var commentToRemove = this.Comments.First(c1 => c1.id == c.id);
-				this.Comments.Remove(commentToRemove);
+				this.SaveWatchList();
+				var commentToRemove = this.Comments.FirstOrDefault(c1 => c1.id == c.id);
+				if (commentToRemove != null)
+				{
+					this.Comments.Remove(commentToRemove);
+				}
 			}
 		}
 

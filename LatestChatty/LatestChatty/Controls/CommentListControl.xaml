@@ -20,7 +20,7 @@
 				<DataTemplate>
 					<Grid>
 						<Grid Visibility="{Binding IsLoadMoreComment, Converter={StaticResource BoolToVisConverter}}">
-							<Button Click="LoadMore_Click" Style="{StaticResource LoadMoreButton}" Content="load more..." />
+							<Button Click="LoadMore_Click" Style="{StaticResource LoadMoreButton}" Content="load more..." Width="455" />
 						</Grid>
 						<StackPanel Margin="0,0,0,0" Width="455" Visibility="{Binding IsLoadMoreComment, Converter={StaticResource NotBoolToVisConverter}}">
 							<Grid>
@@ -48,7 +48,7 @@
 												  Fill="{StaticResource PhoneAccentBrush}" 
 												  Visibility="{Binding selfReply, Converter={StaticResource BoolToVisConverter}}" />
 										</Grid>
-										
+
 										<!--How many replies-->
 										<TextBlock 
 												  HorizontalAlignment="Center" 
@@ -90,7 +90,8 @@
 						</StackPanel>
 						<Grid Grid.Column="0" Grid.ColumnSpan="2" Background="Black" Opacity=".6" Visibility="{Binding IsCollapsed, Converter={StaticResource BoolToVisConverter}}" />
 						<toolkit:ContextMenuService.ContextMenu>
-							<toolkit:ContextMenu>
+							<toolkit:ContextMenu >
+								<TextBlock Text="Nothing to see here! No really, don't click these, you'll break it!" Visibility="{Binding IsLoadMoreComment, Converter={StaticResource BoolToVisConverter}}"/>
 								<toolkit:MenuItem Header="unpin" Click="TogglePin_Click" Visibility="{Binding IsPinned, Converter={StaticResource BoolToVisConverter}}"/>
 								<toolkit:MenuItem Header="pin" Click="TogglePin_Click" Visibility="{Binding IsPinned, Converter={StaticResource NotBoolToVisConverter}}"/>
 								<toolkit:MenuItem Header="uncollapse" Click="ToggleCollapsed_Click" Visibility="{Binding IsCollapsed, Converter={StaticResource BoolToVisConverter}}"/>
