@@ -24,6 +24,8 @@ namespace LatestChatty.ViewModels
 	{
 		public ObservableCollection<Comment> Comments { get; private set; }
 
+		private List<Comment> refreshedComments = new List<Comment>();
+
 		private List<int> subscribedComments = new List<int>();
 
 		public event EventHandler RefreshCompleted;
@@ -112,9 +114,8 @@ namespace LatestChatty.ViewModels
 		//This may not be the optimal way to do this, but it works...
 		public void Refresh()
 		{
-			this.Comments.Clear();
+			this.refreshedComments.Clear();
 			this.commentsLeftToLoad = this.subscribedComments.Count;
-
 			if (this.commentsLeftToLoad > 0)
 			{
 				foreach (var commentId in this.subscribedComments)
@@ -148,25 +149,25 @@ namespace LatestChatty.ViewModels
 					var comment = new Comment(x, storyId, false, 0);
 					var insertAt = 0;
 					//Sort them the same all the time.
-					for (insertAt = 0; insertAt < this.Comments.Count; insertAt++)
+					for (insertAt = 0; insertAt < this.refreshedComments.Count; insertAt++)
 					{
 						//Keep looking
-						if (comment.id > this.Comments[insertAt].id)
+						if (comment.id > this.refreshedComments[insertAt].id)
 						{
 							continue;
 						}
 						//Already exists... don't add it twice.  (This could happen if they click refresh fast)
-						if (comment.id == this.Comments[insertAt].id)
+						if (comment.id == this.refreshedComments[insertAt].id)
 						{
 							return;
 						}
 						//We belong before this one.
-						if (comment.id < this.Comments[insertAt].id)
+						if (comment.id < this.refreshedComments[insertAt].id)
 						{
 							break;
 						}
 					}
-					this.Comments.Insert(insertAt, comment);
+					this.refreshedComments.Insert(insertAt, comment);
 				}
 			}
 			catch (Exception ex)
@@ -184,6 +185,12 @@ namespace LatestChatty.ViewModels
 		{
 			if (this.commentsLeftToLoad == 0)
 			{
+				this.Comments.Clear();
+				foreach (var c in this.refreshedComments)
+				{
+					this.Comments.Add(c);
+				}
+				this.refreshedComments.Clear();
 				if (this.RefreshCompleted != null)
 				{
 					this.RefreshCompleted(this, EventArgs.Empty);
