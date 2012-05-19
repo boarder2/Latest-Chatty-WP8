@@ -60,6 +60,11 @@ namespace LatestChatty.ViewModels
 			try
 			{
 				_story = (int)response.Root.Attribute("story_id");
+				var loadMoreComment = this.Comments.SingleOrDefault(c => c.IsLoadMoreComment);
+				if (loadMoreComment != null)
+				{
+					this.Comments.Remove(loadMoreComment);
+				}
 				var comments = from x in response.Descendants("comment")
 									where !this.Comments.Any(c => c.id == (int)x.Attribute("id"))
 									select new Comment(x, _story, true, 0);
@@ -70,6 +75,7 @@ namespace LatestChatty.ViewModels
 						{
 							this.Comments.Add(c);
 						}
+						this.Comments.Add(Comment.LoadMoreComment);
 					});
 			}
 			catch (Exception)

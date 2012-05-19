@@ -6,69 +6,71 @@
 	xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls"
 	xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
 	FontFamily="{StaticResource PhoneFontFamilyNormal}"
 	FontSize="{StaticResource PhoneFontSizeNormal}"
 	Foreground="{StaticResource PhoneForegroundBrush}"
 	SupportedOrientations="Portrait" Orientation="Portrait"
 	mc:Ignorable="d" d:DesignHeight="800" d:DesignWidth="480"
-	shell:SystemTray.IsVisible="False"
 	Style="{StaticResource TransitionPage}">
-
-	<!--LayoutRoot is the root grid where all page content is placed-->
 	<Grid x:Name="LayoutRoot" Background="Transparent">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="*"/>
 		</Grid.RowDefinitions>
 
-		<!--TitlePanel contains the name of the application and page title-->
-		<StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28">
-			<TextBlock x:Name="ApplicationTitle" Text="LATESTCHATTY" Style="{StaticResource PhoneTextNormalStyle}"/>
-			<TextBlock x:Name="PageTitle" Text="settings" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
-		</StackPanel>
-
-		<!--ContentPanel - place additional content here-->
-		<Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
-			<StackPanel>
-				<TextBlock Text="Reply Notifications" Foreground="{StaticResource PhoneForegroundBrush}"/>
-				<toolkit:ListPicker x:Name="notificationTypePicker" SelectionChanged="NotificationTypePickerChanged">
-					<toolkit:ListPickerItem Tag="None">None</toolkit:ListPickerItem>
-					<toolkit:ListPickerItem Tag="Tile">Tile Only</toolkit:ListPickerItem>
-					<toolkit:ListPickerItem Tag="TileAndToast">Tile and Toasts</toolkit:ListPickerItem>
-				</toolkit:ListPicker><TextBlock Text="Add Shortcuts to Start Menu" Foreground="{StaticResource PhoneForegroundBrush}"/>
-				<Button Content="Shortcut to Chatty" Click="AddChatty_Click"/>
-				<TextBlock Text="Thread View Size" />
-				<toolkit:ListPicker x:Name="sizePicker" SelectionChanged="CommentSizePickerChanged">
-					<toolkit:ListPickerItem Tag="Small">Small</toolkit:ListPickerItem>
-					<toolkit:ListPickerItem Tag="Half">Medium</toolkit:ListPickerItem>
-					<toolkit:ListPickerItem Tag="Huge">Huge</toolkit:ListPickerItem>
-				</toolkit:ListPicker>
-				<TextBlock Text="Thread Comment Navigation"/>
-				<toolkit:ListPicker x:Name="navigationPicker" SelectionChanged="NextBehaviorPickerChanged">
-					<toolkit:ListPickerItem Tag="True">By Date</toolkit:ListPickerItem>
-					<toolkit:ListPickerItem Tag="False">Top Down</toolkit:ListPickerItem>
-				</toolkit:ListPicker>
-				<TextBlock Text="Show Embedded Images"/>
-				<toolkit:ListPicker x:Name="showEmbeddedImagesPicker" SelectionChanged="ShowEmbeddedImagesPickerChanged">
-					<toolkit:ListPickerItem Tag="Always">Always</toolkit:ListPickerItem>
-					<toolkit:ListPickerItem Tag="OnWiFi">Only on WiFi</toolkit:ListPickerItem>
-					<toolkit:ListPickerItem Tag="Never">Never</toolkit:ListPickerItem>
-				</toolkit:ListPicker>
-			</StackPanel>
-		</Grid>
+		<TextBlock Grid.Row="0" Text="LATESTCHATTY - SETTINGS" Style="{StaticResource PhoneTextNormalStyle}"/>
+		<controls:Panorama>
+			<controls:PanoramaItem>
+				<StackPanel Orientation="Vertical">
+					<TextBlock Text="filters" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
+					<TextBlock Text="Auto Collapse" Padding="0, 0, 0, 15"/>
+					<toolkit:ToggleSwitch x:Name="autoCollapseNws" Checked="AutoCollapsePost_Checked" Unchecked="AutoCollapsePost_Checked" Header="nws" Style="{StaticResource SettingsToggleSwitch}"/>
+					<toolkit:ToggleSwitch x:Name="autoCollapseStupid" Checked="AutoCollapsePost_Checked" Unchecked="AutoCollapsePost_Checked" Header="stupid" Style="{StaticResource SettingsToggleSwitch}"/>
+					<toolkit:ToggleSwitch x:Name="autoCollapseOfftopic" Checked="AutoCollapsePost_Checked" Unchecked="AutoCollapsePost_Checked" Header="offtopic" Style="{StaticResource SettingsToggleSwitch}"/>
+					<toolkit:ToggleSwitch x:Name="autoCollapsePolitical" Checked="AutoCollapsePost_Checked" Unchecked="AutoCollapsePost_Checked" Header="political" Style="{StaticResource SettingsToggleSwitch}"/>
+					<toolkit:ToggleSwitch x:Name="autoCollapseInteresting" Checked="AutoCollapsePost_Checked" Unchecked="AutoCollapsePost_Checked" Header="interesting" Style="{StaticResource SettingsToggleSwitch}"/>
+					<toolkit:ToggleSwitch x:Name="autoCollapseInformative" Checked="AutoCollapsePost_Checked" Unchecked="AutoCollapsePost_Checked" Header="informative" Style="{StaticResource SettingsToggleSwitch}"/>
+				</StackPanel>
+			</controls:PanoramaItem>
+			<controls:PanoramaItem>
+				<StackPanel Orientation="Vertical">
+					<TextBlock Text="thread" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
+					<StackPanel>
+						<TextBlock Text="View Size" />
+						<toolkit:ListPicker x:Name="sizePicker" SelectionChanged="CommentSizePickerChanged">
+							<toolkit:ListPickerItem Tag="Small">Small</toolkit:ListPickerItem>
+							<toolkit:ListPickerItem Tag="Half">Medium</toolkit:ListPickerItem>
+							<toolkit:ListPickerItem Tag="Huge">Huge</toolkit:ListPickerItem>
+						</toolkit:ListPicker>
+						<TextBlock Text="Comment Navigation"/>
+						<toolkit:ListPicker x:Name="navigationPicker" SelectionChanged="NextBehaviorPickerChanged">
+							<toolkit:ListPickerItem Tag="True">By Date</toolkit:ListPickerItem>
+							<toolkit:ListPickerItem Tag="False">Top Down</toolkit:ListPickerItem>
+						</toolkit:ListPicker>
+						<TextBlock Text="Show Embedded Images"/>
+						<toolkit:ListPicker x:Name="showEmbeddedImagesPicker" SelectionChanged="ShowEmbeddedImagesPickerChanged">
+							<toolkit:ListPickerItem Tag="Always">Always</toolkit:ListPickerItem>
+							<toolkit:ListPickerItem Tag="OnWiFi">Only on WiFi</toolkit:ListPickerItem>
+							<toolkit:ListPickerItem Tag="Never">Never</toolkit:ListPickerItem>
+						</toolkit:ListPicker>
+					</StackPanel>
+				</StackPanel>
+			</controls:PanoramaItem>
+			<controls:PanoramaItem>
+				<StackPanel Orientation="Vertical">
+					<TextBlock Text="notifications" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
+					<TextBlock Text="Reply Notifications" Foreground="{StaticResource PhoneForegroundBrush}"/>
+					<toolkit:ListPicker x:Name="notificationTypePicker" SelectionChanged="NotificationTypePickerChanged">
+						<toolkit:ListPickerItem Tag="None">None</toolkit:ListPickerItem>
+						<toolkit:ListPickerItem Tag="Tile">Tile Only</toolkit:ListPickerItem>
+						<toolkit:ListPickerItem Tag="TileAndToast">Tile and Toasts</toolkit:ListPickerItem>
+					</toolkit:ListPicker>
+					<TextBlock Text="Add Shortcuts to Start Menu" Foreground="{StaticResource PhoneForegroundBrush}"/>
+					<Button Content="Shortcut to Chatty" Click="AddChatty_Click"/>
+				</StackPanel>
+			</controls:PanoramaItem>
+		</controls:Panorama>
 	</Grid>
-
-	<!--Sample code showing usage of ApplicationBar-->
-	<!--<phone:PhoneApplicationPage.ApplicationBar>
-		<shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
-			<shell:ApplicationBarIconButton IconUri="/Images/appbar_button1.png" Text="Button 1"/>
-			<shell:ApplicationBarIconButton IconUri="/Images/appbar_button2.png" Text="Button 2"/>
-			<shell:ApplicationBar.MenuItems>
-				<shell:ApplicationBarMenuItem Text="MenuItem 1"/>
-				<shell:ApplicationBarMenuItem Text="MenuItem 2"/>
-			</shell:ApplicationBar.MenuItems>
-		</shell:ApplicationBar>
-	</phone:PhoneApplicationPage.ApplicationBar>-->
-
 </phone:PhoneApplicationPage>

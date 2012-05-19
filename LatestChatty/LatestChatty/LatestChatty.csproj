@@ -78,7 +78,6 @@
     <Compile Include="Classes\NotificationHelper.cs" />
     <Compile Include="Classes\NotifyPropertyChangeBase.cs" />
     <Compile Include="Classes\POSTHandler.cs" />
-    <Compile Include="Classes\ScrollViewMonitor.cs" />
     <Compile Include="Classes\SearchResult.cs" />
     <Compile Include="Classes\GETDownloader.cs" />
     <Compile Include="Classes\Message.cs" />
@@ -152,6 +151,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\CommentList.cs" />
     <Compile Include="ViewModels\CommentThread.cs" />
+    <Compile Include="ViewModels\CollapseList.cs" />
     <Compile Include="ViewModels\MyReplies.cs" />
     <Compile Include="ViewModels\SearchResultList.cs" />
     <Compile Include="ViewModels\MyPostsList.cs" />

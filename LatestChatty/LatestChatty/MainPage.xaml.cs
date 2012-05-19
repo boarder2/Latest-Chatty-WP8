@@ -25,10 +25,7 @@ namespace LatestChatty
 		public MainPage()
 		{
 			InitializeComponent();
-			//There are problems doing this in the background thread, so we'll take it out of there for now.
-			//TODO: Make this able to load in the background.
-			CoreServices.Instance.WatchList.RefreshWatchList();
-
+		
 			var maintenanceWorker = new System.ComponentModel.BackgroundWorker();
 			maintenanceWorker.DoWork += (sender, args) =>
 			{
@@ -55,6 +52,15 @@ namespace LatestChatty
 			};
 			maintenanceWorker.RunWorkerAsync();
 
+			Pinned.DataContext = CoreServices.Instance.WatchList;
+			MyPosts.DataContext = CoreServices.Instance.MyPosts;
+			MyReplies.DataContext = CoreServices.Instance.MyReplies;
+
+			//Need to implement this for the watch list.
+			CoreServices.Instance.MyPosts.PropertyChanged += (s, a) => DecrementRefresher();
+			CoreServices.Instance.MyReplies.PropertyChanged += (s, a) => DecrementRefresher();
+			CoreServices.Instance.WatchList.RefreshCompleted += (s, a) => DecrementRefresher();
+
 			if (!CoreServices.Instance.LoginVerified)
 			{
 				LoginText.Text = "login";
@@ -64,20 +70,15 @@ namespace LatestChatty
 
 		void MainPage_Loaded(object sender, RoutedEventArgs e)
 		{
-			Pinned.DataContext = CoreServices.Instance.WatchList;
-			MyPosts.DataContext = CoreServices.Instance.MyPosts;
-			MyReplies.DataContext = CoreServices.Instance.MyReplies;
-
-			//Need to implement this for the watch list.
-			CoreServices.Instance.MyPosts.PropertyChanged += RefreshCompleted;
-			CoreServices.Instance.MyReplies.PropertyChanged += RefreshCompleted;
-
+			IncrementRefresher();
+			CoreServices.Instance.WatchList.Refresh();
+			
 			if (CoreServices.Instance.LoginVerified)
 			{
+				IncrementRefresher();
 				CoreServices.Instance.MyPosts.Refresh();
 				IncrementRefresher();
 				CoreServices.Instance.MyReplies.Refresh();
-				IncrementRefresher();
 			}
 		}
 
@@ -136,10 +137,12 @@ namespace LatestChatty
 			if (verified)
 			{
 				LoginText.Text = "logout";
+				IncrementRefresher();
+				IncrementRefresher();
+				IncrementRefresher();
 				CoreServices.Instance.MyPosts.Refresh();
 				CoreServices.Instance.MyReplies.Refresh();
-				IncrementRefresher();
-				IncrementRefresher();
+				CoreServices.Instance.WatchList.Refresh();
 			}
 			LayoutRoot.Children.Remove(_login);
 			_login = null;
@@ -159,22 +162,28 @@ namespace LatestChatty
 			}
 		}
 
+		protected override void OnNavigatedFrom(System.Windows.Navigation.NavigationEventArgs e)
+		{
+			base.OnNavigatedFrom(e);
+			_refreshing = 0;
+		}
+
 		private void MyPosts_Click(object sender, RoutedEventArgs e)
 		{
-			CoreServices.Instance.MyPosts.Refresh();
 			IncrementRefresher();
+			CoreServices.Instance.MyPosts.Refresh();
 		}
 
 		private void MyReplies_Click(object sender, RoutedEventArgs e)
 		{
-			CoreServices.Instance.MyReplies.Refresh();
 			IncrementRefresher();
+			CoreServices.Instance.MyReplies.Refresh();
 		}
 
 		private void Pinned_Click(object sender, RoutedEventArgs e)
 		{
-			CoreServices.Instance.WatchList.RefreshWatchList();
-			//IncrementRefresher();
+			IncrementRefresher();
+			CoreServices.Instance.WatchList.Refresh();
 		}
 
 		private void IncrementRefresher()
@@ -189,17 +198,17 @@ namespace LatestChatty
 
 		private void DecrementRefresher()
 		{
-			_refreshing--;
-			if (_refreshing == 0)
+			//Since this will now get called when watchlist items are refreshed - even though we didn't request it.
+			if (_refreshing > 0)
 			{
-				ProgressBar.Visibility = Visibility.Collapsed;
-				ProgressBar.IsIndeterminate = false;
+				_refreshing--;
+				System.Diagnostics.Debug.WriteLine("Decrementing refresher. {0}", _refreshing);
+				if (_refreshing == 0)
+				{
+					ProgressBar.Visibility = Visibility.Collapsed;
+					ProgressBar.IsIndeterminate = false;
+				}
 			}
-		}
-
-		void RefreshCompleted(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-		{
-			DecrementRefresher();
-		}
+		}		
 	}
 }

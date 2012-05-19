@@ -55,8 +55,84 @@ namespace LatestChatty.Classes
 		[DataMember]
 		public bool IsSelected { get; set; }
 
+		[DataMember]
+		public bool isPinned;
+		public bool IsPinned
+		{
+			get { return this.isPinned; }
+			set
+			{
+				if (this.SetProperty("IsPinned", ref this.isPinned, value))
+				{
+					if (this.IsPinned)
+					{
+						CoreServices.Instance.WatchList.Add(this);
+					}
+					else
+					{
+						CoreServices.Instance.WatchList.Remove(this);
+					}
+				}
+			}
+		}
+
+		[DataMember]
+		public bool isCollapsed;
+		public bool IsCollapsed
+		{
+			get
+			{
+				return this.isCollapsed;
+			}
+			set
+			{
+				if (this.SetProperty("IsCollapsed", ref this.isCollapsed, value))
+				{
+					if (this.IsCollapsed)
+					{
+						CoreServices.Instance.CollapseList.Add(this);
+					}
+					else
+					{
+						CoreServices.Instance.CollapseList.Remove(this);
+					}
+				}
+			}
+		}
+
+		public bool IsLoadMoreComment { get; private set; }
+
+		public static Comment LoadMoreComment { get; private set; }
+
+		static Comment()
+		{
+			LoadMoreComment = new Comment();
+		}
+
+		private Comment()
+		{
+			this.IsLoadMoreComment = true;
+			this.SavePostCounts = false;
+			this.reply_count = 0;
+			this.dateText = string.Empty;
+			this.id = 0;
+			this.author = string.Empty;
+			this.category = PostCategory.offtopic;
+			this.body = string.Empty;
+			this.storyid = 0;
+			this.myPost = false;
+			this.selfReply = false;
+			this.New = false;
+			this.NewPostCount = 0;
+			this.Depth = 0;
+			this.IsPinned = false;
+			this.IsCollapsed = false;
+			this.Comments = new ObservableCollection<Comment>();
+		}
+
 		public Comment(XElement x, int thisstoryid, bool saveCounts, int depth)
 		{
+			this.IsLoadMoreComment = false;
 			this.SavePostCounts = saveCounts;
 			this.reply_count = (int)x.Attribute("reply_count");
 			this.dateText = (string)x.Attribute("date");
@@ -67,16 +143,18 @@ namespace LatestChatty.Classes
 			this.preview = ((string)x.Attribute("preview")).Trim();
 			this.storyid = thisstoryid;
 			var element = (from e in x.Elements()
-										 where e.Name == "participants"
-										 from p in e.Elements()
-										 where p.Name == "participant" && p.Value == CoreServices.Instance.Credentials.UserName
-										 select p).FirstOrDefault();
-			selfReply = element != null;
+								where e.Name == "participants"
+								from p in e.Elements()
+								where p.Name == "participant" && p.Value == CoreServices.Instance.Credentials.UserName
+								select p).FirstOrDefault();
+			this.selfReply = element != null;
 			this.myPost = author == CoreServices.Instance.Credentials.UserName;
 			this.New = !CoreServices.Instance.PostSeenBefore(this.id);
 			this.NewPostCount = CoreServices.Instance.NewReplyCount(this.id, reply_count, this.SavePostCounts);
 			this.HasNewReplies = (this.NewPostCount > 0 || this.New);
 			this.Depth = depth;
+			this.IsPinned = CoreServices.Instance.WatchList.IsOnWatchList(this);
+			this.CollapseIfRequired();
 
 			List<XElement> comments = x.Element("comments").Elements("comment").ToList();
 			Comments = new ObservableCollection<Comment>();
@@ -88,6 +166,40 @@ namespace LatestChatty.Classes
 					Comments.Add(child);
 				}
 			}
+		}
+
+		private void CollapseIfRequired()
+		{
+			bool collapsed = false;
+
+			if (CoreServices.Instance.CollapseList.IsOnCollapseList(this))
+			{
+				collapsed = true;
+			}
+
+			switch (this.category)
+			{
+				case PostCategory.stupid:
+					collapsed = LatestChattySettings.Instance.AutoCollapseStupid;
+					break;
+				case PostCategory.offtopic:
+					collapsed = LatestChattySettings.Instance.AutoCollapseOffTopic;
+					break;
+				case PostCategory.nws:
+					collapsed = LatestChattySettings.Instance.AutoCollapseNws;
+					break;
+				case PostCategory.political:
+					collapsed = LatestChattySettings.Instance.AutoCollapsePolitical;
+					break;
+				case PostCategory.interesting:
+					collapsed = LatestChattySettings.Instance.AutoCollapseInteresting;
+					break;
+				case PostCategory.informative:
+					collapsed = LatestChattySettings.Instance.AutoCollapseInformative;
+					break;
+			}
+
+			this.SetProperty("IsCollapsed", ref this.isCollapsed, collapsed);
 		}
 
 		private string StripHTML(string s)

@@ -26,6 +26,10 @@ namespace LatestChatty.ViewModels
 
 		private List<int> subscribedComments = new List<int>();
 
+		public event EventHandler RefreshCompleted;
+
+		private int commentsLeftToLoad = 0;
+
 		public WatchList()
 		{
 			this.Comments = new ObservableCollection<Comment>();
@@ -106,18 +110,27 @@ namespace LatestChatty.ViewModels
 		}
 
 		//This may not be the optimal way to do this, but it works...
-		public void RefreshWatchList()
+		public void Refresh()
 		{
 			this.Comments.Clear();
-			foreach (var commentId in this.subscribedComments)
+			this.commentsLeftToLoad = this.subscribedComments.Count;
+
+			if (this.commentsLeftToLoad > 0)
 			{
-				this.DownloadComment(commentId);
+				foreach (var commentId in this.subscribedComments)
+				{
+					this.DownloadComment(commentId);
+				}
+			}
+			else
+			{
+				this.OnRefreshCompleted();
 			}
 		}
-
+		
 		private void DownloadComment(int commentId)
 		{
-			string request = CoreServices.Instance.ServiceHost + "thread/" + commentId + ".xml";
+			var request = CoreServices.Instance.ServiceHost + "thread/" + commentId + ".xml";
 			CoreServices.Instance.QueueDownload(request, GetCommentsCallback);
 		}
 
@@ -159,6 +172,22 @@ namespace LatestChatty.ViewModels
 			catch (Exception ex)
 			{
 				MessageBox.Show("Problem refreshing pinned comments.");
+			}
+			finally
+			{
+				this.commentsLeftToLoad--;
+				this.OnRefreshCompleted();
+			}
+		}
+
+		private void OnRefreshCompleted()
+		{
+			if (this.commentsLeftToLoad == 0)
+			{
+				if (this.RefreshCompleted != null)
+				{
+					this.RefreshCompleted(this, EventArgs.Empty);
+				}
 			}
 		}
 	}

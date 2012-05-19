@@ -106,6 +106,11 @@ namespace LatestChatty.ViewModels
 			}
 		}
 
+		public void Logout()
+		{
+			this.SearchResults.Clear();
+		}
+
 		public event PropertyChangedEventHandler PropertyChanged;
 	}
 }

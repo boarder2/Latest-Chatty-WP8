@@ -11,6 +11,7 @@
 	<!--Application Resources-->
 	<Application.Resources>
 		<chattyClasses:BooleanToVisibilityConverter x:Key="BoolToVisConverter" FalseValue="Collapsed" TrueValue="Visible"/>
+		<chattyClasses:BooleanToVisibilityConverter x:Key="NotBoolToVisConverter" FalseValue="Visible" TrueValue="Collapsed"/>
 		<chattyClasses:BooleanToNewColorConverter x:Key="NewReplyConverter" FalseValue="#999999" TrueValue="White" />
 		<chattyClasses:PostCategoryConverter x:Name="CategoryConverter"/>
 	  
@@ -39,6 +40,17 @@
 					</toolkit:NavigationOutTransition>
 				</Setter.Value>
 			</Setter>
+		</Style>
+		
+		<Style x:Key="LoadMoreButton" TargetType="Button">
+			<Setter Property="BorderThickness" Value="0" />
+			<Setter Property="FontSize" Value="{StaticResource PhoneFontSizeExtraLarge}" />
+			<Setter Property="Margin" Value="0" />
+			<Setter Property="Padding" Value="0" />
+		</Style>
+		
+		<Style x:Key="SettingsToggleSwitch" TargetType="toolkit:ToggleSwitch">
+			<Setter Property="Margin" Value="0, -15, 0, -15" />
 		</Style>
 	</Application.Resources>
 

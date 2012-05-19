@@ -14,41 +14,40 @@
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="#FFFFFF"
     SupportedOrientations="Portrait"  Orientation="Portrait"
-    shell:SystemTray.IsVisible="False"
   	Style="{StaticResource TransitionPage}">
 
-    <!--LayoutRoot is the root grid where all page content is placed-->
-    <Grid x:Name="LayoutRoot" Background="Transparent">
-        <Canvas>
-            <Image Source="/Images/DefaultBackground.png" Stretch="None"/>
-        </Canvas>
+	<!--LayoutRoot is the root grid where all page content is placed-->
+	<Grid x:Name="LayoutRoot" Background="Transparent">
+		<Canvas>
+			<Image Source="/Images/DefaultBackground.png" Stretch="None"/>
+		</Canvas>
 
-        <toolkit:PerformanceProgressBar x:Name="ProgressBar" IsIndeterminate="True" VerticalAlignment="Top" Visibility="Collapsed"/>
+		<toolkit:PerformanceProgressBar x:Name="ProgressBar" IsIndeterminate="True" VerticalAlignment="Top" Visibility="Collapsed"/>
 
-        <!--Pivot Control-->
-        <controls:Pivot Title="MESSAGES" x:Name="Pivot" Foreground="#FFFFFF">
-            <!--Pivot item one-->
-            <controls:PivotItem Header="inbox">
-                <chatty:MessageListControl/>
-            </controls:PivotItem>
+		<!--Pivot Control-->
+		<controls:Pivot Title="MESSAGES" x:Name="Pivot" Foreground="#FFFFFF">
+			<!--Pivot item one-->
+			<controls:PivotItem Header="inbox">
+				<chatty:MessageListControl/>
+			</controls:PivotItem>
 
-            <!--Pivot item two-->
-            <controls:PivotItem Header="outbox">
-                <chatty:MessageListControl/>
-            </controls:PivotItem>
+			<!--Pivot item two-->
+			<controls:PivotItem Header="outbox">
+				<chatty:MessageListControl/>
+			</controls:PivotItem>
 
-            <controls:PivotItem Header="archives">
-                <chatty:MessageListControl/>
-            </controls:PivotItem>
-        </controls:Pivot>
-    </Grid>
+			<controls:PivotItem Header="archives">
+				<chatty:MessageListControl/>
+			</controls:PivotItem>
+		</controls:Pivot>
+	</Grid>
 
-    <!--Sample code showing usage of ApplicationBar-->
-    <phone:PhoneApplicationPage.ApplicationBar>
-        <shell:ApplicationBar IsVisible="True" IsMenuEnabled="False">
-            <shell:ApplicationBarIconButton IconUri="/Images/RefreshIcon.png" Text="Refresh" Click="RefreshClick"/>
-            <!--<shell:ApplicationBarIconButton IconUri="/Images/PostIcon.png" Text="New Post" Click="NewMessageClick"/>-->
-        </shell:ApplicationBar>
-    </phone:PhoneApplicationPage.ApplicationBar>
-    
+	<!--Sample code showing usage of ApplicationBar-->
+	<phone:PhoneApplicationPage.ApplicationBar>
+		<shell:ApplicationBar IsVisible="True" IsMenuEnabled="False">
+			<shell:ApplicationBarIconButton IconUri="/Images/RefreshIcon.png" Text="Refresh" Click="RefreshClick"/>
+			<!--<shell:ApplicationBarIconButton IconUri="/Images/PostIcon.png" Text="New Post" Click="NewMessageClick"/>-->
+		</shell:ApplicationBar>
+	</phone:PhoneApplicationPage.ApplicationBar>
+
 </phone:PhoneApplicationPage>

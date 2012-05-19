@@ -14,7 +14,6 @@
 	FontSize="{StaticResource PhoneFontSizeNormal}"
 	Foreground="#FFFFFF"
 	SupportedOrientations="Portrait"  Orientation="Portrait"
-	shell:SystemTray.IsVisible="False"
 	Style="{StaticResource TransitionPage}">
 
 	<!--LayoutRoot is the root grid where all page content is placed-->
@@ -31,8 +30,8 @@
 
 		<!--TitlePanel contains the name of the application and page title-->
 		<StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,10">
-			<TextBlock x:Name="ApplicationTitle" Text="SHACKNEWS" Style="{StaticResource PhoneTextNormalStyle}" Foreground="#FFFFFF"/>
-			<TextBlock x:Name="PageTitle" Text="chatty" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}" Foreground="#FFFFFF"/>
+			<TextBlock x:Name="ApplicationTitle" Text="SHACKNEWS - CHATTY" Style="{StaticResource PhoneTextNormalStyle}" Foreground="#FFFFFF"/>
+			<!--<TextBlock x:Name="PageTitle" Text="chatty" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}" Foreground="#FFFFFF"/>-->
 		</StackPanel>
 
 		<!--ContentPanel - place additional content here-->

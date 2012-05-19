@@ -14,7 +14,6 @@
 	Foreground="#FFFFFF"
 	SupportedOrientations="Portrait" Orientation="Portrait"
 	mc:Ignorable="d" d:DesignHeight="728" d:DesignWidth="480"
-	shell:SystemTray.IsVisible="False"
 	Style="{StaticResource TransitionPage}">
 
 	<phone:PhoneApplicationPage.Resources>

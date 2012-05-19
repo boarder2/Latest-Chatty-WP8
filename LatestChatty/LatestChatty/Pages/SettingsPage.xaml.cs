@@ -26,7 +26,7 @@ namespace LatestChatty.Pages
 		public SettingsPage()
 		{
 			InitializeComponent();
-			
+
 			this.sizePicker.SelectedItem = this.sizePicker.Items.First(
 				item => ((ListPickerItem)item).Tag.ToString().Equals(
 					Enum.GetName(typeof(CommentViewSize), LatestChattySettings.Instance.CommentSize), StringComparison.InvariantCultureIgnoreCase));
@@ -40,6 +40,12 @@ namespace LatestChatty.Pages
 					Enum.GetName(typeof(NotificationType), LatestChattySettings.Instance.NotificationType), StringComparison.InvariantCultureIgnoreCase));
 			this.loadedNotificationType = LatestChattySettings.Instance.NotificationType;
 
+			this.autoCollapseNws.IsChecked = LatestChattySettings.Instance.AutoCollapseNws;
+			this.autoCollapseStupid.IsChecked = LatestChattySettings.Instance.AutoCollapseStupid;
+			this.autoCollapseOfftopic.IsChecked = LatestChattySettings.Instance.AutoCollapseOffTopic;
+			this.autoCollapsePolitical.IsChecked = LatestChattySettings.Instance.AutoCollapsePolitical;
+			this.autoCollapseInteresting.IsChecked = LatestChattySettings.Instance.AutoCollapseInteresting;
+			this.autoCollapseInformative.IsChecked = LatestChattySettings.Instance.AutoCollapseInformative;
 			this.navigationPicker.SelectedIndex = LatestChattySettings.Instance.ThreadNavigationByDate ? 0 : 1;
 		}
 
@@ -48,7 +54,7 @@ namespace LatestChatty.Pages
 			base.OnNavigatedTo(e);
 			this.loaded = true;
 		}
-		
+
 		private void AddChatty_Click(object sender, RoutedEventArgs e)
 		{
 			ShellTile tile = ShellTile.ActiveTiles.FirstOrDefault(x => x.NavigationUri.ToString().Contains("ChattyPage"));
@@ -64,11 +70,11 @@ namespace LatestChatty.Pages
 				ShellTile.Create(new Uri("/Pages/ChattyPage.xaml", UriKind.Relative), data);
 			}
 		}
-		
+
 		private void NotificationTypePickerChanged(object sender, SelectionChangedEventArgs e)
 		{
 			if (!this.loaded) return;
-			
+
 
 			var picker = sender as ListPicker;
 			if (picker != null)
@@ -124,6 +130,36 @@ namespace LatestChatty.Pages
 			if (picker != null)
 			{
 				LatestChattySettings.Instance.ThreadNavigationByDate = Boolean.Parse(((ListPickerItem)picker.SelectedItem).Tag as string);
+			}
+		}
+
+		private void AutoCollapsePost_Checked(object sender, RoutedEventArgs e)
+		{
+			var toggle = sender as ToggleSwitch;
+			if (toggle != null)
+			{
+				switch(toggle.Header.ToString())
+				{
+					case "nws":
+						LatestChattySettings.Instance.AutoCollapseNws = toggle.IsChecked.HasValue ? toggle.IsChecked.Value : false;
+						break;
+					case "offtopic":
+						LatestChattySettings.Instance.AutoCollapseOffTopic = toggle.IsChecked.HasValue ? toggle.IsChecked.Value : false;
+						break;
+					case "political":
+						LatestChattySettings.Instance.AutoCollapsePolitical = toggle.IsChecked.HasValue ? toggle.IsChecked.Value : false;
+						break;
+					case "stupid":
+						LatestChattySettings.Instance.AutoCollapseStupid = toggle.IsChecked.HasValue ? toggle.IsChecked.Value : false;
+						break;
+					case "informative":
+						LatestChattySettings.Instance.AutoCollapseInteresting = toggle.IsChecked.HasValue ? toggle.IsChecked.Value : false;
+						break;
+					case "interesting":
+						LatestChattySettings.Instance.AutoCollapseInformative = toggle.IsChecked.HasValue ? toggle.IsChecked.Value : false;
+						break;
+					
+				}
 			}
 		}
 	}

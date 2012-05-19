@@ -22,7 +22,13 @@ namespace LatestChatty.Settings
 		private static readonly string username = "username";
 		private static readonly string password = "password";
 		private static readonly string notificationUID = "notificationid";
-
+		private static readonly string autocollapsenws = "autocollapsenws";
+		private static readonly string autocollapsestupid = "autocollapsestupid";
+		private static readonly string autocollapseofftopic = "autocollapseofftopic";
+		private static readonly string autocollapsepolitical = "autocollapsepolitical";
+		private static readonly string autocollapseinformative = "autocollapseinformative";
+		private static readonly string autocollapseinteresting = "autocollapseinteresting";
+		
 		public readonly IsolatedStorageSettings isoStore;
 
 		private static LatestChattySettings instance = null;
@@ -71,6 +77,120 @@ namespace LatestChatty.Settings
 			if (!this.isoStore.Contains(notificationUID))
 			{
 				this.isoStore.Add(notificationUID, Guid.NewGuid());
+			}
+			if (!this.isoStore.Contains(autocollapsenws))
+			{
+				this.isoStore.Add(autocollapsenws, true);
+			}
+			if (!this.isoStore.Contains(autocollapsestupid))
+			{
+				this.isoStore.Add(autocollapsestupid, false);
+			}
+			if (!this.isoStore.Contains(autocollapseofftopic))
+			{
+				this.isoStore.Add(autocollapseofftopic, false);
+			}
+			if (!this.isoStore.Contains(autocollapsepolitical))
+			{
+				this.isoStore.Add(autocollapsepolitical, false);
+			}
+			if (!this.isoStore.Contains(autocollapseinformative))
+			{
+				this.isoStore.Add(autocollapseinformative, false);
+			}
+			if (!this.isoStore.Contains(autocollapseinteresting))
+			{
+				this.isoStore.Add(autocollapseinteresting, false);
+			}		
+		}
+
+		public bool AutoCollapseNws
+		{
+			get
+			{
+				bool v;
+				this.isoStore.TryGetValue<bool>(autocollapsenws, out v);
+				return v;
+			}
+			set
+			{
+				this.isoStore[autocollapsenws] = value;
+				this.isoStore.Save();
+			}
+		}
+
+		public bool AutoCollapseStupid
+		{
+			get
+			{
+				bool v;
+				this.isoStore.TryGetValue<bool>(autocollapsestupid, out v);
+				return v;
+			}
+			set
+			{
+				this.isoStore[autocollapsestupid] = value;
+				this.isoStore.Save();
+			}
+		}
+
+		public bool AutoCollapseOffTopic
+		{
+			get
+			{
+				bool v;
+				this.isoStore.TryGetValue<bool>(autocollapseofftopic, out v);
+				return v;
+			}
+			set
+			{
+				this.isoStore[autocollapseofftopic] = value;
+				this.isoStore.Save();
+			}
+		}
+
+		public bool AutoCollapsePolitical
+		{
+			get
+			{
+				bool v;
+				this.isoStore.TryGetValue<bool>(autocollapsepolitical, out v);
+				return v;
+			}
+			set
+			{
+				this.isoStore[autocollapsepolitical] = value;
+				this.isoStore.Save();
+			}
+		}
+
+		public bool AutoCollapseInformative
+		{
+			get
+			{
+				bool v;
+				this.isoStore.TryGetValue<bool>(autocollapseinformative, out v);
+				return v;
+			}
+			set
+			{
+				this.isoStore[autocollapseinformative] = value;
+				this.isoStore.Save();
+			}
+		}
+
+		public bool AutoCollapseInteresting
+		{
+			get
+			{
+				bool v;
+				this.isoStore.TryGetValue<bool>(autocollapseinteresting, out v);
+				return v;
+			}
+			set
+			{
+				this.isoStore[autocollapseinteresting] = value;
+				this.isoStore.Save();
 			}
 		}
 

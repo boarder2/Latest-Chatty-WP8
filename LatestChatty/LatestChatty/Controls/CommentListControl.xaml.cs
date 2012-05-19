@@ -57,5 +57,28 @@ namespace LatestChatty.Controls
 			}
 			return null;
 		}
+
+		private void TogglePin_Click(object sender, RoutedEventArgs e)
+		{
+			var dc = (sender as FrameworkElement).DataContext;
+			var comment = dc as Comment;
+			comment.IsPinned = !comment.IsPinned;
+		}
+
+		private void ToggleCollapsed_Click(object sender, RoutedEventArgs e)
+		{
+			var dc = (sender as FrameworkElement).DataContext;
+			var comment = dc as Comment;
+			comment.IsCollapsed = !comment.IsCollapsed;
+		}
+
+		private void LoadMore_Click(object sender, RoutedEventArgs e)
+		{
+			var commentThread = this.commentListBox.DataContext as LatestChatty.ViewModels.CommentList;
+			if (commentThread != null)
+			{
+				commentThread.LoadMore();
+			}
+		}
 	}
 }

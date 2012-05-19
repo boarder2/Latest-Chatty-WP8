@@ -19,13 +19,17 @@ namespace LatestChatty
 	{
 		public CoreServices()
 		{
-			SetCommentBrowserString();
-			LoadLoginInformation();
-			LoadReplyCounts();	
 		}
 
 		~CoreServices()
 		{
+		}
+
+		public void Initialize()
+		{
+			SetCommentBrowserString();
+			LoadLoginInformation();
+			LoadReplyCounts();	
 		}
 
 		#region Singleton
@@ -278,11 +282,10 @@ namespace LatestChatty
 
 			Deployment.Current.Dispatcher.BeginInvoke(() =>
 			{
-				_loginCallback(true);
-				_loginCallback = null;
-
 				LatestChattySettings.Instance.Username = username;
 				LatestChattySettings.Instance.Password = password;
+				_loginCallback(true);
+				_loginCallback = null;
 			});
 
 			// Removing authentication for now
@@ -355,11 +358,21 @@ namespace LatestChatty
 
 		public void Logout()
 		{
+			//Unregister notifications first
+			NotificationHelper.UnRegisterNotifications(); 
+
+			//Clear out all the information for the user
 			_nc.UserName = "";
 			_nc.Password = "";
 			_loginVerified = false;
 			LatestChattySettings.Instance.Username = string.Empty;
 			LatestChattySettings.Instance.Password = string.Empty;
+			LatestChattySettings.Instance.NotificationType = NotificationType.None;
+			
+			//Clear MyPosts, MyReplies, and refresh the watchlist so the participation flag goes away
+			this.MyPosts.Logout();
+			this.MyReplies.Logout();
+			this.WatchList.Refresh();
 		}
 		#endregion
 
@@ -438,6 +451,10 @@ namespace LatestChatty
 		}
 		#endregion
 
+		#region CollapseList
+		public CollapseList CollapseList = new CollapseList();
+		#endregion
+
 		#region Reply Count Cache
 		private Dictionary<int, int> knownReplyCounts = new System.Collections.Generic.Dictionary<int, int>();
 		private void LoadReplyCounts()
@@ -462,19 +479,7 @@ namespace LatestChatty
 			}
 
 			System.Diagnostics.Debug.WriteLine("Loaded {0} reply counts.", this.knownReplyCounts.Count);
-			//Since we're already doing expensive operations, let's do this here.
-			//Prevent the list from getting gigantic and taking forever to search through.  We'll trim down to 2000 by postid.  Keeping the most recent posts.
-			//There's probably a faster way to do this...  I'll figure this out at some point, because loading these takes a long time.
-			if (this.knownReplyCounts.Count > 2000)
-			{
-				System.Diagnostics.Debug.WriteLine("Trimming reply counts.");
-				var keepCounts = this.knownReplyCounts.OrderByDescending(r => r.Key).Take(2000).ToList();
-				this.knownReplyCounts.Clear();
-				foreach (var item in keepCounts)
-				{
-					this.knownReplyCounts.Add(item.Key, item.Value);
-				}
-			}
+			this.knownReplyCounts = new Dictionary<int, int>(this.knownReplyCounts.OrderByDescending(r => r.Key).Take(2000).ToDictionary(x => x.Key, x => x.Value));
 		}
 
 		public void SaveReplyCounts()
