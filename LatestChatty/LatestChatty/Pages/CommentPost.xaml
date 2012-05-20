@@ -57,7 +57,7 @@
 			</Grid.RowDefinitions>
 			<TextBlock Text="Compose Post:" FontSize="14" Foreground="#888888"/>
 			<Grid Grid.Row="1" Background="{StaticResource PhoneBackgroundBrush}">
-				<TextBox Grid.Row="1" x:Name="Post" InputScope="Text" AcceptsReturn="True" TextWrapping="Wrap"/>
+				<TextBox x:Name="Post" InputScope="Text"  AcceptsReturn="True" TextWrapping="Wrap"/>
 			</Grid>
 		</Grid>
 
