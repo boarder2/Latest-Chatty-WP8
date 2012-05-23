@@ -15,8 +15,8 @@ namespace LatestChatty.Classes
 	public class GETDownloader
 	{
 		public delegate void GETDelegate(IAsyncResult result);
-		GETDelegate _delegate;
-		HttpWebRequest _request;
+		GETDelegate getCallback;
+		HttpWebRequest request;
 		protected bool cancelled;
 
 		public string Uri { get; private set; }
@@ -25,27 +25,21 @@ namespace LatestChatty.Classes
 		public GETDownloader(string getURI, GETDelegate callback)
 		{
 			this.Uri = getURI;
-			_delegate = callback;
+			getCallback = callback;
 		}
 
 		public void Start()
 		{
-			Thread t = new Thread(this.WorkerThread);
-			t.Start();
-		}
-
-		private void WorkerThread()
-		{
-			_request = (HttpWebRequest)HttpWebRequest.Create(this.Uri);
-			_request.Method = "GET";
-			_request.Headers[HttpRequestHeader.CacheControl] = "no-cache";
-			_request.Credentials = CoreServices.Instance.Credentials;
+			this.request = (HttpWebRequest)HttpWebRequest.Create(this.Uri);
+			this.request.Method = "GET";
+			this.request.Headers[HttpRequestHeader.CacheControl] = "no-cache";
+			this.request.Credentials = CoreServices.Instance.Credentials;
 
 			try
 			{
-				IAsyncResult token = _request.BeginGetResponse(new AsyncCallback(ResponseCallback), _request);
+				IAsyncResult token = request.BeginGetResponse(new AsyncCallback(ResponseCallback), request);
 			}
-			catch (WebException wex)
+			catch (WebException)
 			{
 				//TODO: Catch cancellation exception and throw everything else.
 				System.Diagnostics.Debugger.Break();
@@ -54,8 +48,8 @@ namespace LatestChatty.Classes
 
 		public void Cancel()
 		{
-			_request.Abort();
-			System.Diagnostics.Debug.WriteLine("Cancelling download for {0}", _request.RequestUri);
+			request.Abort();
+			System.Diagnostics.Debug.WriteLine("Cancelling download for {0}", request.RequestUri);
 			this.cancelled = true;
 		}
 
@@ -73,7 +67,7 @@ namespace LatestChatty.Classes
 
 		virtual protected void InvokeDelegate(IAsyncResult result)
 		{
-			_delegate(result);
+			getCallback(result);
 		}
 	}
 }

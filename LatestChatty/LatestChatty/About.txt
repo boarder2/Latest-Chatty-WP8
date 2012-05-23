@@ -18,6 +18,7 @@ Created by: fleabix, boarder2
 > Auto collapse based on root post type - configure in settings
 > Changed settings screen to use panorama control
 > Removed infinite scroll in chatty view and replaced with "load more"
+> Switched posting API to use 3rd party API instead of the shack one since the shack one seems terribly broken now (this means you can post again!)
 > REAL PUSH NOTIFICATIONS!!
 
 [ Version 2.5 ]

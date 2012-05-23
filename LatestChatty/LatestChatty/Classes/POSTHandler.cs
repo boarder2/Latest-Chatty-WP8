@@ -13,70 +13,77 @@ using System.IO;
 
 namespace LatestChatty.Classes
 {
-    public class POSTHandler
-    {
-        private string _content;
-        private string _uri;
-        public delegate void POSTDelegate(bool success);
-        POSTDelegate _delegate;
+	public class POSTHandler
+	{
+		private string content;
+		private string postUri;
+		public delegate void POSTDelegate(bool success);
+		POSTDelegate postCompleteEvent;
 
-        public POSTHandler(string postURI, string content, POSTDelegate callback)
-        {
-            _uri = postURI;
-            _content = content;
-            _delegate = callback;
+		public POSTHandler(string postURI, string content, POSTDelegate callback)
+		{
+			this.postUri = postURI;
+			this.content = content;
+			this.postCompleteEvent = callback;
 
-            Thread t = new Thread(this.WorkerThread);
-            t.Start();
-        }
+			HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(postUri);
+			request.Method = "POST";
+			request.ContentType = "application/x-www-form-urlencoded";
+			request.Credentials = CoreServices.Instance.Credentials;
 
-        private void WorkerThread()
-        {
-            HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(_uri);
-            request.Method = "POST";
-            request.ContentType = "application/x-www-form-urlencoded";
-            request.Credentials = CoreServices.Instance.Credentials;
+			IAsyncResult token = request.BeginGetRequestStream(new AsyncCallback(BeginPostCallback), request);
+		}
 
-            IAsyncResult token = request.BeginGetRequestStream(new AsyncCallback(BeginPostCallback), request);
-        }
+		public void BeginPostCallback(IAsyncResult result)
+		{
+			HttpWebRequest request = result.AsyncState as HttpWebRequest;
 
-        public void BeginPostCallback(IAsyncResult result)
-        {
-            HttpWebRequest request = result.AsyncState as HttpWebRequest;
+			Stream requestStream = request.EndGetRequestStream(result);
+			StreamWriter streamWriter = new StreamWriter(requestStream);
+			streamWriter.Write(content);
+			streamWriter.Flush();
+			streamWriter.Close();
 
-            Stream requestStream = request.EndGetRequestStream(result);
-            StreamWriter streamWriter = new StreamWriter(requestStream);
-            streamWriter.Write(_content);
-            streamWriter.Flush();
-            streamWriter.Close();
+			request.BeginGetResponse(new AsyncCallback(ResponseCallback), request);
+		}
 
-            request.BeginGetResponse(new AsyncCallback(ResponseCallback), request);
-        }
+		public void ResponseCallback(IAsyncResult result)
+		{
+			var success = false;
+			var failureMessage = string.Empty;
 
-        public void ResponseCallback(IAsyncResult result)
-        {
-            try
-            {
-                HttpWebRequest request = result.AsyncState as HttpWebRequest;
-                WebResponse response = request.EndGetResponse(result);
+			try
+			{
+				HttpWebRequest request = result.AsyncState as HttpWebRequest;
+				HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(result);
 
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    _delegate(true);
-                });
+				//Doesn't seem like the API is actually returning failure codes, but... might as well handle it in case it does some time.
+				if (response.StatusCode != HttpStatusCode.OK)
+				{
+					failureMessage = "Bad response code.  Check your username and password.";
+				}
+				else
+				{
+					success = true;
+				}
+			}
+			catch (Exception ex)
+			{
+				System.Diagnostics.Debug.WriteLine("Posting failed because: {0}", ex);
+				failureMessage = "Posting failed.";
+			}
 
-            }
-            catch (Exception ex)
-            {
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
-                {
-                    System.Diagnostics.Debug.WriteLine("Posting failed because: {0}", ex);
-                    MessageBox.Show("Posting Failed!");
-                    _delegate(false);
-                });
-
-
-            }
-        }
-    }
+			finally
+			{
+				Deployment.Current.Dispatcher.BeginInvoke(() =>
+						{
+							if (!success)
+							{
+								MessageBox.Show(failureMessage);
+							}
+							postCompleteEvent(success);
+						});
+			}
+		}
+	}
 }

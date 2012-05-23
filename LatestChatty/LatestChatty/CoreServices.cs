@@ -55,14 +55,6 @@ namespace LatestChatty
 				return "http://shackapi.stonedonkey.com/";
 			}
 		}
-
-		public string PostServiceHost
-		{
-			get
-			{
-				return " http://www.shacknews.com/api/chat/create/";
-			}
-		}
 		#endregion
 
 		#region StoryCommentCache

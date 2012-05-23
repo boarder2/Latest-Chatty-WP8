@@ -89,20 +89,20 @@ namespace LatestChatty.Pages
 				MessageBox.Show("There is a limit of 5000 characters in a single post.");
 				return;
 			}
-			string request = CoreServices.Instance.PostServiceHost + _story + ".json";
-			string content = "content_type_id=" + _story + "&content_id=" + _story;
-
-			if (_reply != null)
-			{
-				content += "&parent_id=" + _reply.id;
-			}
+			string request = CoreServices.Instance.ServiceHost + "post/";
+			var content = string.Empty;
 
 			//Will url encoding help new lines? If not, it'll at least help a lot of other stuff that was probably broken...
 			//Nope.  Ok, so maybe replacing newline with %0A
 			//... newlines in a text box appear to have just \r ... even when Environment.NewLine is \r\n??
 			var encodedBody = HttpUtility.UrlEncode(Post.Text.Replace("\r", "\r\n"));
-			content += "&body=" + encodedBody;
+			content += "body=" + encodedBody;
 
+			if (_reply != null)
+			{
+				content += "&parent_id=" + _reply.id;
+			}
+			
 			System.Diagnostics.Debug.WriteLine("Posting: {0}", encodedBody);
 			ProgressBar.Visibility = Visibility.Visible;
 			ProgressBar.IsIndeterminate = true;

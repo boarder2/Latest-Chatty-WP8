@@ -47,7 +47,7 @@ namespace LatestChatty.Classes
 			{
 				System.Diagnostics.Debug.WriteLine("Setting body to: {0}", e.NewValue.ToString());
 				//We're gonna trick it by starting with opacity of transparent.  When we have something to load, then we'll show the thing.
-				Application.Current.RootVisual.Dispatcher.BeginInvoke(() => browser.InvokeScript("setContent", e.NewValue.ToString()));
+				Application.Current.RootVisual.Dispatcher.BeginInvoke(() => { try { browser.InvokeScript("setContent", e.NewValue.ToString()); } catch { } });
 				if (browser.Opacity != 1) browser.Opacity = 1;
 			}
 			catch (Exception ex) {
