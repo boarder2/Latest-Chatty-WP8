@@ -15,12 +15,18 @@ namespace LatestChatty.Controls
 {
 	public partial class CommentListControl : UserControl
 	{
-		ScrollViewer listScrollViewer;
+		//ScrollViewer listScrollViewer;
 
 		public CommentListControl()
 		{
 			InitializeComponent();
-			this.listScrollViewer = FindChildOfType<ScrollViewer>(commentListBox);
+			//this.listScrollViewer = FindChildOfType<ScrollViewer>(commentListBox);
+			this.commentListBox.Hold += new EventHandler<GestureEventArgs>(commentListBox_Hold);
+		}
+
+		void commentListBox_Hold(object sender, GestureEventArgs e)
+		{
+			System.Diagnostics.Debug.WriteLine("Hold event. Sender: ", sender);
 		}
 
 		private void SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -36,32 +42,11 @@ namespace LatestChatty.Controls
 			lbSender.SelectedIndex = -1;
 		}
 
-		static T FindChildOfType<T>(DependencyObject root) where T : class
-		{
-			var queue = new Queue<DependencyObject>();
-			queue.Enqueue(root);
-
-			while (queue.Count > 0)
-			{
-				DependencyObject current = queue.Dequeue();
-				for (int i = VisualTreeHelper.GetChildrenCount(current) - 1; 0 <= i; i--)
-				{
-					var child = VisualTreeHelper.GetChild(current, i);
-					var typedChild = child as T;
-					if (typedChild != null)
-					{
-						return typedChild;
-					}
-					queue.Enqueue(child);
-				}
-			}
-			return null;
-		}
-
 		private void TogglePin_Click(object sender, RoutedEventArgs e)
 		{
 			var dc = (sender as FrameworkElement).DataContext;
 			var comment = dc as Comment;
+			if (comment.IsLoadMoreComment) return;
 			comment.IsPinned = !comment.IsPinned;
 		}
 
@@ -69,6 +54,7 @@ namespace LatestChatty.Controls
 		{
 			var dc = (sender as FrameworkElement).DataContext;
 			var comment = dc as Comment;
+			if (comment.IsLoadMoreComment) return;
 			comment.IsCollapsed = !comment.IsCollapsed;
 		}
 
