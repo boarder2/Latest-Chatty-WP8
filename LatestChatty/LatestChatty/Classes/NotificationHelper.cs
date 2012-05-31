@@ -30,30 +30,37 @@ namespace LatestChatty.Classes
 		#region Register
 		public static void UnRegisterNotifications()
 		{
-			var uriBuilder = new UriBuilder(
-				"http",
-				ServiceHostName,
-				ServicePort,
-				"users/" + LatestChattySettings.Instance.Username.ToLowerInvariant(),
-				"?deviceId=" + LatestChattySettings.Instance.NotificationID);
-
-			var req = WebRequest.CreateHttp(uriBuilder.Uri);
-			req.Method = "DELETE";
-			req.BeginGetResponse(ar =>
+			try
 			{
-				var r = (HttpWebRequest)ar.AsyncState;
-				var res = (HttpWebResponse)r.EndGetResponse(ar);
-			}, req);
+				var uriBuilder = new UriBuilder(
+					"http",
+					ServiceHostName,
+					ServicePort,
+					"users/" + LatestChattySettings.Instance.Username.ToLowerInvariant(),
+					"?deviceId=" + LatestChattySettings.Instance.NotificationID);
 
-			channel = HttpNotificationChannel.Find(ChannelName);
-			//TODO: Should wait for the response here, otherwise we could run into a race condition where you unsubscribe then subscribe immediately but unsubscribe happens afterwards.
-			if (channel != null)
-			{
-				channel.UnbindToShellTile();
-				channel.UnbindToShellToast();
-				channel.Close();
-				channel = null;
+				var req = WebRequest.CreateHttp(uriBuilder.Uri);
+				req.Method = "DELETE";
+				req.BeginGetResponse(ar =>
+				{
+					try
+					{
+						var r = (HttpWebRequest)ar.AsyncState;
+						var res = (HttpWebResponse)r.EndGetResponse(ar);
+					} catch { }
+				}, req);
+
+				channel = HttpNotificationChannel.Find(ChannelName);
+				//TODO: Should wait for the response here, otherwise we could run into a race condition where you unsubscribe then subscribe immediately but unsubscribe happens afterwards.
+				if (channel != null)
+				{
+					channel.UnbindToShellTile();
+					channel.UnbindToShellToast();
+					channel.Close();
+					channel = null;
+				}
 			}
+			catch { }
 		}
 
 		/// <summary>
