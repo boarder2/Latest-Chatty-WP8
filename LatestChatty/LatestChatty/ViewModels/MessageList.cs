@@ -62,7 +62,7 @@ namespace LatestChatty.ViewModels
         public void Refresh()
         {
             NetworkCredential nc = CoreServices.Instance.Credentials;
-            string request = CoreServices.Instance.ServiceHost + "Messages/?username=" + nc.UserName + "&password=" + nc.Password + "&box=" + _box.ToString() + "&page=1";
+            string request = CoreServices.ServiceHost + "Messages/?username=" + nc.UserName + "&password=" + nc.Password + "&box=" + _box.ToString() + "&page=1";
 
 						CoreServices.Instance.QueueDownload(request, GetMessagesCallback);
         }

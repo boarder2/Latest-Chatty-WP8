@@ -104,17 +104,17 @@ namespace LatestChatty.ViewModels
 
 			if (_story == 0)
 			{
-				request = CoreServices.Instance.ServiceHost + "index.xml";
+				request = CoreServices.ServiceHost + "index.xml";
 			}
 			else
 			{
 				if (_page == 0)
 				{
-					request = CoreServices.Instance.ServiceHost + _story + ".xml";
+					request = CoreServices.ServiceHost + _story + ".xml";
 				}
 				else
 				{
-					request = CoreServices.Instance.ServiceHost + _story + "." + _page + ".xml";
+					request = CoreServices.ServiceHost + _story + "." + _page + ".xml";
 				}
 			}
 			CoreServices.Instance.QueueDownload(request, GetCommentsCallback);

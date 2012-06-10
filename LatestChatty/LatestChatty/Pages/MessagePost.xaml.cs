@@ -42,7 +42,7 @@ namespace LatestChatty.Pages
 
         private void MessageClick(object sender, EventArgs e)
         {
-            string uri = CoreServices.Instance.ServiceHost + "Messages/Send/";
+            string uri = CoreServices.ServiceHost + "Messages/Send/";
 
             HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(uri);
             request.Method = "POST";

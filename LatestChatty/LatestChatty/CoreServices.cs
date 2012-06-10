@@ -17,6 +17,7 @@ namespace LatestChatty
 {
 	public class CoreServices
 	{
+
 		public CoreServices()
 		{
 		}
@@ -28,7 +29,6 @@ namespace LatestChatty
 		public void Initialize()
 		{
 			SetCommentBrowserString();
-			LoadLoginInformation();
 			LoadReplyCounts();	
 		}
 
@@ -48,13 +48,9 @@ namespace LatestChatty
 		#endregion
 
 		#region ServiceHost
-		public string ServiceHost
-		{
-			get
-			{
-				return "http://shackapi.stonedonkey.com/";
-			}
-		}
+		public const string ServiceHost = "http://shackapi.stonedonkey.com/";
+		public const string PostUrl = ServiceHost + "post/";
+
 		#endregion
 
 		#region StoryCommentCache
@@ -245,8 +241,7 @@ namespace LatestChatty
 		#region LoginHelper
 		public delegate void LoginCallback(bool verified);
 
-		NetworkCredential _nc = new NetworkCredential();
-		private bool _loginVerified = false;
+		NetworkCredential userCredentials = new NetworkCredential(LatestChattySettings.Instance.Username, LatestChattySettings.Instance.Password);
 		public bool LoginVerified
 		{
 			get
@@ -259,106 +254,89 @@ namespace LatestChatty
 		{
 			get
 			{
-				return _nc;
+				return userCredentials;
 			}
 		}
 
-		private LoginCallback _loginCallback;
+		private LoginCallback loginCallback;
 
 		public void TryLogin(string username, string password, LoginCallback callback)
 		{
-			_nc.UserName = username;
-			_nc.Password = password;
-			_loginCallback = callback;
-			_loginVerified = true;
+			this.userCredentials = new NetworkCredential(username, password);
+			this.loginCallback = callback;
+			var request = (HttpWebRequest)HttpWebRequest.Create("http://www.shacknews.com/account/signin");
+			request.Method = "POST";
+			request.Headers["x-requested-with"] = "XMLHttpRequest";
+			request.Headers[HttpRequestHeader.Pragma] = "no-cache";
+			request.Headers[HttpRequestHeader.Connection] = "keep-alive";
 
-			Deployment.Current.Dispatcher.BeginInvoke(() =>
-			{
-				LatestChattySettings.Instance.Username = username;
-				LatestChattySettings.Instance.Password = password;
-				_loginCallback(true);
-				_loginCallback = null;
-			});
-
-			// Removing authentication for now
-			
-			//HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create("http://www.shackchatty.com/auth");
-			//request.Method = "POST";
-
-			//request.Credentials = _nc;
-			//request.BeginGetResponse(new AsyncCallback(GetLoginCallback), request);
+			request.ContentType = "application/x-www-form-urlencoded";
+			request.BeginGetRequestStream(BeginLoginPostCallback, request);
 		}
+
+		public void BeginLoginPostCallback(IAsyncResult result)
+		{
+			HttpWebRequest request = result.AsyncState as HttpWebRequest;
+
+			Stream requestStream = request.EndGetRequestStream(result);
+			StreamWriter streamWriter = new StreamWriter(requestStream);
+			streamWriter.Write(String.Format("email={0}&password={1}&get_fields[]=result", HttpUtility.UrlEncode(this.userCredentials.UserName), HttpUtility.UrlEncode(this.userCredentials.Password)));
+			streamWriter.Flush();
+			streamWriter.Close();
+
+			request.BeginGetResponse(GetLoginCallback, request);
+		}
+
 
 		public void GetLoginCallback(IAsyncResult result)
 		{
+			var success = false;
 			try
 			{
-				WebResponse response = ((HttpWebRequest)result.AsyncState).EndGetResponse(result);
-				_loginVerified = true;
+				HttpWebRequest request = result.AsyncState as HttpWebRequest;
+				HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(result);
+
+				//Doesn't seem like the API is actually returning failure codes, but... might as well handle it in case it does some time.
+				if (response.StatusCode == HttpStatusCode.OK)
+				{
+					using (var responseStream = response.GetResponseStream())
+					{
+						var responseBytes = new byte[responseStream.Length];
+						responseStream.Read(responseBytes, 0, responseBytes.Length);
+						var responseString = System.Text.Encoding.UTF8.GetString(responseBytes, 0, responseBytes.Length);
+						success = responseString.Equals("{\"result\":\"true\"}");
+					}
+				}
 			}
-			catch (Exception)
-			{
-				_nc.Password = "";
-				_loginVerified = false;
+			catch (Exception ex) {
+				System.Diagnostics.Debug.WriteLine("problem logging in {0}", ex.ToString());
 			}
 
+			if (!success)
+			{
+				this.userCredentials = null;
+			}
+			//Here we force save, no matter what the success was and then fire the callback.
 			Deployment.Current.Dispatcher.BeginInvoke(() =>
 			{
-				_loginCallback(_loginVerified);
-				_loginCallback = null;
+
+				LatestChattySettings.Instance.Username = this.userCredentials != null ? this.userCredentials.UserName : string.Empty;
+				LatestChattySettings.Instance.Password = this.userCredentials != null ? this.userCredentials.Password : string.Empty;
+
+				if (this.loginCallback != null)
+				{
+					this.loginCallback(success);
+				}
 			});
 		}
-
-		public void LoadLoginInformation()
-		{
-			Deployment.Current.Dispatcher.BeginInvoke(() =>
-				{
-					_nc.UserName = LatestChattySettings.Instance.Username;
-					_nc.Password = LatestChattySettings.Instance.Password;
-					_loginVerified = !string.IsNullOrWhiteSpace(_nc.Password);
-				});
-		}
-
-		//public void SaveLoginInformation()
-		//{
-		//   IsolatedStorageSettings settings = IsolatedStorageSettings.ApplicationSettings;
-		//   if (settings.Contains("username"))
-		//   {
-		//      settings["username"] = _nc.UserName;
-		//   }
-		//   else
-		//   {
-		//      if (_nc.UserName != "")
-		//      {
-		//         settings.Add("username", _nc.UserName);
-		//      }
-		//   }
-
-		//   if (settings.Contains("password"))
-		//   {
-		//      settings["password"] = _nc.Password;
-		//   }
-		//   else
-		//   {
-		//      if (_nc.Password != "")
-		//      {
-		//         settings.Add("password", _nc.Password);
-		//      }
-		//   }
-		//   settings.Save();
-		//}
-
 		public void Logout()
 		{
 			//Unregister notifications first
 			NotificationHelper.UnRegisterNotifications(); 
 
 			//Clear out all the information for the user
-			_nc.UserName = "";
-			_nc.Password = "";
-			_loginVerified = false;
-			LatestChattySettings.Instance.Username = string.Empty;
-			LatestChattySettings.Instance.Password = string.Empty;
+			LatestChattySettings.Instance.Username = this.userCredentials.UserName = string.Empty;
+			LatestChattySettings.Instance.Password = this.userCredentials.Password = string.Empty;
 			LatestChattySettings.Instance.NotificationType = NotificationType.None;
 			
 			//Clear MyPosts, MyReplies, and refresh the watchlist so the participation flag goes away

@@ -1,6 +1,11 @@
 LatestChatty for WindowsPhone v2.6
 Created by: fleabix, boarder2
 
+[ Version 2.7 ]
+> Changed Icon yet again!
+> Login will no longer succeed if credentials are invalid
+> 
+
 [ Version 2.6 ]
 > Switched highlighted post text color to white so it's easier to read
 > Fixed back button not working in thread view when using date sorting method

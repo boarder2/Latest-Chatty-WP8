@@ -123,7 +123,7 @@ namespace LatestChatty.ViewModels
 
 		public void Refresh()
 		{
-			string request = CoreServices.Instance.ServiceHost + "thread/" + SeedCommentId + ".xml";
+			string request = CoreServices.ServiceHost + "thread/" + SeedCommentId + ".xml";
 			this.IsLoading = true;
 			CoreServices.Instance.QueueDownload(request, GetCommentsCallback);
 		}

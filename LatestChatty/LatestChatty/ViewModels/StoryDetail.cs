@@ -49,7 +49,7 @@ namespace LatestChatty.ViewModels
 		  {
 				string request;
 
-				request = CoreServices.Instance.ServiceHost + "/stories/" + _story + ".xml";
+				request = CoreServices.ServiceHost + "/stories/" + _story + ".xml";
 
 						CoreServices.Instance.QueueDownload(request, GetStoryDetailCallback);
 		  }

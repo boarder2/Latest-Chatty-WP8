@@ -16,20 +16,34 @@ namespace LatestChatty.Classes
 	public class POSTHandler
 	{
 		private string content;
-		private string postUri;
 		public delegate void POSTDelegate(bool success);
 		POSTDelegate postCompleteEvent;
+		private bool showExceptionMessageBox;
 
-		public POSTHandler(string postURI, string content, POSTDelegate callback)
+		public POSTHandler(string content, int replyingToId, POSTDelegate callback)
 		{
-			this.postUri = postURI;
+			//Will url encoding help new lines? If not, it'll at least help a lot of other stuff that was probably broken...
+			//Nope.  Ok, so maybe replacing newline with %0A
+			//... newlines in a text box appear to have just \r ... even when Environment.NewLine is \r\n??
+			var encodedBody = HttpUtility.UrlEncode(content.Replace("\r", "\r\n"));
+			content = "body=" + encodedBody;
+
+			if (replyingToId != -1)
+			{
+				content += "&parent_id=" + replyingToId;
+			}
+
+			System.Diagnostics.Debug.WriteLine("Posting: {0}", encodedBody);
+
 			this.content = content;
 			this.postCompleteEvent = callback;
 
-			HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(postUri);
+			HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(CoreServices.PostUrl);
 			request.Method = "POST";
 			request.ContentType = "application/x-www-form-urlencoded";
 			request.Credentials = CoreServices.Instance.Credentials;
+
+			this.showExceptionMessageBox = true;
 
 			IAsyncResult token = request.BeginGetRequestStream(new AsyncCallback(BeginPostCallback), request);
 		}
@@ -77,7 +91,7 @@ namespace LatestChatty.Classes
 			{
 				Deployment.Current.Dispatcher.BeginInvoke(() =>
 						{
-							if (!success)
+							if (!success && this.showExceptionMessageBox)
 							{
 								MessageBox.Show(failureMessage);
 							}

@@ -53,7 +53,7 @@ namespace LatestChatty.ViewModels
 		{
 			if (CoreServices.Instance.LoginVerified)
 			{
-				string request = CoreServices.Instance.ServiceHost + "Search/?Author=" + CoreServices.Instance.Credentials.UserName;
+				string request = CoreServices.ServiceHost + "Search/?Author=" + CoreServices.Instance.Credentials.UserName;
 				CoreServices.Instance.QueueDownload(request, GetCommentsCallback);
 			}
 		}

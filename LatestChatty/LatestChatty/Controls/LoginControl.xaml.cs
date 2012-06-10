@@ -13,54 +13,55 @@ using Microsoft.Phone.Tasks;
 
 namespace LatestChatty.Controls
 {
-    public partial class LoginControl : UserControl
-    {
-        CoreServices.LoginCallback _delegate;
-        public LoginControl()
-        {
-            InitializeComponent();
-        }
+	public partial class LoginControl : UserControl
+	{
+		CoreServices.LoginCallback _delegate;
+		public LoginControl()
+		{
+			InitializeComponent();
+		}
 
-        public LoginControl(CoreServices.LoginCallback callback) : this()
-        {
-            _delegate = callback;
-        }
+		public LoginControl(CoreServices.LoginCallback callback)
+			: this()
+		{
+			_delegate = callback;
+		}
 
-        public void LoginVerification(bool verified)
-        {
-            if (verified)
-            {
-                ((Panel)Parent).Children.Remove(this);
-                if (_delegate != null)
-                {
-                    _delegate(verified);
-                }
-            }
-            else
-            {
-							//TODO: Bind Progress bar
-                VerificationFailed.Visibility = Visibility.Visible;
-								ProgressBar.IsIndeterminate = true;
-            }
-            ProgressBar.Visibility = Visibility.Collapsed;
-						ProgressBar.IsIndeterminate = false;
-        }
+		public void LoginVerification(bool verified)
+		{
+			if (verified)
+			{
+				((Panel)Parent).Children.Remove(this);
+				if (_delegate != null)
+				{
+					_delegate(verified);
+				}
+			}
+			else
+			{
+				//TODO: Bind Progress bar
+				VerificationFailed.Visibility = Visibility.Visible;
+				ProgressBar.IsIndeterminate = true;
+			}
+			ProgressBar.Visibility = Visibility.Collapsed;
+			ProgressBar.IsIndeterminate = false;
+		}
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            VerificationFailed.Visibility = Visibility.Collapsed;
-            ProgressBar.Visibility = Visibility.Visible;
-						ProgressBar.IsIndeterminate = false;
+		private void Button_Click(object sender, RoutedEventArgs e)
+		{
+			VerificationFailed.Visibility = Visibility.Collapsed;
+			ProgressBar.Visibility = Visibility.Visible;
+			ProgressBar.IsIndeterminate = false;
 
-            CoreServices.Instance.TryLogin(usernameTB.Text, passwordTB.Password, LoginVerification);
-        }
+			CoreServices.Instance.TryLogin(usernameTB.Text, passwordTB.Password, LoginVerification);
+		}
 
-        private void Register_Click(object sender, RoutedEventArgs e)
-        {
-            WebBrowserTask task = new WebBrowserTask();
+		private void Register_Click(object sender, RoutedEventArgs e)
+		{
+			WebBrowserTask task = new WebBrowserTask();
 
-            task.Uri = new Uri("http://www.shacknews.com/create_account.x");
-            task.Show();
-        }
-    }
+			task.Uri = new Uri("http://www.shacknews.com/create_account.x");
+			task.Show();
+		}
+	}
 }

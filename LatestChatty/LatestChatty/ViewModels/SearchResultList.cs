@@ -55,7 +55,7 @@ namespace LatestChatty.ViewModels
 
 		  public void Refresh()
 		  {
-				string request = CoreServices.Instance.ServiceHost + "Search/?" + _search;
+				string request = CoreServices.ServiceHost + "Search/?" + _search;
 						CoreServices.Instance.QueueDownload(request, GetCommentsCallback);
 		  }
 
