@@ -9,6 +9,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using System.Threading;
+using System.Text;
 
 namespace LatestChatty.Classes
 {
@@ -33,6 +34,7 @@ namespace LatestChatty.Classes
 			this.request = (HttpWebRequest)HttpWebRequest.Create(this.Uri);
 			this.request.Method = "GET";
 			this.request.Headers[HttpRequestHeader.CacheControl] = "no-cache";
+			request.Headers[HttpRequestHeader.Authorization] = Convert.ToBase64String(Encoding.UTF8.GetBytes(CoreServices.Instance.Credentials.UserName + ":" + CoreServices.Instance.Credentials.Password));
 			this.request.Credentials = CoreServices.Instance.Credentials;
 
 			try

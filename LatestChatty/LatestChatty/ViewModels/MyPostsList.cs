@@ -8,6 +8,7 @@ using System.Runtime.Serialization;
 using System.Windows;
 using System.Xml.Linq;
 using LatestChatty.Classes;
+using LatestChatty.Settings;
 
 namespace LatestChatty.ViewModels
 {
@@ -53,7 +54,7 @@ namespace LatestChatty.ViewModels
 		{
 			if (CoreServices.Instance.LoginVerified)
 			{
-				string request = CoreServices.ServiceHost + "Search/?Author=" + CoreServices.Instance.Credentials.UserName;
+				string request = Locations.ServiceHost + "Search/?Author=" + CoreServices.Instance.Credentials.UserName;
 				CoreServices.Instance.QueueDownload(request, GetCommentsCallback);
 			}
 		}

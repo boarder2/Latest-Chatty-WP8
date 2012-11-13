@@ -12,6 +12,7 @@ using System.Windows.Shapes;
 using LatestChatty.Classes;
 using System.ComponentModel;
 using System.Xml.Linq;
+using LatestChatty.Settings;
 
 namespace LatestChatty.ViewModels
 {
@@ -49,7 +50,7 @@ namespace LatestChatty.ViewModels
 		  {
 				string request;
 
-				request = CoreServices.ServiceHost + "/stories/" + _story + ".xml";
+				request = Locations.ServiceHost + "/stories/" + _story + ".xml";
 
 						CoreServices.Instance.QueueDownload(request, GetStoryDetailCallback);
 		  }

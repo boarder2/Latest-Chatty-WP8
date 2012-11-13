@@ -15,6 +15,7 @@ using LatestChatty.Classes;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 using System.Collections.Generic;
+using LatestChatty.Settings;
 
 namespace LatestChatty.ViewModels
 {
@@ -82,7 +83,17 @@ namespace LatestChatty.ViewModels
 
 		public void TogglePinned()
 		{
-			this.IsWatched = !CoreServices.Instance.AddOrRemoveWatch(this.FlatComments.First());
+			var c = this.FlatComments.First();
+			if (c.IsPinned)
+			{
+				LatestChattySettings.Instance.RemoveWatchedComment(c);
+				this.IsWatched = false;
+			}
+			else
+			{
+				LatestChattySettings.Instance.AddWatchedComment(c);
+				this.IsWatched = true;
+			}
 		}
 
 		public void SelectComment(Comment c)
@@ -103,7 +114,7 @@ namespace LatestChatty.ViewModels
 				XElement x = response.Elements("comments").Elements("comment").First();
 				
 				var rootComment = new Comment(x, StoryId, true, 0);
-				this.IsWatched = CoreServices.Instance.IsOnWatchedList(rootComment);
+				this.IsWatched = LatestChattySettings.Instance.PinnedComments.Any(c => c.id == rootComment.id);
 				
 				this.FlatComments.Clear();
 				foreach (var comment in this.GetFlattenedComments(rootComment))
@@ -123,7 +134,7 @@ namespace LatestChatty.ViewModels
 
 		public void Refresh()
 		{
-			string request = CoreServices.ServiceHost + "thread/" + SeedCommentId + ".xml";
+			string request = Locations.ServiceHost + "thread/" + SeedCommentId + ".xml";
 			this.IsLoading = true;
 			CoreServices.Instance.QueueDownload(request, GetCommentsCallback);
 		}

@@ -66,11 +66,11 @@ namespace LatestChatty.Classes
 				{
 					if (this.IsPinned)
 					{
-						CoreServices.Instance.WatchList.Add(this);
+						LatestChattySettings.Instance.AddWatchedComment(this);
 					}
 					else
 					{
-						CoreServices.Instance.WatchList.Remove(this);
+						LatestChattySettings.Instance.RemoveWatchedComment(this);
 					}
 				}
 			}
@@ -153,7 +153,7 @@ namespace LatestChatty.Classes
 			this.NewPostCount = CoreServices.Instance.NewReplyCount(this.id, reply_count, this.SavePostCounts);
 			this.HasNewReplies = (this.NewPostCount > 0 || this.New);
 			this.Depth = depth;
-			this.IsPinned = CoreServices.Instance.WatchList.IsOnWatchList(this);
+			this.IsPinned = LatestChattySettings.Instance.PinnedComments.Any(c => c.id == this.id);
 			this.CollapseIfRequired();
 
 			List<XElement> comments = x.Element("comments").Elements("comment").ToList();

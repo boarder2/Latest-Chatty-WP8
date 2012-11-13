@@ -13,6 +13,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using LatestChatty.Classes;
 using System.Xml.Linq;
+using LatestChatty.Settings;
 
 namespace LatestChatty.ViewModels
 {
@@ -38,7 +39,7 @@ namespace LatestChatty.ViewModels
 			try
 			{
 				var ObjStory = from x in response.Descendants("story")
-											 select new Story(x);
+									select new Story(x);
 
 				Stories.Clear();
 
@@ -61,7 +62,7 @@ namespace LatestChatty.ViewModels
 		{
 			string request;
 
-			request = CoreServices.ServiceHost + "stories.xml";
+			request = Locations.ServiceHost + "stories.xml";
 
 			this.IsLoading = true;
 			CoreServices.Instance.QueueDownload(request, GetStoriesCallback);

@@ -17,6 +17,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows.Media.Imaging;
 using System.Text;
+using LatestChatty.Settings;
 
 namespace LatestChatty.Pages
 {
@@ -96,7 +97,16 @@ namespace LatestChatty.Pages
 
 			((Microsoft.Phone.Shell.ApplicationBarIconButton)ApplicationBar.Buttons[0]).IsEnabled = false;
 
-			POSTHandler download = new POSTHandler(Post.Text, _reply != null ? _reply.id : -1, PostCallback);
+			//Will url encoding help new lines? If not, it'll at least help a lot of other stuff that was probably broken...
+			//Nope.  Ok, so maybe replacing newline with %0A
+			//... newlines in a text box appear to have just \r ... even when Environment.NewLine is \r\n??
+			var encodedBody = "body=" + HttpUtility.UrlEncode(Post.Text.Replace("\r", "\r\n"));
+			if (_reply != null)
+			{
+				encodedBody += "&parent_id=" + _reply.id;
+			}
+
+			POSTHandler download = new POSTHandler(Locations.PostUrl, encodedBody, PostCallback);
 		}
 
 		void PostCallback(bool success)

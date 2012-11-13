@@ -29,6 +29,8 @@
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
     <SccProvider>SAK</SccProvider>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -55,8 +57,13 @@
     <Reference Include="Microsoft.Expression.Interactions, Version=3.8.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.Phone" />
     <Reference Include="Microsoft.Phone.Controls" />
-    <Reference Include="Microsoft.Phone.Controls.Toolkit, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b772ad94eb9ca604, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Phone.Controls.Toolkit">
+      <HintPath>..\packages\WPtoolkit.4.2012.10.30\lib\sl4-windowsphone71\Microsoft.Phone.Controls.Toolkit.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Phone.Interop" />
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.4.5.10\lib\sl4-windowsphone71\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows" />
     <Reference Include="system" />
@@ -73,6 +80,7 @@
     <Compile Include="Classes\API Helper.cs" />
     <Compile Include="Classes\BooleanToValueConverter.cs" />
     <Compile Include="Classes\Comment.cs" />
+    <Compile Include="Classes\JSONDownloader.cs" />
     <Compile Include="Settings\LatestChattySettings.cs" />
     <Compile Include="Classes\MultiplicationConverter.cs" />
     <Compile Include="Classes\NotificationHelper.cs" />
@@ -82,6 +90,7 @@
     <Compile Include="Classes\GETDownloader.cs" />
     <Compile Include="Classes\Message.cs" />
     <Compile Include="Classes\PostCategory.cs" />
+    <Compile Include="Settings\Locations.cs" />
     <Compile Include="Settings\SettingsEnums.cs" />
     <Compile Include="Classes\Story.cs" />
     <Compile Include="Classes\VisualTreeHelperExtensions.cs" />
@@ -253,6 +262,7 @@
   <ItemGroup>
     <None Include="Images\TimeIcon.design" />
     <None Include="Images\TopDownIcon.design" />
+    <None Include="packages.config" />
     <None Include="Properties\AppManifest.xml" />
     <None Include="Properties\WMAppManifest.xml" />
   </ItemGroup>
@@ -279,9 +289,14 @@
     <Content Include="Images\sticky_notes.png" />
     <Content Include="Images\TimeIcon.png" />
     <Content Include="Images\TopDownIcon.png" />
+    <Content Include="README_FIRST.txt" />
     <Content Include="stylesheet.css" />
     <Content Include="Images\MainBackground.png" />
     <Content Include="SplashScreenImage.jpg" />
+    <Content Include="Toolkit.Content\ApplicationBar.Cancel.png" />
+    <Content Include="Toolkit.Content\ApplicationBar.Check.png" />
+    <Content Include="Toolkit.Content\ApplicationBar.Delete.png" />
+    <Content Include="Toolkit.Content\ApplicationBar.Select.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.$(TargetFrameworkProfile).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.CSharp.targets" />
@@ -293,4 +308,5 @@
   </Target>
   -->
   <ProjectExtensions />
+  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
 </Project>

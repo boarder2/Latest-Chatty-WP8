@@ -11,6 +11,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using LatestChatty.Classes;
 using Microsoft.Phone.Controls;
+using LatestChatty.Settings;
 
 namespace LatestChatty.Controls
 {
@@ -38,7 +39,7 @@ namespace LatestChatty.Controls
 		{
 			var dc = (sender as FrameworkElement).DataContext;
 			var comment = dc as Comment;
-			CoreServices.Instance.AddOrRemoveWatch(comment);
+			LatestChattySettings.Instance.RemoveWatchedComment(comment);
 		}
 	}
 }

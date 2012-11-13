@@ -10,6 +10,8 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using System.Threading;
 using System.IO;
+using LatestChatty.Settings;
+using System.Text;
 
 namespace LatestChatty.Classes
 {
@@ -20,27 +22,17 @@ namespace LatestChatty.Classes
 		POSTDelegate postCompleteEvent;
 		private bool showExceptionMessageBox;
 
-		public POSTHandler(string content, int replyingToId, POSTDelegate callback)
+		public POSTHandler(string postUrl, string content, POSTDelegate callback)
 		{
-			//Will url encoding help new lines? If not, it'll at least help a lot of other stuff that was probably broken...
-			//Nope.  Ok, so maybe replacing newline with %0A
-			//... newlines in a text box appear to have just \r ... even when Environment.NewLine is \r\n??
-			var encodedBody = HttpUtility.UrlEncode(content.Replace("\r", "\r\n"));
-			content = "body=" + encodedBody;
-
-			if (replyingToId != -1)
-			{
-				content += "&parent_id=" + replyingToId;
-			}
-
-			System.Diagnostics.Debug.WriteLine("Posting: {0}", encodedBody);
+			System.Diagnostics.Debug.WriteLine("Posting: {0}", content);
 
 			this.content = content;
 			this.postCompleteEvent = callback;
 
-			HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(CoreServices.PostUrl);
+			HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(postUrl);
 			request.Method = "POST";
 			request.ContentType = "application/x-www-form-urlencoded";
+			request.Headers[HttpRequestHeader.Authorization] = Convert.ToBase64String(Encoding.UTF8.GetBytes(CoreServices.Instance.Credentials.UserName + ":" + CoreServices.Instance.Credentials.Password));
 			request.Credentials = CoreServices.Instance.Credentials;
 
 			this.showExceptionMessageBox = true;
@@ -83,7 +75,7 @@ namespace LatestChatty.Classes
 			}
 			catch (Exception ex)
 			{
-				System.Diagnostics.Debug.WriteLine("Posting failed because: {0}", ex);
+				System.Diagnostics.Debug.WriteLine("HTTP Send failed because: {0}", ex);
 				failureMessage = "Posting failed.";
 			}
 
@@ -95,7 +87,10 @@ namespace LatestChatty.Classes
 							{
 								MessageBox.Show(failureMessage);
 							}
-							postCompleteEvent(success);
+							if (postCompleteEvent != null)
+							{
+								postCompleteEvent(success);
+							}
 						});
 			}
 		}

@@ -40,13 +40,8 @@ namespace LatestChatty.Pages
 					Enum.GetName(typeof(NotificationType), LatestChattySettings.Instance.NotificationType), StringComparison.InvariantCultureIgnoreCase));
 			this.loadedNotificationType = LatestChattySettings.Instance.NotificationType;
 
-			this.autoCollapseNws.IsChecked = LatestChattySettings.Instance.AutoCollapseNws;
-			this.autoCollapseStupid.IsChecked = LatestChattySettings.Instance.AutoCollapseStupid;
-			this.autoCollapseOfftopic.IsChecked = LatestChattySettings.Instance.AutoCollapseOffTopic;
-			this.autoCollapsePolitical.IsChecked = LatestChattySettings.Instance.AutoCollapsePolitical;
-			this.autoCollapseInteresting.IsChecked = LatestChattySettings.Instance.AutoCollapseInteresting;
-			this.autoCollapseInformative.IsChecked = LatestChattySettings.Instance.AutoCollapseInformative;
 			this.navigationPicker.SelectedIndex = LatestChattySettings.Instance.ThreadNavigationByDate ? 0 : 1;
+			this.DataContext = LatestChattySettings.Instance;
 		}
 
 		protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
@@ -130,36 +125,6 @@ namespace LatestChatty.Pages
 			if (picker != null)
 			{
 				LatestChattySettings.Instance.ThreadNavigationByDate = Boolean.Parse(((ListPickerItem)picker.SelectedItem).Tag as string);
-			}
-		}
-
-		private void AutoCollapsePost_Checked(object sender, RoutedEventArgs e)
-		{
-			var toggle = sender as ToggleSwitch;
-			if (toggle != null)
-			{
-				switch(toggle.Header.ToString())
-				{
-					case "nws":
-						LatestChattySettings.Instance.AutoCollapseNws = toggle.IsChecked.HasValue ? toggle.IsChecked.Value : false;
-						break;
-					case "offtopic":
-						LatestChattySettings.Instance.AutoCollapseOffTopic = toggle.IsChecked.HasValue ? toggle.IsChecked.Value : false;
-						break;
-					case "political":
-						LatestChattySettings.Instance.AutoCollapsePolitical = toggle.IsChecked.HasValue ? toggle.IsChecked.Value : false;
-						break;
-					case "stupid":
-						LatestChattySettings.Instance.AutoCollapseStupid = toggle.IsChecked.HasValue ? toggle.IsChecked.Value : false;
-						break;
-					case "informative":
-						LatestChattySettings.Instance.AutoCollapseInteresting = toggle.IsChecked.HasValue ? toggle.IsChecked.Value : false;
-						break;
-					case "interesting":
-						LatestChattySettings.Instance.AutoCollapseInformative = toggle.IsChecked.HasValue ? toggle.IsChecked.Value : false;
-						break;
-					
-				}
 			}
 		}
 	}

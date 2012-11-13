@@ -13,6 +13,7 @@ using System.Collections.ObjectModel;
 using LatestChatty.Classes;
 using System.Xml.Linq;
 using System.ComponentModel;
+using LatestChatty.Settings;
 
 namespace LatestChatty.ViewModels
 {
@@ -62,7 +63,7 @@ namespace LatestChatty.ViewModels
         public void Refresh()
         {
             NetworkCredential nc = CoreServices.Instance.Credentials;
-            string request = CoreServices.ServiceHost + "Messages/?username=" + nc.UserName + "&password=" + nc.Password + "&box=" + _box.ToString() + "&page=1";
+            string request = Locations.ServiceHost + "Messages/?username=" + nc.UserName + "&password=" + nc.Password + "&box=" + _box.ToString() + "&page=1";
 
 						CoreServices.Instance.QueueDownload(request, GetMessagesCallback);
         }

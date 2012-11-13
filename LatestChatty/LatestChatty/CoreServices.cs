@@ -47,12 +47,6 @@ namespace LatestChatty
 		}
 		#endregion
 
-		#region ServiceHost
-		public const string ServiceHost = "http://shackapi.stonedonkey.com/";
-		public const string PostUrl = ServiceHost + "post/";
-
-		#endregion
-
 		#region StoryCommentCache
 		private CommentList _storyComment;
 		public void AddStoryComments(int story, CommentList comments)
@@ -342,7 +336,7 @@ namespace LatestChatty
 			//Clear MyPosts, MyReplies, and refresh the watchlist so the participation flag goes away
 			this.MyPosts.Logout();
 			this.MyReplies.Logout();
-			this.WatchList.Refresh();
+			LatestChattySettings.Instance.LoadLongRunningSettings();
 		}
 		#endregion
 
@@ -403,22 +397,6 @@ namespace LatestChatty
 
 		public delegate void SelectedMessageChangedEvent(Message newSelection);
 		public SelectedMessageChangedEvent SelectedMessageChanged;
-		#endregion
-
-		#region WatchList
-		public WatchList WatchList = new WatchList();
-
-		public bool IsOnWatchedList(Comment c)
-		{
-			return WatchList.IsOnWatchList(c);
-		}
-
-		public bool AddOrRemoveWatch(Comment c)
-		{
-			var result = WatchList.AddOrRemove(c);
-			WatchList.SaveWatchList(); //Force saving right away.
-			return result;
-		}
 		#endregion
 
 		#region CollapseList

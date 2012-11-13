@@ -10,6 +10,14 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using System.IO.IsolatedStorage;
 using Microsoft.Phone.Net.NetworkInformation;
+using LatestChatty.Classes;
+using System.Runtime.Serialization;
+using System.Collections.Generic;
+using System.IO;
+using System.Xml.Linq;
+using Newtonsoft.Json.Linq;
+using System.Linq;
+using System.Collections.ObjectModel;
 
 namespace LatestChatty.Settings
 {
@@ -28,8 +36,14 @@ namespace LatestChatty.Settings
 		private static readonly string autocollapsepolitical = "autocollapsepolitical";
 		private static readonly string autocollapseinformative = "autocollapseinformative";
 		private static readonly string autocollapseinteresting = "autocollapseinteresting";
-		
+		private static readonly string cloudsync = "cloudsync";
+
+		private int commentsLeftToLoad;
+		private bool loadingSettingsInternal;
+
 		public readonly IsolatedStorageSettings isoStore;
+
+		public event EventHandler SettingsSynced;
 
 		private static LatestChattySettings instance = null;
 		public static LatestChattySettings Instance
@@ -49,6 +63,8 @@ namespace LatestChatty.Settings
 		public LatestChattySettings()
 		{
 			this.isoStore = IsolatedStorageSettings.ApplicationSettings;
+			this.pinnedCommentsCollection = new ObservableCollection<Comment>();
+			this.PinnedComments = new ReadOnlyObservableCollection<Comment>(this.pinnedCommentsCollection);
 
 			if (!this.isoStore.Contains(notificationType))
 			{
@@ -101,7 +117,36 @@ namespace LatestChatty.Settings
 			if (!this.isoStore.Contains(autocollapseinteresting))
 			{
 				this.isoStore.Add(autocollapseinteresting, false);
-			}		
+			}
+			if (!this.isoStore.Contains(cloudsync))
+			{
+				this.isoStore.Add(cloudsync, false);
+			}
+		}
+
+		#region Properties
+		private ObservableCollection<Comment> pinnedCommentsCollection;
+		public ReadOnlyObservableCollection<Comment> PinnedComments
+		{
+			get;
+			private set;
+		}
+		private List<int> pinnedCommentIds = new List<int>();
+
+		public bool CloudSync
+		{
+			get
+			{
+				bool v;
+				this.isoStore.TryGetValue<bool>(cloudsync, out v);
+				return v;
+			}
+			set
+			{
+				this.isoStore[cloudsync] = value;
+				this.isoStore.Save();
+				this.SaveToCloud();
+			}
 		}
 
 		public bool AutoCollapseNws
@@ -116,6 +161,7 @@ namespace LatestChatty.Settings
 			{
 				this.isoStore[autocollapsenws] = value;
 				this.isoStore.Save();
+				this.SaveToCloud();
 			}
 		}
 
@@ -131,6 +177,7 @@ namespace LatestChatty.Settings
 			{
 				this.isoStore[autocollapsestupid] = value;
 				this.isoStore.Save();
+				this.SaveToCloud();
 			}
 		}
 
@@ -146,6 +193,7 @@ namespace LatestChatty.Settings
 			{
 				this.isoStore[autocollapseofftopic] = value;
 				this.isoStore.Save();
+				this.SaveToCloud();
 			}
 		}
 
@@ -161,6 +209,7 @@ namespace LatestChatty.Settings
 			{
 				this.isoStore[autocollapsepolitical] = value;
 				this.isoStore.Save();
+				this.SaveToCloud();
 			}
 		}
 
@@ -176,6 +225,7 @@ namespace LatestChatty.Settings
 			{
 				this.isoStore[autocollapseinformative] = value;
 				this.isoStore.Save();
+				this.SaveToCloud();
 			}
 		}
 
@@ -191,6 +241,7 @@ namespace LatestChatty.Settings
 			{
 				this.isoStore[autocollapseinteresting] = value;
 				this.isoStore.Save();
+				this.SaveToCloud();
 			}
 		}
 
@@ -293,6 +344,7 @@ namespace LatestChatty.Settings
 				this.isoStore.Save();
 			}
 		}
+		#endregion
 
 		//This should be in an extension method since it's app specific, but... meh.
 		public bool ShouldShowInlineImages
@@ -316,6 +368,208 @@ namespace LatestChatty.Settings
 
 				//Always.
 				return true;
+			}
+		}
+
+		public void AddWatchedComment(Comment c)
+		{
+			if (!this.pinnedCommentIds.Contains(c.id))
+			{
+				this.pinnedCommentIds.Add(c.id);
+				this.pinnedCommentsCollection.Add(c);
+				this.SaveToCloud();
+			}			
+		}
+
+		public void RemoveWatchedComment(Comment c)
+		{
+			if (this.pinnedCommentIds.Contains(c.id))
+			{
+				var cRemove = this.pinnedCommentsCollection.SingleOrDefault(c1 => c1.id == c.id);
+				if (cRemove != null)
+				{
+					this.pinnedCommentIds.Remove(c.id);
+					this.pinnedCommentsCollection.Remove(cRemove);
+					this.SaveToCloud();
+				}
+			}
+		}
+
+		public void LoadLongRunningSettings()
+		{
+			this.loadingSettingsInternal = true;
+			this.pinnedCommentsCollection.Clear();
+			if (!this.CloudSync)
+			{
+				try
+				{
+					DataContractSerializer ser = new DataContractSerializer(typeof(List<int>));
+
+					using (IsolatedStorageFile isf = IsolatedStorageFile.GetUserStoreForApplication())
+					{
+						using (IsolatedStorageFileStream stream = new IsolatedStorageFileStream("watchlist.txt", FileMode.OpenOrCreate, isf))
+						{
+							this.pinnedCommentIds = ser.ReadObject(stream) as List<int>;
+						}
+					}
+				}
+
+				catch { }
+
+				this.GetPinnedComments();
+				this.loadingSettingsInternal = false;
+			}
+			else
+			{
+				try
+				{
+					var downloader = new JSONDownloader(Locations.MyCloudSettings, GotCloudSettings);
+					downloader.Start();
+				}
+				catch (WebException e)
+				{
+					var r = e.Response as HttpWebResponse;
+					if (r != null)
+					{
+						if (r.StatusCode == HttpStatusCode.Forbidden || r.StatusCode == HttpStatusCode.NotFound)
+						{
+							return;
+						}
+					}
+					throw;
+				}
+			}
+		}
+
+
+		private void GetCommentsCallback(XDocument response)
+		{
+			try
+			{
+				//Don't throw an exception if we didn't get anything.
+				//I found this can happen when you pin a post that later gets nuked.  Ultimately it should be removed from the list of stuff to retrieve, probably, but for now we just won't error.
+				if (response != null)
+				{
+					XElement x = response.Elements("comments").Elements("comment").First();
+					var storyId = int.Parse(response.Element("comments").Attribute("story_id").Value);
+					//Don't save the counts when we load these posts.
+					var comment = new Comment(x, storyId, false, 0);
+					var insertAt = 0;
+					//Sort them the same all the time.
+					for (insertAt = 0; insertAt < this.pinnedCommentsCollection.Count; insertAt++)
+					{
+						//Keep looking
+						if (comment.id > this.pinnedCommentsCollection[insertAt].id)
+						{
+							continue;
+						}
+						//Already exists... don't add it twice.  (This could happen if they click refresh fast)
+						if (comment.id == this.pinnedCommentsCollection[insertAt].id)
+						{
+							return;
+						}
+						//We belong before this one.
+						if (comment.id < this.pinnedCommentsCollection[insertAt].id)
+						{
+							break;
+						}
+					}
+					this.pinnedCommentsCollection.Insert(insertAt, comment);
+				}
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show("Problem refreshing pinned comments.");
+			}
+			finally
+			{
+				this.commentsLeftToLoad--;
+				this.OnRefreshCompleted();
+			}
+		}
+
+		private void GotCloudSettings(JObject result)
+		{
+			if (result != null)
+			{
+				this.AutoCollapseInformative = (bool)result[autocollapseinformative];
+				this.AutoCollapseInteresting = (bool)result[autocollapseinteresting];
+				this.AutoCollapseNws = (bool)result[autocollapsenws];
+				this.AutoCollapseOffTopic = (bool)result[autocollapseofftopic];
+				this.AutoCollapsePolitical = (bool)result[autocollapsepolitical];
+				this.AutoCollapseStupid = (bool)result[autocollapsestupid];
+				//this.ShowInlineImages = (bool)result[showInlineImages];
+
+				this.pinnedCommentIds = result["watched"].Children().Select(t => (int)t).ToList();
+				this.GetPinnedComments();
+			}
+
+			this.loadingSettingsInternal = false;
+		}
+
+		public void SaveToCloud()
+		{
+			try
+			{
+				//If cloud sync is enabled
+				if (!this.loadingSettingsInternal && LatestChattySettings.Instance.CloudSync)
+				{
+					System.Diagnostics.Debug.WriteLine("Syncing to cloud...");
+					var saveObject =
+						new JObject(
+							new JProperty("watched",
+								new JArray(this.pinnedCommentIds)
+								),
+							//TODO: make this work for real
+							new JProperty("embedimages", true),
+							new JProperty(autocollapseinformative, this.AutoCollapseInformative),
+							new JProperty(autocollapseinteresting, this.AutoCollapseInteresting),
+							new JProperty(autocollapsenws, this.AutoCollapseNws),
+							new JProperty(autocollapseofftopic, this.AutoCollapseOffTopic),
+							new JProperty(autocollapsepolitical, this.AutoCollapsePolitical),
+							new JProperty(autocollapsestupid, this.AutoCollapseStupid));
+					var post = new POSTHandler(Locations.MyCloudSettings, saveObject.ToString(), null);
+				}
+			}
+			catch
+			{
+				System.Diagnostics.Debug.Assert(false);
+			}
+		}
+
+		private void GetPinnedComments()
+		{
+			if (this.pinnedCommentIds != null)
+			{
+				this.commentsLeftToLoad = this.pinnedCommentIds.Count;
+				if (this.commentsLeftToLoad > 0)
+				{
+					foreach (var commentId in this.pinnedCommentIds)
+					{
+						this.QueueCommentDownload(commentId);
+					}
+				}
+				else
+				{
+					this.OnRefreshCompleted();
+				}
+			}
+		}
+
+		private void QueueCommentDownload(int commentId)
+		{
+			var request = Locations.ServiceHost + "thread/" + commentId + ".xml";
+			CoreServices.Instance.QueueDownload(request, GetCommentsCallback);
+		}
+
+		private void OnRefreshCompleted()
+		{
+			if (this.commentsLeftToLoad == 0)
+			{
+				if (this.SettingsSynced != null)
+				{
+					this.SettingsSynced(this, EventArgs.Empty);
+				}
 			}
 		}
 	}

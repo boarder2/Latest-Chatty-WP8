@@ -13,6 +13,7 @@ using Microsoft.Phone.Controls;
 using LatestChatty.Controls;
 using Microsoft.Phone.Shell;
 using LatestChatty.Classes;
+using LatestChatty.Settings;
 
 namespace LatestChatty
 {
@@ -52,14 +53,14 @@ namespace LatestChatty
 			};
 			maintenanceWorker.RunWorkerAsync();
 
-			Pinned.DataContext = CoreServices.Instance.WatchList;
+			Pinned.DataContext = LatestChattySettings.Instance.PinnedComments;
 			MyPosts.DataContext = CoreServices.Instance.MyPosts;
 			MyReplies.DataContext = CoreServices.Instance.MyReplies;
 
 			//Need to implement this for the watch list.
 			CoreServices.Instance.MyPosts.PropertyChanged += (s, a) => DecrementRefresher();
 			CoreServices.Instance.MyReplies.PropertyChanged += (s, a) => DecrementRefresher();
-			CoreServices.Instance.WatchList.RefreshCompleted += (s, a) => DecrementRefresher();
+			LatestChattySettings.Instance.SettingsSynced += (s, a) => SettingsSynced();
 
 			if (!CoreServices.Instance.LoginVerified)
 			{
@@ -68,11 +69,8 @@ namespace LatestChatty
 			Loaded += new RoutedEventHandler(MainPage_Loaded);
 		}
 
-		void MainPage_Loaded(object sender, RoutedEventArgs e)
+		private void SettingsSynced()
 		{
-			IncrementRefresher();
-			CoreServices.Instance.WatchList.Refresh();
-			
 			if (CoreServices.Instance.LoginVerified)
 			{
 				IncrementRefresher();
@@ -80,6 +78,13 @@ namespace LatestChatty
 				IncrementRefresher();
 				CoreServices.Instance.MyReplies.Refresh();
 			}
+			DecrementRefresher();
+		}
+		void MainPage_Loaded(object sender, RoutedEventArgs e)
+		{
+			//Sync settings.  When this is finished, we'll try to load replies and whatnot.
+			IncrementRefresher();
+			LatestChattySettings.Instance.LoadLongRunningSettings();
 		}
 
 		private void Chatty_Click(object sender, RoutedEventArgs e)
@@ -142,7 +147,7 @@ namespace LatestChatty
 				IncrementRefresher();
 				CoreServices.Instance.MyPosts.Refresh();
 				CoreServices.Instance.MyReplies.Refresh();
-				CoreServices.Instance.WatchList.Refresh();
+				LatestChattySettings.Instance.LoadLongRunningSettings();
 			}
 			LayoutRoot.Children.Remove(_login);
 			_login = null;
@@ -183,7 +188,7 @@ namespace LatestChatty
 		private void Pinned_Click(object sender, RoutedEventArgs e)
 		{
 			IncrementRefresher();
-			CoreServices.Instance.WatchList.Refresh();
+			LatestChattySettings.Instance.LoadLongRunningSettings();
 		}
 
 		private void IncrementRefresher()

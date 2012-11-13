@@ -16,6 +16,7 @@ using System.ComponentModel;
 using System.Runtime.Serialization;
 using System.Collections.Generic;
 using Microsoft.Expression.Interactivity.Core;
+using LatestChatty.Settings;
 
 namespace LatestChatty.ViewModels
 {
@@ -104,17 +105,17 @@ namespace LatestChatty.ViewModels
 
 			if (_story == 0)
 			{
-				request = CoreServices.ServiceHost + "index.xml";
+				request = Locations.ServiceHost + "index.xml";
 			}
 			else
 			{
 				if (_page == 0)
 				{
-					request = CoreServices.ServiceHost + _story + ".xml";
+					request = Locations.ServiceHost + _story + ".xml";
 				}
 				else
 				{
-					request = CoreServices.ServiceHost + _story + "." + _page + ".xml";
+					request = Locations.ServiceHost + _story + "." + _page + ".xml";
 				}
 			}
 			CoreServices.Instance.QueueDownload(request, GetCommentsCallback);
