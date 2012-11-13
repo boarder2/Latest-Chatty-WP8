@@ -1,8 +1,6 @@
 *.suo
 *.csproj.user
 README_FIRST.txt
-
 Bin/
 Obj/
-Toolkit.Content/
 packages/
