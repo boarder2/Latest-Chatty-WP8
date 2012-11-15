@@ -50,6 +50,13 @@ namespace LatestChatty
 					tileToUpdate.Update(tileData);
 				}
 				NotificationHelper.RegisterForNotifications();
+
+				//Sync settings.  When this is finished, we'll try to load replies and whatnot.
+				IncrementRefresher();
+				Deployment.Current.Dispatcher.BeginInvoke(() =>
+					{
+						LatestChattySettings.Instance.LoadLongRunningSettings();
+					});
 			};
 			maintenanceWorker.RunWorkerAsync();
 
@@ -82,9 +89,7 @@ namespace LatestChatty
 		}
 		void MainPage_Loaded(object sender, RoutedEventArgs e)
 		{
-			//Sync settings.  When this is finished, we'll try to load replies and whatnot.
-			IncrementRefresher();
-			LatestChattySettings.Instance.LoadLongRunningSettings();
+
 		}
 
 		private void Chatty_Click(object sender, RoutedEventArgs e)
@@ -193,12 +198,15 @@ namespace LatestChatty
 
 		private void IncrementRefresher()
 		{
-			_refreshing++;
-			if (_refreshing > 0)
-			{
-				ProgressBar.Visibility = Visibility.Visible;
-				ProgressBar.IsIndeterminate = true;
-			}
+			Deployment.Current.Dispatcher.BeginInvoke(() =>
+				{
+					_refreshing++;
+					if (_refreshing > 0)
+					{
+						ProgressBar.Visibility = Visibility.Visible;
+						ProgressBar.IsIndeterminate = true;
+					}
+				});
 		}
 
 		private void DecrementRefresher()
