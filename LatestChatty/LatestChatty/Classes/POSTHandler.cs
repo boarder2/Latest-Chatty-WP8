@@ -32,8 +32,8 @@ namespace LatestChatty.Classes
 			HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(postUrl);
 			request.Method = "POST";
 			request.ContentType = "application/x-www-form-urlencoded";
-			request.Headers[HttpRequestHeader.Authorization] = Convert.ToBase64String(Encoding.UTF8.GetBytes(CoreServices.Instance.Credentials.UserName + ":" + CoreServices.Instance.Credentials.Password));
-			request.Credentials = CoreServices.Instance.Credentials;
+			request.Headers[HttpRequestHeader.Authorization] = "Basic " + Convert.ToBase64String(Encoding.UTF8.GetBytes(CoreServices.Instance.Credentials.UserName + ":" + CoreServices.Instance.Credentials.Password));
+			//request.Credentials = CoreServices.Instance.Credentials;
 
 			this.showExceptionMessageBox = true;
 

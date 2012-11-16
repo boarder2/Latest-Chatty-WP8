@@ -34,8 +34,8 @@ namespace LatestChatty.Classes
 			this.request = (HttpWebRequest)HttpWebRequest.Create(this.Uri);
 			this.request.Method = "GET";
 			this.request.Headers[HttpRequestHeader.CacheControl] = "no-cache";
-			request.Headers[HttpRequestHeader.Authorization] = Convert.ToBase64String(Encoding.UTF8.GetBytes(CoreServices.Instance.Credentials.UserName + ":" + CoreServices.Instance.Credentials.Password));
-			this.request.Credentials = CoreServices.Instance.Credentials;
+			request.Headers[HttpRequestHeader.Authorization] = "Basic " + Convert.ToBase64String(Encoding.UTF8.GetBytes(CoreServices.Instance.Credentials.UserName + ":" + CoreServices.Instance.Credentials.Password));
+			//this.request.Credentials = CoreServices.Instance.Credentials;
 
 			try
 			{
