@@ -9,7 +9,7 @@ namespace LatestChatty.Settings
 	{
 		public const string ServiceHost = "http://shackapi.stonedonkey.com/";
 		public const string PostUrl = ServiceHost + "post/";
-		public const string CloudHost = "http://shacknotify.bit-shift.com:12244/";
+		public const string CloudHost = "https://shacknotify.bit-shift.com:12244/";
 		public static string MyCloudSettings
 		{
 			get { return CloudHost + "users/" + CoreServices.Instance.Credentials.UserName + "/settings"; }
