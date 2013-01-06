@@ -289,7 +289,6 @@
     <Content Include="Images\sticky_notes.png" />
     <Content Include="Images\TimeIcon.png" />
     <Content Include="Images\TopDownIcon.png" />
-    <Content Include="README_FIRST.txt" />
     <Content Include="stylesheet.css" />
     <Content Include="Images\MainBackground.png" />
     <Content Include="SplashScreenImage.jpg" />

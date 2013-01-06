@@ -30,12 +30,14 @@
 		<toolkit:PerformanceProgressBar Grid.Row="0" Height="5" x:Name="ProgressBar" IsIndeterminate="True" Visibility="Collapsed"/>
 
 		<!--TitlePanel contains the name of the application and page title-->
-		<StackPanel x:Name="TitlePanel" Grid.Row="0" VerticalAlignment="Top">
+		<StackPanel x:Name="TitlePanel"
+		            Grid.Row="0"
+		            Margin="12,17,0,10">
 			<TextBlock x:Name="ApplicationTitle" Text="SEARCH" Style="{StaticResource PhoneTextNormalStyle}" Foreground="#FFFFFF"/>
 		</StackPanel>
 
 		<StackPanel Grid.Row="1" Background="{StaticResource PhoneBackgroundBrush}">
-			<TextBlock Margin="0,5,0,0" Text="search term" Foreground="{StaticResource PhoneForegroundBrush}"/>
+			<TextBlock Margin="12,0,0,0" Text="search term" Foreground="{StaticResource PhoneForegroundBrush}"/>
 			<Grid>
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="*"/>
@@ -44,7 +46,7 @@
 				<TextBox Grid.Column="0" x:Name="term"/>
 				<Button x:Name="SearchMeButton" Grid.Column="1" Content="Me" Click="SearchMe_Clicked"/>
 			</Grid>
-			<TextBlock Text="author" Foreground="{StaticResource PhoneForegroundBrush}"/>
+			<TextBlock Margin="12,0,0,0" Text="author" Foreground="{StaticResource PhoneForegroundBrush}"/>
 			<Grid>
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="*"/>
@@ -53,7 +55,7 @@
 				<TextBox Grid.Column="0" x:Name="author"/>
 				<Button x:Name="AuthorMeButton" Grid.Column="1" Content="Me" Click="AuthorMe_Clicked"/>
 			</Grid>
-			<TextBlock Text="parent author" Foreground="{StaticResource PhoneForegroundBrush}"/>
+			<TextBlock Margin="12,0,0,0" Text="parent author" Foreground="{StaticResource PhoneForegroundBrush}"/>
 			<Grid>
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="*"/>

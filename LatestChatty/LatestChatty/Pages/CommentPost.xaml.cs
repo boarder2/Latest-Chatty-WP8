@@ -121,6 +121,10 @@ namespace LatestChatty.Pages
 			if (success)
 			{
 				System.Diagnostics.Debug.WriteLine("Post Successful!");
+                if (LatestChattySettings.Instance.AutoPinOnReply)
+                {
+                    LatestChattySettings.Instance.AddWatchedComment(_reply);
+                }
 				//Reset the current thread to nothing.  This will force a reload so we see our comment.
 				//We'll leave the currently highlighted thread, that way we'll return right to where we responded.
 				CoreServices.Instance.SetCurrentCommentThread(null);
