@@ -537,6 +537,7 @@ namespace LatestChatty.Settings
 		{
 			if (result != null)
 			{
+				System.Diagnostics.Debug.WriteLine("Got JSON: {0}", result.ToString());
 				this.cloudSettings = result;
 				this.AutoCollapseInformative = result[autocollapseinformative] != null ? (bool)result[autocollapseinformative] : true;
 				this.AutoCollapseInteresting = result[autocollapseinteresting] != null ? (bool)result[autocollapseinteresting] : true;
@@ -584,7 +585,7 @@ namespace LatestChatty.Settings
 					{
 						//If we do have settings, use them.
 						this.cloudSettings.CreateOrSet("watched", new JArray(this.pinnedCommentIds));
-						this.cloudSettings.CreateOrSet(showInlineImages, this.ShowInlineImages);
+						this.cloudSettings.CreateOrSet(showInlineImages, Enum.GetName(typeof(ShowInlineImages), this.ShowInlineImages));
 						this.cloudSettings.CreateOrSet(autocollapseinformative, this.AutoCollapseInformative);
 						this.cloudSettings.CreateOrSet(autocollapseinteresting, this.AutoCollapseInteresting);
 						this.cloudSettings.CreateOrSet(autocollapsenws, this.AutoCollapseNws);
