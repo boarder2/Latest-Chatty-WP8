@@ -25,7 +25,7 @@ namespace LatestChatty.Settings
 	{
 		private static readonly string commentSize = "CommentSize";
 		private static readonly string threadNavigationByDate = "ThreadNavigationByDate";
-		private static readonly string showInlineImages = "ShowInline";
+		private static readonly string showInlineImages = "showinlinephone";
 		private static readonly string notificationType = "NotificationType";
 		private static readonly string username = "username";
 		private static readonly string password = "password";
