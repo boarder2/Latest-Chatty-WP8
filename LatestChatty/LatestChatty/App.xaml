@@ -15,7 +15,7 @@
 		<chattyClasses:BooleanToNewColorConverter x:Key="NewReplyConverter" FalseValue="#999999" TrueValue="White" />
 		<chattyClasses:PostCategoryConverter x:Name="CategoryConverter"/>
 	  
-		<Style x:Key="TransitionPage" TargetType="phone:PhoneApplicationPage" >
+		<!--<Style x:Key="TransitionPage" TargetType="phone:PhoneApplicationPage" >
 			<Setter Property="shell:SystemTray.IsVisible" Value="True" />
 			<Setter Property="shell:SystemTray.Opacity" Value=".0" />
             <Setter Property="Margin" Value="0, 10, 0, 0" />
@@ -43,7 +43,7 @@
 					</toolkit:NavigationOutTransition>
 				</Setter.Value>
 			</Setter>
-		</Style>
+		</Style>-->
 		
 		<Style x:Key="LoadMoreButton" TargetType="Button">
 			<Setter Property="BorderThickness" Value="0" />

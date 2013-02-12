@@ -25,15 +25,7 @@ namespace LatestChatty.Pages
 
 		protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
 		{
-			if (!CoreServices.Instance.LoginVerified)
-			{
-				_login = new LoginControl(LoginCallback);
-				LayoutRoot.Children.Add(_login);
-			}
-			else
-			{
-				LoadPage();
-			}
+			LoadPage();
 			base.OnNavigatedTo(e);
 		}
 
@@ -117,13 +109,6 @@ namespace LatestChatty.Pages
 
 		private void RefreshClick(object sender, EventArgs e)
 		{
-			if (!CoreServices.Instance.LoginVerified && _login == null)
-			{
-				_login = new LoginControl(LoginCallback);
-				LayoutRoot.Children.Add(_login);
-				return;
-			}
-
 			MessageList messages;
 			switch (Pivot.SelectedIndex)
 			{
@@ -146,29 +131,6 @@ namespace LatestChatty.Pages
 			messages.Refresh();
 			ProgressBar.Visibility = Visibility.Visible;
 			ProgressBar.IsIndeterminate = true;
-		}
-
-		public void LoginCallback(bool verified)
-		{
-			if (verified)
-			{
-				LoadPage();
-			}
-			LayoutRoot.Children.Remove(_login);
-			_login = null;
-		}
-
-		protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
-		{
-			if (_login != null)
-			{
-				LayoutRoot.Children.Remove(_login);
-				_login = null;
-			}
-			else
-			{
-				base.OnBackKeyPress(e);
-			}
 		}
 
 		private void NewMessageClick(object sender, EventArgs e)

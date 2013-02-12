@@ -25,7 +25,7 @@ namespace LatestChatty.Pages
 	{
 		public Rectangle SelectedFill = null;
 		private CommentThread thread;
-		private ApplicationBarMenuItem pinMenuItem;
+		//private ApplicationBarMenuItem pinMenuItem;
 		private ApplicationBarIconButton navigationModeButton;
 		private bool navigateByDate;
 
@@ -33,7 +33,6 @@ namespace LatestChatty.Pages
 		{
 			System.Diagnostics.Debug.WriteLine("Thread - ctor");
 			InitializeComponent();
-			this.pinMenuItem = ApplicationBar.MenuItems[1] as ApplicationBarMenuItem;
 			this.navigationModeButton = ApplicationBar.Buttons[1] as ApplicationBarIconButton;
 			this.navigateByDate = LatestChattySettings.Instance.ThreadNavigationByDate;
 			this.SetNavigationModeIcon();

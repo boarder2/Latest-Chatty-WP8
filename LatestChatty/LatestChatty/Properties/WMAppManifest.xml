@@ -1,31 +1,46 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Deployment xmlns="http://schemas.microsoft.com/windowsphone/2009/deployment" AppPlatformVersion="7.1">
-  <App xmlns="" ProductID="{08d12456-95ae-49b6-890d-8fe6c4e885a9}" Title="LatestChatty" RuntimeType="Silverlight" Version="1.0.0.0" Genre="apps.normal" Author="LatestChatty author" Description="Sample description" Publisher="LatestChatty">
-    <IconPath IsRelative="true" IsResource="false">ApplicationIcon.png</IconPath>
+
+<Deployment xmlns="http://schemas.microsoft.com/windowsphone/2012/deployment" AppPlatformVersion="8.0">
+  <DefaultLanguage xmlns="" code="en-US"/>
+  <App xmlns="" ProductID="{A3CC8C4D-DC46-4146-8A9A-E508DD72EDDB}" Title="Latest Chatty 8" RuntimeType="Silverlight" Version="1.0.0.0" Genre="apps.normal" Author="Willie Zutz" Description="Shacknews Reader" Publisher="Bit Shift Software, LLC" BitsPerPixel="32" PublisherID="{063a1720-130f-401d-8969-fc93738c3e11}">
+    <IconPath IsRelative="true" IsResource="false">Images\ApplicationIcon.png</IconPath>
     <Capabilities>
-      <Capability Name="ID_CAP_GAMERSERVICES" />
       <Capability Name="ID_CAP_IDENTITY_DEVICE" />
       <Capability Name="ID_CAP_IDENTITY_USER" />
       <Capability Name="ID_CAP_LOCATION" />
-      <Capability Name="ID_CAP_MEDIALIB" />
       <Capability Name="ID_CAP_MICROPHONE" />
       <Capability Name="ID_CAP_NETWORKING" />
       <Capability Name="ID_CAP_PHONEDIALER" />
       <Capability Name="ID_CAP_PUSH_NOTIFICATION" />
       <Capability Name="ID_CAP_SENSORS" />
       <Capability Name="ID_CAP_WEBBROWSERCOMPONENT" />
+      <Capability Name="ID_CAP_MEDIALIB_PHOTO"/>
     </Capabilities>
     <Tasks>
       <DefaultTask Name="_default" NavigationPage="MainPage.xaml" />
     </Tasks>
     <Tokens>
       <PrimaryToken TokenID="LatestChattyToken" TaskName="_default">
-        <TemplateType5>
-          <BackgroundImageURI IsRelative="true" IsResource="false">Background.png</BackgroundImageURI>
-          <Count>0</Count>
-          <Title>LatestChatty</Title>
-        </TemplateType5>
+        <TemplateFlip>
+          <SmallImageURI IsRelative="true" IsResource="false">Images\ApplicationIcon.png</SmallImageURI>
+          <Count>10</Count>
+          <BackgroundImageURI IsRelative="true" IsResource="false">Images\ApplicationIcon.png</BackgroundImageURI>
+          <Title>Latest Chatty 8</Title>
+          <BackContent></BackContent>
+          <BackBackgroundImageURI></BackBackgroundImageURI>
+          <BackTitle></BackTitle>
+          <DeviceLockImageURI IsRelative="true" IsResource="false">Images\LockIcon.png</DeviceLockImageURI>
+          <HasLarge></HasLarge>
+        </TemplateFlip>
       </PrimaryToken>
     </Tokens>
+    <Extensions>
+      <Extension ExtensionName="LockScreen_Notification_IconCount" ConsumerID="{111DFF24-AA15-4A96-8006-2BFF8122084F}" TaskID="_default" />
+    </Extensions>
+    <ScreenResolutions>
+      <ScreenResolution Name="ID_RESOLUTION_WVGA"/>
+      <ScreenResolution Name="ID_RESOLUTION_WXGA"/>
+      <ScreenResolution Name="ID_RESOLUTION_HD720P"/>
+    </ScreenResolutions>
   </App>
 </Deployment>

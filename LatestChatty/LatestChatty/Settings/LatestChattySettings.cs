@@ -571,7 +571,7 @@ namespace LatestChatty.Settings
 								  new JProperty("watched",
 										new JArray(this.pinnedCommentIds)
 										),
-								  new JProperty(showInlineImages, this.ShowInlineImages),
+								  new JProperty(showInlineImages, Enum.GetName(typeof(ShowInlineImages), this.ShowInlineImages)),
 								  new JProperty(autocollapseinformative, this.AutoCollapseInformative),
 								  new JProperty(autocollapseinteresting, this.AutoCollapseInteresting),
 								  new JProperty(autocollapsenws, this.AutoCollapseNws),

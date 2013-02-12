@@ -10,38 +10,45 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using Microsoft.Phone.Tasks;
+using System.Threading.Tasks;
+using System.Windows.Controls.Primitives;
 
 namespace LatestChatty.Controls
 {
+    public class Login
+    {
+        async public Task<bool> ShowLogin()
+        {
+            var tcs = new TaskCompletionSource<bool>();
+            var p = new Popup();
+            p.Child = new LoginControl(tcs);
+            var task = tcs.Task;
+            p.IsOpen = true;
+            await task.AsAsyncAction();
+            p.IsOpen = false;
+            return task.Result;
+        }
+    }
+
 	public partial class LoginControl : UserControl
 	{
-		CoreServices.LoginCallback _delegate;
-		public LoginControl()
+        TaskCompletionSource<bool> taskCompletion;
+
+		public LoginControl(TaskCompletionSource<bool> tcs)
 		{
 			InitializeComponent();
+            this.taskCompletion = tcs;
 		}
 
-		public LoginControl(CoreServices.LoginCallback callback)
-			: this()
-		{
-			_delegate = callback;
-		}
-
-		public void LoginVerification(bool verified)
+        public void LoginVerification(bool verified)
 		{
 			if (verified)
 			{
-				((Panel)Parent).Children.Remove(this);
-				if (_delegate != null)
-				{
-					_delegate(verified);
-				}
+                this.taskCompletion.SetResult(true);
 			}
 			else
 			{
-				//TODO: Bind Progress bar
 				VerificationFailed.Visibility = Visibility.Visible;
-				ProgressBar.IsIndeterminate = true;
 			}
 			ProgressBar.Visibility = Visibility.Collapsed;
 			ProgressBar.IsIndeterminate = false;
@@ -63,5 +70,6 @@ namespace LatestChatty.Controls
 			task.Uri = new Uri("http://www.shacknews.com/create_account.x");
 			task.Show();
 		}
+
 	}
 }

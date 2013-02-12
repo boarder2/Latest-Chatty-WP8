@@ -12,7 +12,6 @@
                             FontSize="{StaticResource PhoneFontSizeNormal}"
                             Foreground="#FFFFFF"
                             Orientation="Portrait"
-                            Style="{StaticResource TransitionPage}"
                             SupportedOrientations="Portrait"
                             d:DesignHeight="728"
                             d:DesignWidth="480"
