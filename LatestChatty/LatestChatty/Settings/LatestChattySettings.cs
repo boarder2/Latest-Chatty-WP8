@@ -156,7 +156,10 @@ namespace LatestChatty.Settings
 			{
 				this.isoStore[cloudsync] = value;
 				this.isoStore.Save();
-				this.SaveToCloud();
+                if (value)
+                {
+                    this.LoadLongRunningSettings();
+                }
 			}
 		}
 
@@ -556,7 +559,7 @@ namespace LatestChatty.Settings
 			this.loadingSettingsInternal = false;
 		}
 
-		public void SaveToCloud()
+		async public void SaveToCloud()
 		{
 			try
 			{

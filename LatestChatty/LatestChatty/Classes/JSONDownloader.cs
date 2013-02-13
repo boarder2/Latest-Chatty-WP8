@@ -2,11 +2,30 @@
 using System;
 using System.IO;
 using System.Net;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Xml.Linq;
 
 namespace LatestChatty.Classes
 {
+    public class JSONDownloaderAsync
+    {
+        TaskCompletionSource<JObject> taskCompletion;
+
+        async public Task<JObject> GetJSON(string uri)
+        {
+            var downloader = new JSONDownloader(uri, this.DownloadComplete);
+            this.taskCompletion = new TaskCompletionSource<JObject>();
+            downloader.Start();
+            await this.taskCompletion.Task.AsAsyncAction();
+            return taskCompletion.Task.Result;
+        }
+
+        private void DownloadComplete(JObject response)
+        {
+            this.taskCompletion.SetResult(response);
+        }
+    }
 	public class JSONDownloader : GETDownloader
 	{
 		public delegate void JSONDownloaderCallback(JObject response);

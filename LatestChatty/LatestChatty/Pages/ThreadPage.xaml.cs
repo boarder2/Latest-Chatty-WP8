@@ -25,7 +25,7 @@ namespace LatestChatty.Pages
 	{
 		public Rectangle SelectedFill = null;
 		private CommentThread thread;
-		//private ApplicationBarMenuItem pinMenuItem;
+		private ApplicationBarMenuItem pinMenuItem;
 		private ApplicationBarIconButton navigationModeButton;
 		private bool navigateByDate;
 
@@ -33,6 +33,7 @@ namespace LatestChatty.Pages
 		{
 			System.Diagnostics.Debug.WriteLine("Thread - ctor");
 			InitializeComponent();
+            this.pinMenuItem = ApplicationBar.MenuItems[1] as ApplicationBarMenuItem;
 			this.navigationModeButton = ApplicationBar.Buttons[1] as ApplicationBarIconButton;
 			this.navigateByDate = LatestChattySettings.Instance.ThreadNavigationByDate;
 			this.SetNavigationModeIcon();
@@ -149,10 +150,14 @@ namespace LatestChatty.Pages
 
 		private void ReplyClick(object sender, EventArgs e)
 		{
+            if (!CoreServices.Instance.LoginVerified)
+            {
+                MessageBox.Show("You must be logged in to reply to comments");
+            }
 			var c = this.thread.SelectedComment;
 			if (c != null)
 			{
-				CoreServices.Instance.ReplyToContext = c;
+                CoreServices.Instance.ReplyContext = new LatestChatty.CoreServices.ReplyToContext(this.thread.FlatComments.First(), c);
 				CoreServices.Instance.Navigate(new Uri("/Pages/CommentPost.xaml?Story=" + c.storyid, UriKind.Relative));
 			}
 		}

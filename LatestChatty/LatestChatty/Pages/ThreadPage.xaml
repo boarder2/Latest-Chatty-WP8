@@ -150,7 +150,7 @@
             <shell:ApplicationBar.MenuItems>
                 <shell:ApplicationBarMenuItem Click="RefreshClick" Text="refresh" />
                 <!--  <shell:ApplicationBarMenuItem Text="{Binding Path=IsWatched, Converter={StaticResource BooleanToPinnedTextConverter}}" Click="PinClick"/>  -->
-                <shell:ApplicationBarMenuItem x:Name="pinMenuItem"
+                <shell:ApplicationBarMenuItem 
                                               Click="PinClick"
                                               Text="pin thread" />
                 <shell:ApplicationBarMenuItem Click="ShareThreadClick" Text="share ..." />

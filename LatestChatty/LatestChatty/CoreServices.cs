@@ -215,7 +215,21 @@ namespace LatestChatty
 		{
 			((Page)((App)App.Current).RootFrame.Content).NavigationService.Navigate(uri);
 		}
-		public Comment ReplyToContext;
+
+        public ReplyToContext ReplyContext;
+
+        public class ReplyToContext
+        {
+            public ReplyToContext(Comment rootComment, Comment replyToComment)
+            {
+                this.RootComment = rootComment;
+                this.ReplyToComment = replyToComment;
+            }
+
+            public Comment RootComment { get; set; }
+
+            public Comment ReplyToComment { get; set; }
+        }
 		#endregion
 
 		#region API Helper

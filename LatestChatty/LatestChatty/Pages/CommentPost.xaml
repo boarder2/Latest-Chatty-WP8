@@ -59,8 +59,6 @@
 				<TextBox x:Name="Post" InputScope="Text"  AcceptsReturn="True" TextWrapping="Wrap"/>
 			</Grid>
 		</Grid>
-
-		<chatty:LoginControl x:Name="Login" Visibility="Collapsed"/>
 	</Grid>
 
 	<!--Sample code showing usage of ApplicationBar-->

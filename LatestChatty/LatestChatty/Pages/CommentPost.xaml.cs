@@ -23,9 +23,10 @@ namespace LatestChatty.Pages
 {
 	public partial class CommentPost : PhoneApplicationPage
 	{
-		int _story;
-		Comment _reply;
-		Stream _imageStream;
+		int storyId;
+        Comment rootReplyComment;
+		Comment replyToComment;
+		Stream imageStream;
 
 		public CommentPost()
 		{
@@ -36,9 +37,9 @@ namespace LatestChatty.Pages
 
 		void CommentPost_Loaded(object sender, RoutedEventArgs e)
 		{
-			if (_reply != null)
+			if (replyToComment != null)
 			{
-				CommentViewer.InvokeScript("setContent", _reply.body);
+				CommentViewer.InvokeScript("setContent", replyToComment.body);
 				if (CommentViewer.Opacity != 1) CommentViewer.Opacity = 1;
 			}
 			CommentViewer.Navigating += new EventHandler<NavigatingEventArgs>(CommentViewer_Navigating);
@@ -50,32 +51,28 @@ namespace LatestChatty.Pages
 			string sStory = "";
 			if (NavigationContext.QueryString.TryGetValue("Story", out sStory))
 			{
-				_story = int.Parse(sStory);
+				storyId = int.Parse(sStory);
 			}
 			else
 			{
 				NavigationService.GoBack();
 			}
 
-			if (CoreServices.Instance.ReplyToContext != null)
+			if (CoreServices.Instance.ReplyContext != null)
 			{
-				_reply = CoreServices.Instance.ReplyToContext;
-				DataContext = _reply;
+				this.replyToComment = CoreServices.Instance.ReplyContext.ReplyToComment;
+                this.rootReplyComment = CoreServices.Instance.ReplyContext.RootComment;
+				DataContext = this.replyToComment;
 			}
 			else
 			{
 				CommentReplyBox.Visibility = Visibility.Collapsed;
 			}
-
-			if (CoreServices.Instance.LoginVerified == false)
-			{
-				Login.Visibility = Visibility.Visible;
-			}
 		}
 
 		protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
 		{
-			CoreServices.Instance.ReplyToContext = null;
+			CoreServices.Instance.ReplyContext = null;
 		}
 
 		private void PostClick(object sender, EventArgs e)
@@ -101,9 +98,9 @@ namespace LatestChatty.Pages
 			//Nope.  Ok, so maybe replacing newline with %0A
 			//... newlines in a text box appear to have just \r ... even when Environment.NewLine is \r\n??
 			var encodedBody = "body=" + HttpUtility.UrlEncode(Post.Text.Replace("\r", "\r\n"));
-			if (_reply != null)
+			if (replyToComment != null)
 			{
-				encodedBody += "&parent_id=" + _reply.id;
+				encodedBody += "&parent_id=" + replyToComment.id;
 			}
 
 			POSTHandler download = new POSTHandler(Locations.PostUrl, encodedBody, PostCallback);
@@ -123,12 +120,12 @@ namespace LatestChatty.Pages
 				System.Diagnostics.Debug.WriteLine("Post Successful!");
                 if (LatestChattySettings.Instance.AutoPinOnReply)
                 {
-                    LatestChattySettings.Instance.AddWatchedComment(_reply);
+                    LatestChattySettings.Instance.AddWatchedComment(this.rootReplyComment);
                 }
 				//Reset the current thread to nothing.  This will force a reload so we see our comment.
 				//We'll leave the currently highlighted thread, that way we'll return right to where we responded.
 				CoreServices.Instance.SetCurrentCommentThread(null);
-				CoreServices.Instance.ReplyToContext = null;
+				CoreServices.Instance.ReplyContext = null;
 				NavigationService.GoBack();
 			}
 		}
@@ -166,7 +163,7 @@ namespace LatestChatty.Pages
 		{
 			if (e.TaskResult == TaskResult.OK)
 			{
-				_imageStream = e.ChosenPhoto;
+				imageStream = e.ChosenPhoto;
 				HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(new Uri("http://chattypics.com/upload.php"));
 				request.Method = "POST";
 				request.ContentType = string.Format("multipart/form-data; boundary={0}", boundary);
@@ -184,8 +181,8 @@ namespace LatestChatty.Pages
 			Stream requestStream = request.EndGetRequestStream(result);
 			StreamWriter writer = new StreamWriter(requestStream);
 
-			byte[] ba = new byte[_imageStream.Length];
-			_imageStream.Read(ba, 0, (int)_imageStream.Length);
+			byte[] ba = new byte[imageStream.Length];
+			imageStream.Read(ba, 0, (int)imageStream.Length);
 
 			writer.Write("--");
 			writer.WriteLine(boundary);

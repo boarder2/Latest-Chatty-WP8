@@ -61,7 +61,7 @@ namespace LatestChatty.Pages
 
 		private void PostClick(object sender, EventArgs e)
 		{
-			CoreServices.Instance.ReplyToContext = null;
+			CoreServices.Instance.ReplyContext = null;
 			CoreServices.Instance.Navigate(new Uri("/Pages/CommentPost.xaml?Story=" + storyId, UriKind.Relative));
 		}
 	}
