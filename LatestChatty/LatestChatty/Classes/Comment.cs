@@ -211,10 +211,9 @@ namespace LatestChatty.Classes
 		{
 			if (LatestChattySettings.Instance.ShouldShowInlineImages && this.category != PostCategory.nws)
 			{
-				//I assume the compiler handles making this a single object and not something that gets compiled every time this method gets called.
-				//I reeeeeally hope so
-				var withPreview = Regex.Replace(s, @">(?<link>https?://.*?\.(?:jpe?g|png|gif)).*?<", "><br/><img border=\"0\" style=\"vertical-align: middle; max-height: 100px; height: 100px;\" src=\"${link}\"/><");
-				return withPreview.Replace("viewer.php?file=", @"files/");
+                var imageSize = (int)(140 * (App.Current.Host.Content.ScaleFactor / 100f));
+				var withPreview = Regex.Replace(s, @">(?<link>https?://.*?\.(?:jpe?g|png|gif)).*?<", "><br/><img border=\"0\" style=\"vertical-align: middle; max-height: @imgSizepx; height: @imgSizepx;\" src=\"${link}\"/><");
+				return withPreview.Replace("viewer.php?file=", @"files/").Replace("@imgSize", imageSize.ToString());
 			}
 			return s;
 		}

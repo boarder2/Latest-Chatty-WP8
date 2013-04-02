@@ -13,6 +13,8 @@
                             Foreground="#FFFFFF"
                             Orientation="Portrait"
                             SupportedOrientations="Portrait"
+                            shell:SystemTray.IsVisible="True"
+                            shell:SystemTray.Opacity=".0"
                             d:DesignHeight="728"
                             d:DesignWidth="480"
                             mc:Ignorable="d">

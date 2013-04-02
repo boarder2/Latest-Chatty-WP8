@@ -33,10 +33,13 @@ namespace LatestChatty.Classes
 		private JSONDownloaderCallback doneCallback;
 
 		public JSONDownloader(string getURI, JSONDownloaderCallback callback)
-			: base(getURI, null)
-		{
-			this.doneCallback = callback;
-		}
+			: this(getURI, true, null) { }
+
+        public JSONDownloader(string getURI, bool canCancel, JSONDownloaderCallback callback)
+            :base(getURI, canCancel, null)
+        {
+            this.doneCallback = callback;
+        }
 
 		protected override void InvokeDelegate(IAsyncResult result)
 		{

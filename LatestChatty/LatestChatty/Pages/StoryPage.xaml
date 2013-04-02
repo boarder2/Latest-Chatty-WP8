@@ -11,6 +11,8 @@
 	 FontSize="{StaticResource PhoneFontSizeNormal}"
 	 Foreground="#FFFFFF"
 	 SupportedOrientations="Portrait" Orientation="Portrait"
+    shell:SystemTray.IsVisible="True"
+                            shell:SystemTray.Opacity=".0"
 	 mc:Ignorable="d" d:DesignHeight="800" d:DesignWidth="480">
 
 	<!--LayoutRoot is the root grid where all page content is placed-->

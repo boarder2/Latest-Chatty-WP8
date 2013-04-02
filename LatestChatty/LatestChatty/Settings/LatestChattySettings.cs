@@ -470,8 +470,7 @@ namespace LatestChatty.Settings
 			{
 				try
 				{
-					//TODO: Don't let these downloads be canceleable.
-					var downloader = new JSONDownloader(Locations.MyCloudSettings, GotCloudSettings);
+					var downloader = new JSONDownloader(Locations.MyCloudSettings, false, GotCloudSettings);
 					downloader.Start();
 				}
 				catch (WebException e)

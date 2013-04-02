@@ -1,68 +1,11 @@
-LatestChatty for WindowsPhone v2.7
-Created by: fleabix, boarder2
+Latest Chatty for Windows Phone 8
+Created by: boarder2, fleabix
 
-[ Version 2.7 ]
-> Changed Icon yet again!
-> Login will no longer succeed if credentials are invalid
-> Auto-pin posts when you reply to them
-> Auto-unpin posts when they're expired
-> Enabled system tray
-> Cloud syncing of pinned posts and settings
-
-[ Version 2.6 ]
-> Switched highlighted post text color to white so it's easier to read
-> Fixed back button not working in thread view when using date sorting method
-> Added wrapping to back/forward button in thread view
-> Fixed error when a pinned post is nuked
-> Changed Icon - Again
-> Added embedded images to posts (unless marked as NWS), can be disabled in settings
-> Moved refreshing of a thread to the navigation menu
-> Added toggle between top/down and date navigation for the forward/back buttons in thread view
-> Main page loading indicator reflects the status of pinned posts refreshing now
-> Logging out will clear My Posts and My Replies
-> Collapse/uncollapse threads via long press in the chatty view
-> Pin/unpin threads via long press in the chatty view
-> Added visual representation of pinned threads in chatty view, lower left corner of the post type square
-> Auto collapse based on root post type - configure in settings
-> Changed settings screen to use panorama control
-> Removed infinite scroll in chatty view and replaced with "load more"
-> Switched posting API to use 3rd party API instead of the shack one since the shack one seems terribly broken now (this means you can post again!)
-> REAL PUSH NOTIFICATIONS!!
-
-[ Version 2.5 ]
-> Added smooth transitions to all pages
-> Auto-load more posts when scrolling to the bottom of the chatty
-> Removed pages setting because it's no longer needed
-> Added buttons to search view to insert your user name if you are logged in
-> Threads you are participating in will be highlighted in the chatty
-> Your posts will be highlighted in threads
-> Highlight color of the currently displayed post in the thread is easier to see (theme accent color)
-> Next/Previous buttons in the thread view
->> You can change the way the buttons behave in the settings screen
-> Open in web browser in thread view
-> Social sharing functionality in thread view
-> Progress bar inefficiency fixed
-> Fixed new lines
-> Don't allow < 6 character posts
-> Don't allow > 5000 character posts
-> Refresh post count on pinned threads on app start
-> Fixed blinking when viewing another thread/post, etc.
-> Unpin threads via context menu (long press) on the main page
-> Added refresh to pinned threads
-> Switched to single listbox for thread comment view, should improve a lot of things and takes advantage of virtualization by default
-> Added setting for comment size in thread view
-> Added strip at the top of the thread view to show the category color for the currently shown post
-
-[ Version 2.4 ]
-> Added Settings menu
-> Added ability to pin chatty directly to start menu from Settings menu
-> Added Push Notifications, when people reply to your posts
-> Added ChattyPics integration
-> Changed Icon
-> Added Setting to change number of pages of comments to load
-> Retires downloading when an empty list is loaded
-> Small performance optimizations
+[ Version 1.0 ]
+This version diverges from the previous release for Windows Phone 7 to provide features for Windows Phone 8 and forward.
+Added:
+- Lock screen icon for new replies to your threads
+- Cloud sync of pinned posts and settings - Works between Latest Chatty 8 for Windows 8 and ChromeShack for pinning everywhere!
+- Better support for embedded images on higher resolution displays
 
 This application is meant to be as a standalone client for the comments system on www.shacknews.com.  It is not affiliated with Shacknews LTD or its associates.  It is created independently by fans of the website.
-
-Special thanks to SqueegyTBS/stonedonkey for helping with the interface to the servers, and also for providing the services which this application uses to retrieve its data.

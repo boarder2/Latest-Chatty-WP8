@@ -19,15 +19,20 @@ namespace LatestChatty.Classes
 		GETDelegate getCallback;
 		HttpWebRequest request;
 		protected bool cancelled;
+        private readonly bool canCancel;
 
 		public string Uri { get; private set; }
 
 
-		public GETDownloader(string getURI, GETDelegate callback)
-		{
-			this.Uri = getURI;
-			getCallback = callback;
-		}
+        public GETDownloader(string getURI, GETDelegate callback)
+            : this(getURI, true, callback) { }
+
+        public GETDownloader(string getURI, bool canCancel, GETDelegate callback)
+        {
+            this.Uri = getURI;
+            getCallback = callback;
+            this.canCancel = canCancel;
+        }
 
 		public void Start()
 		{
@@ -50,6 +55,8 @@ namespace LatestChatty.Classes
 
 		public void Cancel()
 		{
+            if (!this.canCancel) return;
+
 			request.Abort();
 			System.Diagnostics.Debug.WriteLine("Cancelling download for {0}", request.RequestUri);
 			this.cancelled = true;

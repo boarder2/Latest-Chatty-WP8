@@ -23,6 +23,8 @@ namespace LatestChatty.Pages
 		private bool loaded = false;
 		NotificationType loadedNotificationType;
 
+        //TODO: Ensure things are data bound.
+        //TODO: When enabling cloud sync, filters and stuff didn't automatically switch until backing out and coming back into settings.
 		public SettingsPage()
 		{
 			InitializeComponent();
