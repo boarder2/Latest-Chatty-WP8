@@ -13,10 +13,10 @@
                             Foreground="#FFFFFF"
                             Orientation="Portrait"
                             SupportedOrientations="Portrait"
-                            shell:SystemTray.IsVisible="True"
-                            shell:SystemTray.Opacity=".0"
                             d:DesignHeight="728"
                             d:DesignWidth="480"
+                            shell:SystemTray.IsVisible="True"
+                            shell:SystemTray.Opacity="1.0"
                             mc:Ignorable="d">
 
 	<!--  LayoutRoot is the root grid where all page content is placed  -->

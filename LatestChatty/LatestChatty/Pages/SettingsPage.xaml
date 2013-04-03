@@ -12,10 +12,10 @@
                             Foreground="{StaticResource PhoneForegroundBrush}"
                             Orientation="Portrait"
                             SupportedOrientations="Portrait"
-                            shell:SystemTray.IsVisible="True"
-                            shell:SystemTray.Opacity=".0"
                             d:DesignHeight="800"
                             d:DesignWidth="480"
+                            shell:SystemTray.IsVisible="True"
+                            shell:SystemTray.Opacity="1.0"
                             mc:Ignorable="d">
 	<Grid x:Name="LayoutRoot">
 		<Grid.RowDefinitions>
@@ -26,9 +26,7 @@
 		<StackPanel x:Name="TitlePanel"
 		            Grid.Row="0"
 		            Margin="12,17,0,10">
-			<TextBlock 
-		           Style="{StaticResource PhoneTextNormalStyle}"
-		           Text="LATESTCHATTY - SETTINGS" />
+			<TextBlock Style="{StaticResource PhoneTextNormalStyle}" Text="LATESTCHATTY - SETTINGS" />
 		</StackPanel>
 		<controls:Panorama Grid.Row="1">
 			<controls:PanoramaItem>
@@ -68,11 +66,13 @@
 					<TextBlock Margin="9,-7,0,6"
 					           Style="{StaticResource PhoneTextTitle1Style}"
 					           Text="pinning" />
-					<toolkit:ToggleSwitch Header="auto pin on reply"
+					<toolkit:ToggleSwitch x:Name="autoPinOnReply"
+					                      Header="auto pin on reply"
 					                      IsChecked="{Binding AutoPinOnReply,
 					                                          Mode=TwoWay}"
 					                      Style="{StaticResource SettingsToggleSwitch}" />
-					<toolkit:ToggleSwitch Header="auto remove on expire"
+					<toolkit:ToggleSwitch x:Name="autoRemoveOnExpire"
+					                      Header="auto remove on expire"
 					                      IsChecked="{Binding AutoRemoveOnExpire,
 					                                          Mode=TwoWay}"
 					                      Style="{StaticResource SettingsToggleSwitch}" />
@@ -124,8 +124,10 @@
 					<TextBlock Margin="9,-7,0,0"
 					           Style="{StaticResource PhoneTextTitle1Style}"
 					           Text="cloud" />
-					<toolkit:ToggleSwitch Margin="0,0,0,0"
-						Header="sync settings to cloud"
+					<toolkit:ToggleSwitch x:Name="cloudSync"
+					                      Margin="0,0,0,0"
+					                      Click="CloudSettingsClicked"
+					                      Header="sync settings to cloud"
 					                      IsChecked="{Binding CloudSync,
 					                                          Mode=TwoWay}"
 					                      Style="{StaticResource SettingsToggleSwitch}" />

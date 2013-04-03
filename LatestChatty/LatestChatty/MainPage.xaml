@@ -15,7 +15,7 @@
                             d:DesignHeight="800"
                             d:DesignWidth="480"
                             shell:SystemTray.IsVisible="True"
-                            shell:SystemTray.Opacity=".0"
+                            shell:SystemTray.Opacity="1.0"
                             mc:Ignorable="d">
     <!--    -->
 

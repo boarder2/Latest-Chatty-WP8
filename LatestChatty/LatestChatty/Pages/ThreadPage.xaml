@@ -13,152 +13,150 @@
                             Foreground="#FFFFFF"
                             Orientation="Portrait"
                             SupportedOrientations="Portrait"
-                            shell:SystemTray.IsVisible="True"
-                            shell:SystemTray.Opacity=".0"
                             d:DesignHeight="728"
                             d:DesignWidth="480"
+                            shell:SystemTray.IsVisible="True"
+                            shell:SystemTray.Opacity="1.0"
                             mc:Ignorable="d">
 
-    <phone:PhoneApplicationPage.Resources>
-        <chattyClasses:BooleanToStringConverter x:Key="BooleanToPinnedTextConverter"
-                                                FalseValue="pin thread"
-                                                TrueValue="unpin thread" />
-        <chattyClasses:MultiplicationConverter x:Key="IndentConverter" Multiplier="15.0" />
+	<phone:PhoneApplicationPage.Resources>
+		<chattyClasses:BooleanToStringConverter x:Key="BooleanToPinnedTextConverter"
+		                                        FalseValue="pin thread"
+		                                        TrueValue="unpin thread" />
+		<chattyClasses:MultiplicationConverter x:Key="IndentConverter" Multiplier="15.0" />
 
-        <Style x:Key="ThreadListBoxItem" TargetType="ListBoxItem">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="ListBoxItem">
-                        <Grid Width="480">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="5" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Rectangle Grid.Column="0" Width="{Binding Depth, Converter={StaticResource IndentConverter}}" />
-                            <Rectangle Grid.Column="1"
-                                       Margin="0,4,0,4"
-                                       Fill="{StaticResource PhoneAccentBrush}"
-                                       Visibility="{Binding myPost,
-                                                            Converter={StaticResource BoolToVisConverter}}" />
-                            <TextBlock Grid.Column="2"
-                                       Margin="2,2,0,2"
-                                       Foreground="{Binding New,
-                                                            Converter={StaticResource NewReplyConverter}}"
-                                       Style="{StaticResource PhoneTextNormalStyle}"
-                                       Text="{Binding preview}"
-                                       TextWrapping="NoWrap" />
-                            <Grid Grid.Column="1"
-                                  Grid.ColumnSpan="2"
-                                  Background="{StaticResource PhoneAccentBrush}"
-                                  Visibility="{Binding RelativeSource={RelativeSource TemplatedParent},
-                                                       Path=IsSelected,
-                                                       Converter={StaticResource BoolToVisConverter}}">
-                                <TextBlock Margin="6,2,0,2"
-                                           Foreground="White"
-                                           Style="{StaticResource PhoneTextNormalStyle}"
-                                           Text="{Binding preview}"
-                                           TextWrapping="NoWrap" />
-                            </Grid>
-                        </Grid>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-    </phone:PhoneApplicationPage.Resources>
-    <!--  LayoutRoot is the root grid where all page content is placed  -->
-    <Grid x:Name="LayoutRoot">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
+		<Style x:Key="ThreadListBoxItem" TargetType="ListBoxItem">
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="ListBoxItem">
+						<Grid Width="480">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="Auto" />
+								<ColumnDefinition Width="5" />
+								<ColumnDefinition Width="*" />
+							</Grid.ColumnDefinitions>
+							<Rectangle Grid.Column="0" Width="{Binding Depth, Converter={StaticResource IndentConverter}}" />
+							<Rectangle Grid.Column="1"
+							           Margin="0,4,0,4"
+							           Fill="{StaticResource PhoneAccentBrush}"
+							           Visibility="{Binding myPost,
+							                                Converter={StaticResource BoolToVisConverter}}" />
+							<TextBlock Grid.Column="2"
+							           Margin="2,2,0,2"
+							           Foreground="{Binding New,
+							                                Converter={StaticResource NewReplyConverter}}"
+							           Style="{StaticResource PhoneTextNormalStyle}"
+							           Text="{Binding preview}"
+							           TextWrapping="NoWrap" />
+							<Grid Grid.Column="1"
+							      Grid.ColumnSpan="2"
+							      Background="{StaticResource PhoneAccentBrush}"
+							      Visibility="{Binding RelativeSource={RelativeSource TemplatedParent},
+							                           Path=IsSelected,
+							                           Converter={StaticResource BoolToVisConverter}}">
+								<TextBlock Margin="6,2,0,2"
+								           Foreground="White"
+								           Style="{StaticResource PhoneTextNormalStyle}"
+								           Text="{Binding preview}"
+								           TextWrapping="NoWrap" />
+							</Grid>
+						</Grid>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+	</phone:PhoneApplicationPage.Resources>
+	<!--  LayoutRoot is the root grid where all page content is placed  -->
+	<Grid x:Name="LayoutRoot">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
 
-        <Canvas>
-            <Image Source="/Images/DefaultBackground.png" Stretch="None" />
-        </Canvas>
+		<Canvas>
+			<Image Source="/Images/DefaultBackground.png" Stretch="None" />
+		</Canvas>
 
-        <StackPanel Height="5">
-            <toolkit:PerformanceProgressBar x:Name="ProgressBar"
-                                            VerticalAlignment="Top"
-                                            IsIndeterminate="{Binding IsLoading}"
-                                            Visibility="{Binding IsLoading,
-                                                                 Converter={StaticResource BoolToVisConverter}}" />
-        </StackPanel>
+		<StackPanel Height="5">
+			<toolkit:PerformanceProgressBar x:Name="ProgressBar"
+			                                VerticalAlignment="Top"
+			                                IsIndeterminate="{Binding IsLoading}"
+			                                Visibility="{Binding IsLoading,
+			                                                     Converter={StaticResource BoolToVisConverter}}" />
+		</StackPanel>
 
-        <Grid x:Name="CommentHeader"
-              Grid.Row="1"
-              Height="30"
-              Margin="10,0,10,0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <TextBlock HorizontalAlignment="Left"
-                       FontSize="20"
-                       Foreground="#ffba00"
-                       Text="{Binding SelectedComment.author}" />
-            <TextBlock Grid.Column="1"
-                       HorizontalAlignment="Right"
-                       FontSize="20"
-                       Foreground="#888888"
-                       Text="{Binding SelectedComment.dateText}" />
-        </Grid>
+		<Grid x:Name="CommentHeader"
+		      Grid.Row="1"
+		      Height="30"
+		      Margin="10,0,10,0">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition Width="*" />
+			</Grid.ColumnDefinitions>
+			<TextBlock HorizontalAlignment="Left"
+			           FontSize="20"
+			           Foreground="#ffba00"
+			           Text="{Binding SelectedComment.author}" />
+			<TextBlock Grid.Column="1"
+			           HorizontalAlignment="Right"
+			           FontSize="20"
+			           Foreground="#888888"
+			           Text="{Binding SelectedComment.dateText}" />
+		</Grid>
 
-        <Border Grid.Row="2"
-                Background="{Binding SelectedComment.category,
-                                     Converter={StaticResource CategoryConverter}}"
-                Padding="0,3,0,0">
-            <Border Grid.Row="2" Background="#222222">
-                <phone:WebBrowser x:Name="commentBrowser"
-                                  Margin="10,5,10,5"
-                                  Background="Black"
-                                  IsScriptEnabled="True"
-                                  Navigating="BrowserNavigating"
-                                  Opacity="0"
-                                  chattyClasses:WebBrowserBinding.Html="{Binding SelectedComment.body}" />
-            </Border>
-        </Border>
+		<Border Grid.Row="2"
+		        Background="{Binding SelectedComment.category,
+		                             Converter={StaticResource CategoryConverter}}"
+		        Padding="0,3,0,0">
+			<Border Grid.Row="2" Background="#222222">
+				<phone:WebBrowser x:Name="commentBrowser"
+				                  Margin="10,5,10,5"
+				                  Background="Black"
+				                  IsScriptEnabled="True"
+				                  Navigating="BrowserNavigating"
+				                  Opacity="0"
+				                  chattyClasses:WebBrowserBinding.Html="{Binding SelectedComment.body}" />
+			</Border>
+		</Border>
 
-        <ListBox x:Name="CommentListBox"
-                 Grid.Row="3"
-                 Margin="0,10,0,0"
-                 ItemContainerStyle="{StaticResource ThreadListBoxItem}"
-                 ItemsSource="{Binding FlatComments}"
-                 SelectedItem="{Binding SelectedComment,
-                                        Mode=TwoWay}" />
-        <!--
-            Apparently when virtualizing a ListBox, binding will throw a ton of junk in the output window when using the Recycling virtualization mode.
-            VirtualizingStackPanel.VirtualizationMode="Standard"/>
-        -->
-    </Grid>
+		<ListBox x:Name="CommentListBox"
+		         Grid.Row="3"
+		         Margin="0,10,0,0"
+		         ItemContainerStyle="{StaticResource ThreadListBoxItem}"
+		         ItemsSource="{Binding FlatComments}"
+		         SelectedItem="{Binding SelectedComment,
+		                                Mode=TwoWay}" />
+		<!--
+			Apparently when virtualizing a ListBox, binding will throw a ton of junk in the output window when using the Recycling virtualization mode.
+			VirtualizingStackPanel.VirtualizationMode="Standard"/>
+		-->
+	</Grid>
 
-    <!--  Sample code showing usage of ApplicationBar  -->
-    <phone:PhoneApplicationPage.ApplicationBar>
-        <shell:ApplicationBar IsMenuEnabled="True" IsVisible="True">
-            <shell:ApplicationBarIconButton Click="ReplyClick"
-                                            IconUri="/Images/PostIcon.png"
-                                            Text="Reply" />
-            <shell:ApplicationBarIconButton Click="ToggleThreadMode"
-                                            IconUri="/Images/TimeIcon.png"
-                                            Text="Time Navigation" />
-            <shell:ApplicationBarIconButton Click="PreviousClick"
-                                            IconUri="/Images/LeftArrow.png"
-                                            Text="Previous" />
-            <shell:ApplicationBarIconButton Click="NextClick"
-                                            IconUri="/Images/RightArrow.png"
-                                            Text="Next" />
-            <shell:ApplicationBar.MenuItems>
-                <shell:ApplicationBarMenuItem Click="RefreshClick" Text="refresh" />
-                <!--  <shell:ApplicationBarMenuItem Text="{Binding Path=IsWatched, Converter={StaticResource BooleanToPinnedTextConverter}}" Click="PinClick"/>  -->
-                <shell:ApplicationBarMenuItem 
-                                              Click="PinClick"
-                                              Text="pin thread" />
-                <shell:ApplicationBarMenuItem Click="ShareThreadClick" Text="share ..." />
-                <shell:ApplicationBarMenuItem Click="OpenInBrowserClick" Text="open in browser" />
-            </shell:ApplicationBar.MenuItems>
-        </shell:ApplicationBar>
-    </phone:PhoneApplicationPage.ApplicationBar>
+	<!--  Sample code showing usage of ApplicationBar  -->
+	<phone:PhoneApplicationPage.ApplicationBar>
+		<shell:ApplicationBar IsMenuEnabled="True" IsVisible="True">
+			<shell:ApplicationBarIconButton Click="ReplyClick"
+			                                IconUri="/Images/PostIcon.png"
+			                                Text="Reply" />
+			<shell:ApplicationBarIconButton Click="ToggleThreadMode"
+			                                IconUri="/Images/TimeIcon.png"
+			                                Text="Time Navigation" />
+			<shell:ApplicationBarIconButton Click="PreviousClick"
+			                                IconUri="/Images/LeftArrow.png"
+			                                Text="Previous" />
+			<shell:ApplicationBarIconButton Click="NextClick"
+			                                IconUri="/Images/RightArrow.png"
+			                                Text="Next" />
+			<shell:ApplicationBar.MenuItems>
+				<shell:ApplicationBarMenuItem Click="RefreshClick" Text="refresh" />
+				<!--  <shell:ApplicationBarMenuItem Text="{Binding Path=IsWatched, Converter={StaticResource BooleanToPinnedTextConverter}}" Click="PinClick"/>  -->
+				<shell:ApplicationBarMenuItem Click="PinClick" Text="pin thread" />
+				<shell:ApplicationBarMenuItem Click="ShareThreadClick" Text="share ..." />
+				<shell:ApplicationBarMenuItem Click="OpenInBrowserClick" Text="open in browser" />
+			</shell:ApplicationBar.MenuItems>
+		</shell:ApplicationBar>
+	</phone:PhoneApplicationPage.ApplicationBar>
 
 </phone:PhoneApplicationPage>

@@ -18,10 +18,11 @@ using System.Xml.Linq;
 using Newtonsoft.Json.Linq;
 using System.Linq;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace LatestChatty.Settings
 {
-	public class LatestChattySettings
+	public class LatestChattySettings : INotifyPropertyChanged
 	{
 		private static readonly string commentSize = "CommentSize";
 		private static readonly string threadNavigationByDate = "ThreadNavigationByDate";
@@ -155,6 +156,10 @@ namespace LatestChatty.Settings
 			set
 			{
 				this.isoStore[cloudsync] = value;
+                if (this.PropertyChanged != null)
+                {
+                    this.PropertyChanged(this, new PropertyChangedEventArgs("CloudSync"));
+                }
 				this.isoStore.Save();
                 if (value)
                 {
@@ -175,6 +180,10 @@ namespace LatestChatty.Settings
 			{
 				this.isoStore[autocollapsenws] = value;
 				this.isoStore.Save();
+                if (this.PropertyChanged != null)
+                {
+                    this.PropertyChanged(this, new PropertyChangedEventArgs("AutoCollapseNws"));
+                }
 				this.SaveToCloud();
 			}
 		}
@@ -191,6 +200,10 @@ namespace LatestChatty.Settings
 			{
 				this.isoStore[autocollapsestupid] = value;
 				this.isoStore.Save();
+                if (this.PropertyChanged != null)
+                {
+                    this.PropertyChanged(this, new PropertyChangedEventArgs("AutoCollapseStupid"));
+                }
 				this.SaveToCloud();
 			}
 		}
@@ -207,6 +220,10 @@ namespace LatestChatty.Settings
 			{
 				this.isoStore[autocollapseofftopic] = value;
 				this.isoStore.Save();
+                if (this.PropertyChanged != null)
+                {
+                    this.PropertyChanged(this, new PropertyChangedEventArgs("AutoCollapseOffTopic"));
+                }
 				this.SaveToCloud();
 			}
 		}
@@ -223,6 +240,10 @@ namespace LatestChatty.Settings
 			{
 				this.isoStore[autocollapsepolitical] = value;
 				this.isoStore.Save();
+                if (this.PropertyChanged != null)
+                {
+                    this.PropertyChanged(this, new PropertyChangedEventArgs("AutoCollapsePolitical"));
+                }
 				this.SaveToCloud();
 			}
 		}
@@ -239,6 +260,10 @@ namespace LatestChatty.Settings
 			{
 				this.isoStore[autocollapseinformative] = value;
 				this.isoStore.Save();
+                if (this.PropertyChanged != null)
+                {
+                    this.PropertyChanged(this, new PropertyChangedEventArgs("AutoCollapseInformative"));
+                }
 				this.SaveToCloud();
 			}
 		}
@@ -255,6 +280,10 @@ namespace LatestChatty.Settings
 			{
 				this.isoStore[autocollapseinteresting] = value;
 				this.isoStore.Save();
+                if (this.PropertyChanged != null)
+                {
+                    this.PropertyChanged(this, new PropertyChangedEventArgs("AutoCollapseInteresting"));
+                }
 				this.SaveToCloud();
 			}
 		}
@@ -271,6 +300,10 @@ namespace LatestChatty.Settings
 			{
 				this.isoStore[autopinonreply] = value;
 				this.isoStore.Save();
+                if (this.PropertyChanged != null)
+                {
+                    this.PropertyChanged(this, new PropertyChangedEventArgs("AutoPinOnReply"));
+                }
 				this.SaveToCloud();
 			}
 		}
@@ -287,6 +320,10 @@ namespace LatestChatty.Settings
 			{
 				this.isoStore[autoremoveonexpire] = value;
 				this.isoStore.Save();
+                if (this.PropertyChanged != null)
+                {
+                    this.PropertyChanged(this, new PropertyChangedEventArgs("AutoRemoveOnExpire"));
+                }
 				this.SaveToCloud();
 			}
 		}
@@ -318,6 +355,10 @@ namespace LatestChatty.Settings
 			{
 				this.isoStore[notificationType] = value;
 				this.isoStore.Save();
+                if (this.PropertyChanged != null)
+                {
+                    this.PropertyChanged(this, new PropertyChangedEventArgs("NotificationType"));
+                }
 			}
 		}
 
@@ -333,6 +374,10 @@ namespace LatestChatty.Settings
 			{
 				this.isoStore[commentSize] = value;
 				this.isoStore.Save();
+                if (this.PropertyChanged != null)
+                {
+                    this.PropertyChanged(this, new PropertyChangedEventArgs("CommentSize"));
+                }
 			}
 		}
 
@@ -348,6 +393,10 @@ namespace LatestChatty.Settings
 			{
 				this.isoStore[showInlineImages] = value;
 				this.isoStore.Save();
+                if (this.PropertyChanged != null)
+                {
+                    this.PropertyChanged(this, new PropertyChangedEventArgs("ShowInlineImages"));
+                }
 				this.SaveToCloud();
 			}
 		}
@@ -363,6 +412,10 @@ namespace LatestChatty.Settings
 			{
 				this.isoStore[threadNavigationByDate] = value;
 				this.isoStore.Save();
+                if (this.PropertyChanged != null)
+                {
+                    this.PropertyChanged(this, new PropertyChangedEventArgs("ThreadNavigationByDate"));
+                }
 			}
 		}
 
@@ -465,6 +518,7 @@ namespace LatestChatty.Settings
 
 				this.GetPinnedComments();
 				this.loadingSettingsInternal = false;
+				this.OnRefreshCompleted();
 			}
 			else
 			{
@@ -556,6 +610,7 @@ namespace LatestChatty.Settings
 			}
 
 			this.loadingSettingsInternal = false;
+			this.OnRefreshCompleted();
 		}
 
 		async public void SaveToCloud()
@@ -618,10 +673,6 @@ namespace LatestChatty.Settings
 						this.QueueCommentDownload(commentId);
 					}
 				}
-				else
-				{
-					this.OnRefreshCompleted();
-				}
 			}
 		}
 
@@ -641,6 +692,8 @@ namespace LatestChatty.Settings
 				}
 			}
 		}
+
+        public event PropertyChangedEventHandler PropertyChanged;
 	}
 
 	internal static class JSONExtensions

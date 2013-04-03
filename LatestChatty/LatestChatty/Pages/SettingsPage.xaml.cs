@@ -20,36 +20,47 @@ namespace LatestChatty.Pages
 {
 	public partial class SettingsPage : PhoneApplicationPage
 	{
-		private bool loaded = false;
-		NotificationType loadedNotificationType;
+        private bool loaded = false;
+        NotificationType loadedNotificationType;
 
-        //TODO: Ensure things are data bound.
-        //TODO: When enabling cloud sync, filters and stuff didn't automatically switch until backing out and coming back into settings.
 		public SettingsPage()
 		{
 			InitializeComponent();
-
-			this.sizePicker.SelectedItem = this.sizePicker.Items.First(
-				item => ((ListPickerItem)item).Tag.ToString().Equals(
-					Enum.GetName(typeof(CommentViewSize), LatestChattySettings.Instance.CommentSize), StringComparison.InvariantCultureIgnoreCase));
-
-			this.showEmbeddedImagesPicker.SelectedItem = this.showEmbeddedImagesPicker.Items.First(
-				item => ((ListPickerItem)item).Tag.ToString().Equals(
-					Enum.GetName(typeof(ShowInlineImages), LatestChattySettings.Instance.ShowInlineImages), StringComparison.InvariantCultureIgnoreCase));
-
-			this.notificationTypePicker.SelectedItem = this.notificationTypePicker.Items.First(
-				item => ((ListPickerItem)item).Tag.ToString().Equals(
-					Enum.GetName(typeof(NotificationType), LatestChattySettings.Instance.NotificationType), StringComparison.InvariantCultureIgnoreCase));
-			this.loadedNotificationType = LatestChattySettings.Instance.NotificationType;
-
-			this.navigationPicker.SelectedIndex = LatestChattySettings.Instance.ThreadNavigationByDate ? 0 : 1;
-			this.DataContext = LatestChattySettings.Instance;
+            this.SyncUIToSettings();
 		}
+
+        private void SyncUIToSettings()
+        {
+            this.loaded = false;
+            this.sizePicker.SelectedItem = this.sizePicker.Items.First(
+                item => ((ListPickerItem)item).Tag.ToString().Equals(
+                    Enum.GetName(typeof(CommentViewSize), LatestChattySettings.Instance.CommentSize), StringComparison.InvariantCultureIgnoreCase));
+
+            this.showEmbeddedImagesPicker.SelectedItem = this.showEmbeddedImagesPicker.Items.First(
+                item => ((ListPickerItem)item).Tag.ToString().Equals(
+                    Enum.GetName(typeof(ShowInlineImages), LatestChattySettings.Instance.ShowInlineImages), StringComparison.InvariantCultureIgnoreCase));
+
+            this.notificationTypePicker.SelectedItem = this.notificationTypePicker.Items.First(
+                item => ((ListPickerItem)item).Tag.ToString().Equals(
+                    Enum.GetName(typeof(NotificationType), LatestChattySettings.Instance.NotificationType), StringComparison.InvariantCultureIgnoreCase));
+            this.loadedNotificationType = LatestChattySettings.Instance.NotificationType;
+
+            this.navigationPicker.SelectedIndex = LatestChattySettings.Instance.ThreadNavigationByDate ? 0 : 1;
+            this.DataContext = LatestChattySettings.Instance;
+				if (!CoreServices.Instance.LoginVerified)
+				{
+					this.cloudSync.IsEnabled = false;
+					this.notificationTypePicker.IsEnabled = false;
+					this.autoPinOnReply.IsEnabled = false;
+					this.autoRemoveOnExpire.IsEnabled = false;
+				}
+            this.loaded = true;
+        }
 
 		protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
 		{
 			base.OnNavigatedTo(e);
-			this.loaded = true;
+			//this.loaded = true;
 		}
 
 		private void AddChatty_Click(object sender, RoutedEventArgs e)
@@ -129,5 +140,13 @@ namespace LatestChatty.Pages
 				LatestChattySettings.Instance.ThreadNavigationByDate = Boolean.Parse(((ListPickerItem)picker.SelectedItem).Tag as string);
 			}
 		}
+
+        private void CloudSettingsClicked(object sender, RoutedEventArgs e)
+        {
+            if (LatestChattySettings.Instance.CloudSync)
+            {
+                this.SyncUIToSettings();
+            }
+        }
 	}
 }

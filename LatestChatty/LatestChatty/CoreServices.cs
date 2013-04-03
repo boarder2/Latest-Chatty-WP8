@@ -346,6 +346,7 @@ namespace LatestChatty
 			LatestChattySettings.Instance.Username = this.userCredentials.UserName = string.Empty;
 			LatestChattySettings.Instance.Password = this.userCredentials.Password = string.Empty;
 			LatestChattySettings.Instance.NotificationType = NotificationType.None;
+			LatestChattySettings.Instance.CloudSync = false;
 			
 			//Clear MyPosts, MyReplies, and refresh the watchlist so the participation flag goes away
 			this.MyPosts.Logout();

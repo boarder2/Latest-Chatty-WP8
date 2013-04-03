@@ -332,6 +332,12 @@
     <Content Include="Images\RefreshIcon.png" />
     <Content Include="Images\RightArrow.png" />
     <Content Include="Images\sticky_notes.png" />
+    <Content Include="Images\TileIconMedium.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\TileIconSmall.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Images\TimeIcon.png" />
     <Content Include="Images\TopDownIcon.png" />
     <Content Include="stylesheet.css" />
