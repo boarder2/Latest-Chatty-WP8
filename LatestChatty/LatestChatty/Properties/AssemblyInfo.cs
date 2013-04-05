@@ -35,3 +35,17 @@ using System.Resources;
 // by using the '*' as shown below:
 [assembly: AssemblyVersion("1.0.0")]
 [assembly: AssemblyFileVersion("1.0.0")]
+
+//Latest Chatty 8 is a comment and news viewer for shacknews.com
+
+//It is designed to provide access to all shacknews.com user posts and the daily running discussion thread in a unique and modern way.
+
+//Some great features which are not available on the website include embedded image viewing, post pinning with syncing between devices, comment search, direct photo uploads from your device, notifications when replies are made to your posts via live tile, toasts, and lock screen icons.
+
+//Front page news articles
+//Pin posts for easy viewing later
+//Live tile notifications when someone replies to your posts
+//Cloud syncing of pinned posts across all Windows 8 and Windows Phone 8 devices
+//Automatic post collapsing based on comment type
+//Chattypics integration for in-app photo uploading
+//In-line image viewing
