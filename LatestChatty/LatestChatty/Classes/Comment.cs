@@ -55,6 +55,11 @@ namespace LatestChatty.Classes
 		[DataMember]
 		public bool IsSelected { get; set; }
 
+        [DataMember]
+        public DateTime Date { get; set; }
+
+        public bool IsExpired { get { return this.Date.AddHours(18).ToUniversalTime() < DateTime.UtcNow; } }
+        
 		[DataMember]
 		public bool isPinned;
 		public bool IsPinned
@@ -115,6 +120,7 @@ namespace LatestChatty.Classes
 			this.SavePostCounts = false;
 			this.reply_count = 0;
 			this.dateText = string.Empty;
+            this.Date = DateTime.MinValue;
 			this.id = 0;
 			this.author = string.Empty;
 			this.category = PostCategory.offtopic;
@@ -135,7 +141,17 @@ namespace LatestChatty.Classes
 			this.IsLoadMoreComment = false;
 			this.SavePostCounts = saveCounts;
 			this.reply_count = (int)x.Attribute("reply_count");
-			this.dateText = (string)x.Attribute("date");
+			var dateText = (string)x.Attribute("date");
+            if (dateText.Length > 0)
+            {
+                this.Date = DateTime.Parse(dateText.Replace(" PDT", "-7:00").Replace(" PST", "-8:00"));
+                this.dateText = this.Date.ToString("MMM d, yyyy h:mm tt");
+            }
+            else
+            {
+                this.Date = DateTime.MinValue;
+            }
+
 			this.id = (int)x.Attribute("id");
 			this.author = (string)x.Attribute("author");
 			this.category = (PostCategory)Enum.Parse(typeof(PostCategory), ((string)x.Attribute("category")).Trim(), true);
