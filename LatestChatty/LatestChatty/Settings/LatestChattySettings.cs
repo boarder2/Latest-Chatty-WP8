@@ -555,27 +555,34 @@ namespace LatestChatty.Settings
 					var storyId = int.Parse(response.Element("comments").Attribute("story_id").Value);
 					//Don't save the counts when we load these posts.
 					var comment = new Comment(x, storyId, false, 0);
-					var insertAt = 0;
-					//Sort them the same all the time.
-					for (insertAt = 0; insertAt < this.pinnedCommentsCollection.Count; insertAt++)
-					{
-						//Keep looking
-						if (comment.id > this.pinnedCommentsCollection[insertAt].id)
-						{
-							continue;
-						}
-						//Already exists... don't add it twice.  (This could happen if they click refresh fast)
-						if (comment.id == this.pinnedCommentsCollection[insertAt].id)
-						{
-							return;
-						}
-						//We belong before this one.
-						if (comment.id < this.pinnedCommentsCollection[insertAt].id)
-						{
-							break;
-						}
-					}
-					this.pinnedCommentsCollection.Insert(insertAt, comment);
+                    if (LatestChattySettings.Instance.AutoRemoveOnExpire && comment.IsExpired)
+                    {
+                        this.pinnedCommentIds.Remove(comment.id);
+                    }
+                    else
+                    {
+                        var insertAt = 0;
+                        //Sort them the same all the time.
+                        for (insertAt = 0; insertAt < this.pinnedCommentsCollection.Count; insertAt++)
+                        {
+                            //Keep looking
+                            if (comment.id > this.pinnedCommentsCollection[insertAt].id)
+                            {
+                                continue;
+                            }
+                            //Already exists... don't add it twice.  (This could happen if they click refresh fast)
+                            if (comment.id == this.pinnedCommentsCollection[insertAt].id)
+                            {
+                                return;
+                            }
+                            //We belong before this one.
+                            if (comment.id < this.pinnedCommentsCollection[insertAt].id)
+                            {
+                                break;
+                            }
+                        }
+                        this.pinnedCommentsCollection.Insert(insertAt, comment);
+                    }
 				}
 			}
 			catch (Exception ex)
@@ -686,6 +693,8 @@ namespace LatestChatty.Settings
 		{
 			if (this.commentsLeftToLoad == 0)
 			{
+                //In case we removed pinned threads, etc.
+                this.SaveToCloud();
 				if (this.SettingsSynced != null)
 				{
 					this.SettingsSynced(this, EventArgs.Empty);
