@@ -56,6 +56,9 @@ namespace LatestChatty.Classes
 		public bool IsSelected { get; set; }
 
         [DataMember]
+        public bool IsOriginalAuthor { get; set; }
+
+        [DataMember]
         public DateTime Date { get; set; }
 
         public bool IsExpired { get { return this.Date.AddHours(18).ToUniversalTime() < DateTime.UtcNow; } }
@@ -136,7 +139,7 @@ namespace LatestChatty.Classes
 			this.Comments = new ObservableCollection<Comment>();
 		}
 
-		public Comment(XElement x, int thisstoryid, bool saveCounts, int depth)
+		public Comment(XElement x, int thisstoryid, bool saveCounts, int depth, string originalAuthor)
 		{
 			this.IsLoadMoreComment = false;
 			this.SavePostCounts = saveCounts;
@@ -170,6 +173,11 @@ namespace LatestChatty.Classes
 			this.HasNewReplies = (this.NewPostCount > 0 || this.New);
 			this.Depth = depth;
 			this.IsPinned = LatestChattySettings.Instance.PinnedComments.Any(c => c.id == this.id);
+            if (this.Depth == 0 && string.IsNullOrWhiteSpace(originalAuthor))
+            {
+                originalAuthor = this.author;
+            }
+            this.IsOriginalAuthor = this.author == originalAuthor;
 			this.CollapseIfRequired();
 
 			List<XElement> comments = x.Element("comments").Elements("comment").ToList();
@@ -178,7 +186,7 @@ namespace LatestChatty.Classes
 			{
 				foreach (XElement xchild in comments)
 				{
-					Comment child = new Comment(xchild, thisstoryid, this.SavePostCounts, depth + 1);
+					Comment child = new Comment(xchild, thisstoryid, this.SavePostCounts, depth + 1, originalAuthor);
 					Comments.Add(child);
 				}
 			}

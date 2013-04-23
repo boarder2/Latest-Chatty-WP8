@@ -113,7 +113,7 @@ namespace LatestChatty.ViewModels
 			{
 				XElement x = response.Elements("comments").Elements("comment").First();
 				
-				var rootComment = new Comment(x, StoryId, true, 0);
+				var rootComment = new Comment(x, StoryId, true, 0, string.Empty);
 				this.IsWatched = LatestChattySettings.Instance.PinnedComments.Any(c => c.id == rootComment.id);
 				
 				this.FlatComments.Clear();

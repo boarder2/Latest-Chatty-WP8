@@ -41,6 +41,11 @@
                                        Fill="{StaticResource PhoneAccentBrush}"
                                        Visibility="{Binding myPost,
                                                             Converter={StaticResource BoolToVisConverter}}" />
+                            <Rectangle Grid.Column="1"
+                                       Margin="0,4,0,4"
+                                       Fill="#09BCEB"
+                                       Visibility="{Binding IsOriginalAuthor,
+                                                            Converter={StaticResource BoolToVisConverter}}" />
                             <TextBlock Grid.Column="2"
                                        Margin="2,2,0,2"
                                        Foreground="{Binding New,

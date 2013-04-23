@@ -554,7 +554,7 @@ namespace LatestChatty.Settings
 					XElement x = response.Elements("comments").Elements("comment").First();
 					var storyId = int.Parse(response.Element("comments").Attribute("story_id").Value);
 					//Don't save the counts when we load these posts.
-					var comment = new Comment(x, storyId, false, 0);
+					var comment = new Comment(x, storyId, false, 0, string.Empty);
                     if (LatestChattySettings.Instance.AutoRemoveOnExpire && comment.IsExpired)
                     {
                         this.pinnedCommentIds.Remove(comment.id);

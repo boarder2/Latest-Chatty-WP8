@@ -68,7 +68,7 @@ namespace LatestChatty.ViewModels
 				}
 				var comments = from x in response.Descendants("comment")
 									where !this.Comments.Any(c => c.id == (int)x.Attribute("id"))
-									select new Comment(x, _story, true, 0);
+									select new Comment(x, _story, true, 0, string.Empty);
 
 				Deployment.Current.Dispatcher.BeginInvoke(() =>
 					{

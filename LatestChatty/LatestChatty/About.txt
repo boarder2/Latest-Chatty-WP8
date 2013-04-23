@@ -9,5 +9,6 @@ Added:
 - Better support for embedded images on higher resolution displays
 - Dates will be shown in local time
 - Expired posts will have a red background on the date
+- Original poster will have their posts highlighted in blue in the thread view
 
 This application is meant to be as a standalone client for the comments system on www.shacknews.com.  It is not affiliated with Shacknews LTD or its associates.  It is created independently by fans of the website.
