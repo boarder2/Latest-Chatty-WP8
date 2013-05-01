@@ -272,7 +272,7 @@ namespace LatestChatty
 		{
 			this.userCredentials = new NetworkCredential(username, password);
 			this.loginCallback = callback;
-			var request = (HttpWebRequest)HttpWebRequest.Create("http://www.shacknews.com/account/signin");
+			var request = (HttpWebRequest)HttpWebRequest.Create("https://www.shacknews.com/account/signin");
 			request.Method = "POST";
 			request.Headers["x-requested-with"] = "XMLHttpRequest";
 			request.Headers[HttpRequestHeader.Pragma] = "no-cache";
@@ -288,7 +288,7 @@ namespace LatestChatty
 
 			Stream requestStream = request.EndGetRequestStream(result);
 			StreamWriter streamWriter = new StreamWriter(requestStream);
-			streamWriter.Write(String.Format("email={0}&password={1}&get_fields[]=result", HttpUtility.UrlEncode(this.userCredentials.UserName), HttpUtility.UrlEncode(this.userCredentials.Password)));
+            streamWriter.Write(String.Format("user-identifier={0}&supplied-pass={1}&get_fields[]=result", HttpUtility.UrlEncode(this.userCredentials.UserName), HttpUtility.UrlEncode(this.userCredentials.Password)));
 			streamWriter.Flush();
 			streamWriter.Close();
 
@@ -312,7 +312,7 @@ namespace LatestChatty
 						var responseBytes = new byte[responseStream.Length];
 						responseStream.Read(responseBytes, 0, responseBytes.Length);
 						var responseString = System.Text.Encoding.UTF8.GetString(responseBytes, 0, responseBytes.Length);
-						success = responseString.Equals("{\"result\":\"true\"}");
+                        success = responseString.Contains("{\"result\":{\"valid\":\"true\"");
 					}
 				}
 			}
