@@ -22,10 +22,10 @@ namespace LatestChatty.Classes
 		{
 			try
 			{
-				WebResponse response = ((HttpWebRequest)result.AsyncState).EndGetResponse(result);
-				StreamReader reader = new StreamReader(response.GetResponseStream());
-				string responseString = reader.ReadToEnd();
-				XDocument XMLResponse = XDocument.Parse(responseString);
+				var response = ((HttpWebRequest)result.AsyncState).EndGetResponse(result);
+				var reader = new StreamReader(response.GetResponseStream());
+				var responseString = reader.ReadToEnd();
+				var XMLResponse = XDocument.Parse(responseString);
 
 				//TODO: A lot of expensive stuff always happens here
 				// We should consider allowing this to run on a separate thread and having the responders be responsible for getting the changes to the UI thread.

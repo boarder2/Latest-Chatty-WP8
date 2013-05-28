@@ -31,25 +31,6 @@ namespace LatestChatty
 			var maintenanceWorker = new System.ComponentModel.BackgroundWorker();
 			maintenanceWorker.DoWork += (sender, args) =>
 			{
-				//Clear the tile since we're loading everything now.
-				var tileToUpdate =
-					 ShellTile.ActiveTiles.FirstOrDefault(x => x.NavigationUri.ToString().Contains("ChattyPage"))
-					 ?? ShellTile.ActiveTiles.FirstOrDefault();
-
-				if (tileToUpdate != null)
-				{
-					//Get rid of tile data that's now old.
-					var tileData = new StandardTileData
-					{
-						BackgroundImage = new Uri("ApplicationIcon.png", UriKind.Relative),
-						Count = 0,
-						BackContent = string.Empty,
-						BackTitle = string.Empty,
-						Title = "Latest Chatty 8"
-					};
-
-					tileToUpdate.Update(tileData);
-				}
 				NotificationHelper.RegisterForNotifications();
 
 				//Sync settings.  When this is finished, we'll try to load replies and whatnot.

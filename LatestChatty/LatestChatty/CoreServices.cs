@@ -12,6 +12,7 @@ using LatestChatty.Classes;
 using LatestChatty.ViewModels;
 using Microsoft.Phone.Net.NetworkInformation;
 using LatestChatty.Settings;
+using Microsoft.Phone.Shell;
 
 namespace LatestChatty
 {
@@ -29,7 +30,8 @@ namespace LatestChatty
 		public void Initialize()
 		{
 			SetCommentBrowserString();
-			LoadReplyCounts();	
+			LoadReplyCounts();
+            CoreServices.Instance.ClearTile();
 		}
 
 		#region Singleton
@@ -356,8 +358,11 @@ namespace LatestChatty
 		#endregion
 
 		#region Tombstone
+
+        //Occurs when the application is brought back to the foreground from a non-clean launch.
 		public void Activated()
 		{
+            CoreServices.Instance.ClearTile();
 			LoadCurrentStoryComments();
 			LoadCurrentCommentThread();
 			//Should already be loaded, no?
@@ -510,5 +515,32 @@ namespace LatestChatty
 		public MyPostsList MyPosts = new MyPostsList();
 		public MyRepliesList MyReplies = new MyRepliesList();
 		#endregion
-	}
+
+        #region Tile Notifications
+        public void ClearTile()
+        {
+            //Clear the tile since we're loading everything now.
+            var tileToUpdate =
+                 ShellTile.ActiveTiles.FirstOrDefault(x => x.NavigationUri.ToString().Contains("ChattyPage"))
+                 ?? ShellTile.ActiveTiles.FirstOrDefault();
+
+            if (tileToUpdate != null)
+            {
+                //Get rid of tile data that's now old.
+                var tileData = new IconicTileData
+                {
+                    SmallIconImage = new Uri("Images/TileIconSmall.png", UriKind.Relative),
+                    IconImage = new Uri("Images/TileIconMedium.png", UriKind.Relative),
+                    Count = 0,
+                    Title = "Latest Chatty 8",
+                    WideContent1 = "",
+                    WideContent2 = "",
+                    WideContent3 = ""
+                };
+
+                tileToUpdate.Update(tileData);
+            }
+        }
+        #endregion
+    }
 }

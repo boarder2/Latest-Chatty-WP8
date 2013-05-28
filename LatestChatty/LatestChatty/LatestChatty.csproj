@@ -304,8 +304,6 @@
   <ItemGroup>
     <None Include="Images\TimeIcon.design" />
     <None Include="Images\TopDownIcon.design" />
-    <None Include="LatestChatty_2013_04_04_22_34_28.sap" />
-    <None Include="LatestChatty_2013_04_04_22_41_33.sap" />
     <None Include="packages.config" />
     <None Include="Properties\AppManifest.xml" />
     <None Include="Properties\WMAppManifest.xml">

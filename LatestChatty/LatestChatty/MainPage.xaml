@@ -38,9 +38,12 @@
                         <TextBlock FontSize="{StaticResource PhoneFontSizeExtraLarge}" Text="stories" />
                         <HyperlinkButton Click="Stories_Click" />
                     </Grid>
-                    <Grid x:Name="messagesSection" Visibility="Collapsed">
-                        <TextBlock FontSize="{StaticResource PhoneFontSizeExtraLarge}" Text="messages" />
-                        <HyperlinkButton Click="Messages_Click" />
+                    <!-- Removing shackmessages beacuse the API is broken right now. -->
+                    <Grid Visibility="Collapsed">
+                        <Grid x:Name="messagesSection" Visibility="Collapsed">
+                            <TextBlock FontSize="{StaticResource PhoneFontSizeExtraLarge}" Text="messages" />
+                            <HyperlinkButton Click="Messages_Click" />
+                        </Grid>
                     </Grid>
                     <Grid>
                         <TextBlock FontSize="{StaticResource PhoneFontSizeExtraLarge}" Text="search" />

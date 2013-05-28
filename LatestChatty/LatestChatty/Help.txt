@@ -11,9 +11,6 @@ ____________________________________________________
 [ Stories ]
 This is a list of the headlines from the website.  Clicking on each will go into a more detailed view.  Clicking on the chat bubbles will take you to the associated comment thread.
 ____________________________________________________
-[ Messages ]
-This will bring up a list of Shackmessages that you have received and sent.  Receiving and sending messages requires an account with Shacknews.com
-____________________________________________________
 [ Search ]
 This will allow you to search the comments of Shacknews.com.  Enter the search term, and the author, or parent author you want to search.  A list of results will display below.  Clicking on the result will bring up the thread associated with that result.
 ____________________________________________________

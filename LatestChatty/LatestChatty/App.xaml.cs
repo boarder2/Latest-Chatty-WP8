@@ -17,32 +17,32 @@ using System.IO.IsolatedStorage;
 namespace LatestChatty
 {
 	public partial class App : Application
-    {
-        #region Fast App Resume Stuff
-        //Using http://code.msdn.microsoft.com/wpapps/Fast-app-resume-backstack-f16baaa6 as an example.
+	{
+		#region Fast App Resume Stuff
+		//Using http://code.msdn.microsoft.com/wpapps/Fast-app-resume-backstack-f16baaa6 as an example.
 
-        enum SessionType
-        {
-            None,
-            Home,
-            DeepLink
-        }
+		enum SessionType
+		{
+			None,
+			Home,
+			DeepLink
+		}
 
-        // Set to Home when the app is launched from Primary tile. 
-        // Set to DeepLink when the app is launched from Deep Link. 
-        private SessionType sessionType = SessionType.None;
+		// Set to Home when the app is launched from Primary tile. 
+		// Set to DeepLink when the app is launched from Deep Link. 
+		private SessionType sessionType = SessionType.None;
 
-        // Set to true when the page navigation is being reset  
-        bool relaunched = false;
+		// Set to true when the page navigation is being reset  
+		bool relaunched = false;
 
-        // set to true when 5 min passed since the app was relaunched 
-        bool clearPageStack = false;
+		// set to true when 5 min passed since the app was relaunched 
+		bool clearPageStack = false;
 
-        IsolatedStorageSettings settings = IsolatedStorageSettings.ApplicationSettings; 
+		IsolatedStorageSettings settings = IsolatedStorageSettings.ApplicationSettings; 
  
-        #endregion
+		#endregion
 
-        /// <summary>
+		/// <summary>
 		/// Provides easy access to the root frame of the Phone Application.
 		/// </summary>
 		/// <returns>The root frame of the Phone Application.</returns>
@@ -81,7 +81,7 @@ namespace LatestChatty
 		// This code will not execute when the application is reactivated
 		private void Application_Launching(object sender, LaunchingEventArgs e)
 		{
-            RemoveCurrentTimeSetting();
+			this.RemoveCurrentTimeSetting();
 			CoreServices.Instance.Initialize();
 		}
 
@@ -90,6 +90,8 @@ namespace LatestChatty
 		private void Application_Activated(object sender, ActivatedEventArgs e)
 		{
 			CoreServices.Instance.Activated();
+			//When the application is launched we need to check if it's been too long since the last time it was opened.
+			this.clearPageStack = IsResumeExpired();
 		}
 
 		// Code to execute when the application is deactivated (sent to background)
@@ -97,14 +99,14 @@ namespace LatestChatty
 		private void Application_Deactivated(object sender, DeactivatedEventArgs e)
 		{
 			CoreServices.Instance.Deactivated();
-            SaveCurrentTime();
+			this.SaveCurrentTime();
 		}
 
 		// Code to execute when the application is closing (eg, user hit Back)
 		// This code will not execute when the application is deactivated
 		private void Application_Closing(object sender, ClosingEventArgs e)
 		{
-            RemoveCurrentTimeSetting();
+			this.RemoveCurrentTimeSetting();
 		}
 
 		// Code to execute if a navigation fails
@@ -142,7 +144,7 @@ namespace LatestChatty
 			// screen to remain active until the application is ready to render.
 			//RootFrame = new PhoneApplicationFrame();
 			RootFrame = new TransitionFrame();
-            RootFrame.Navigating += FrameNavigating;
+			RootFrame.Navigating += FrameNavigating;
 			RootFrame.Navigated += CompleteInitializePhoneApplication;
 
 			// Handle navigation failures
@@ -152,156 +154,163 @@ namespace LatestChatty
 			phoneApplicationInitialized = true;
 		}
 
-        #region Fast App Resume Methods
-        void FrameNavigating(object sender, NavigatingCancelEventArgs e)
-        {
-            //Handle application resuming here.
-            //if (sessionType == SessionType.None && e.NavigationMode == NavigationMode.New)
-            //{
-            //    // This block will run if the current navigation is part of the app's intial launch 
+		#region Fast App Resume Methods
+		void FrameNavigating(object sender, NavigatingCancelEventArgs e)
+		{
+			//Handle application resuming here.
+			if (sessionType == SessionType.None && e.NavigationMode == NavigationMode.New)
+			{
+			    // This block will run if the current navigation is part of the app's intial launch 
+
+			    // Keep track of Session Type  
+			    if (e.Uri.ToString().Contains("DeepLink=true"))
+			    {
+			        sessionType = SessionType.DeepLink;
+			    }
+			    else if (e.Uri.ToString().Contains("/MainPage.xaml"))
+			    {
+			        sessionType = SessionType.Home;
+			    }
+			}
 
 
-            //    // Keep track of Session Type  
-            //    if (e.Uri.ToString().Contains("DeepLink=true"))
-            //    {
-            //        sessionType = SessionType.DeepLink;
-            //    }
-            //    else if (e.Uri.ToString().Contains("/MainPage.xaml"))
-            //    {
-            //        sessionType = SessionType.Home;
-            //    }
-            //}
+			if (e.NavigationMode == NavigationMode.Reset)
+			{
+			    // This block will execute if the current navigation is a relaunch. 
+			    // If so, another navigation will be coming, so this records that a relaunch just happened 
+			    // so that the next navigation can use this info. 
+			    relaunched = true;
+			}
+			else if (e.NavigationMode == NavigationMode.New && relaunched)
+			{
+			    // This block will run if the previous navigation was a relaunch 
+			    relaunched = false;
+
+			    if (e.Uri.ToString().Contains("DeepLink=true"))
+			    {
+			        // This block will run if the launch Uri contains "DeepLink=true" which 
+			        // was specified when the secondary tile was created in MainPage.xaml.cs 
+
+			        sessionType = SessionType.DeepLink;
+			        // The app was relaunched via a Deep Link. 
+			        // The page stack will be cleared. 
+			    }
+			    else if (e.Uri.ToString().Contains("/MainPage.xaml"))
+			    {
+			        // This block will run if the navigation Uri is the main page 
+			        if (sessionType == SessionType.DeepLink)
+			        {
+			            // When the app was previously launched via Deep Link and relaunched via Main Tile, we need to clear the page stack.  
+			            sessionType = SessionType.Home;
+			        }
+			        else
+			        {
+			            if (!clearPageStack)
+			            {
+			                //The app was previously launched via Main Tile and relaunched via Main Tile. Cancel the navigation to resume. 
+			                e.Cancel = true;
+			                RootFrame.Navigated -= ClearBackStackAfterReset;
+			            }
+			        }
+			    }
+
+			    clearPageStack = false;
+			}             
+		}
+
+		private void CheckForResetNavigation(object sender, NavigationEventArgs e)
+		{
+			// If the app has received a 'reset' navigation, then we need to check 
+			// on the next navigation to see if the page stack should be reset 
+			if (e.NavigationMode == NavigationMode.Reset)
+				RootFrame.Navigated += ClearBackStackAfterReset;
+		}
+
+		private void ClearBackStackAfterReset(object sender, NavigationEventArgs e)
+		{
+			// Unregister the event so it doesn't get called again 
+			RootFrame.Navigated -= ClearBackStackAfterReset;
+
+			// Only clear the stack for 'new' (forward) and 'refresh' navigations 
+			if (e.NavigationMode != NavigationMode.New)
+				return;
+
+			// For UI consistency, clear the entire page stack 
+			while (RootFrame.RemoveBackEntry() != null)
+			{
+				; // do nothing 
+			}
+		}
+
+		public bool AddOrUpdateValue(string Key, Object value)
+		{
+			bool valueChanged = false;
+
+			// If the key exists 
+			if (settings.Contains(Key))
+			{
+				// If the value has changed 
+				if (settings[Key] != value)
+				{
+					// Store the new value 
+					settings[Key] = value;
+					valueChanged = true;
+				}
+			}
+			// Otherwise create the key. 
+			else
+			{
+				settings.Add(Key, value);
+				valueChanged = true;
+			}
+			return valueChanged;
+		}
 
 
-            //if (e.NavigationMode == NavigationMode.Reset)
-            //{
-            //    // This block will execute if the current navigation is a relaunch. 
-            //    // If so, another navigation will be coming, so this records that a relaunch just happened 
-            //    // so that the next navigation can use this info. 
-            //    wasRelaunched = true;
-            //}
-            //else if (e.NavigationMode == NavigationMode.New && wasRelaunched)
-            //{
-            //    // This block will run if the previous navigation was a relaunch 
-            //    wasRelaunched = false;
+		public void RemoveValue(string Key)
+		{
+			// If the key exists 
+			if (settings.Contains(Key))
+			{
+				settings.Remove(Key);
+			}
+		}
+		public void SaveCurrentTime()
+		{
+			if (AddOrUpdateValue("DeactivateTime", DateTimeOffset.Now))
+			{
+				settings.Save();
+			}
+		}
 
-            //    if (e.Uri.ToString().Contains("DeepLink=true"))
-            //    {
-            //        // This block will run if the launch Uri contains "DeepLink=true" which 
-            //        // was specified when the secondary tile was created in MainPage.xaml.cs 
+		public void RemoveCurrentTimeSetting()
+		{
+			RemoveValue("DeactivateTime");
+			settings.Save();
+		}
 
-            //        sessionType = SessionType.DeepLink;
-            //        // The app was relaunched via a Deep Link. 
-            //        // The page stack will be cleared. 
-            //    }
-            //    else if (e.Uri.ToString().Contains("/MainPage.xaml"))
-            //    {
-            //        // This block will run if the navigation Uri is the main page 
-            //        if (sessionType == SessionType.DeepLink)
-            //        {
-            //            // When the app was previously launched via Deep Link and relaunched via Main Tile, we need to clear the page stack.  
-            //            sessionType = SessionType.Home;
-            //        }
-            //        else
-            //        {
-            //            if (!mustClearPagestack)
-            //            {
-            //                //The app was previously launched via Main Tile and relaunched via Main Tile. Cancel the navigation to resume. 
-            //                e.Cancel = true;
-            //                RootFrame.Navigated -= ClearBackStackAfterReset;
-            //            }
-            //        }
-            //    }
+		bool IsResumeExpired()
+		{
+			DateTimeOffset lastDeactivated;
 
-            //    mustClearPagestack = false;
-            //}             
-        }
+			if (settings.Contains("DeactivateTime"))
+			{
+				lastDeactivated = (DateTimeOffset)settings["DeactivateTime"];
+			}
 
-        private void CheckForResetNavigation(object sender, NavigationEventArgs e)
-        {
-            // If the app has received a 'reset' navigation, then we need to check 
-            // on the next navigation to see if the page stack should be reset 
-            if (e.NavigationMode == NavigationMode.Reset)
-                RootFrame.Navigated += ClearBackStackAfterReset;
-        }
+			var currentDuration = DateTimeOffset.Now.Subtract(lastDeactivated);
 
-        private void ClearBackStackAfterReset(object sender, NavigationEventArgs e)
-        {
-            // Unregister the event so it doesn't get called again 
-            RootFrame.Navigated -= ClearBackStackAfterReset;
+			TimeSpan expired;
 
-            // Only clear the stack for 'new' (forward) and 'refresh' navigations 
-            if (e.NavigationMode != NavigationMode.New)
-                return;
+#if DEBUG
+			expired = TimeSpan.FromSeconds(30);
+#else
+			expired = TimeSpan.FromMinutes(30);
+#endif
 
-            // For UI consistency, clear the entire page stack 
-            while (RootFrame.RemoveBackEntry() != null)
-            {
-                ; // do nothing 
-            }
-        }
-
-        public bool AddOrUpdateValue(string Key, Object value)
-        {
-            bool valueChanged = false;
-
-            // If the key exists 
-            if (settings.Contains(Key))
-            {
-                // If the value has changed 
-                if (settings[Key] != value)
-                {
-                    // Store the new value 
-                    settings[Key] = value;
-                    valueChanged = true;
-                }
-            }
-            // Otherwise create the key. 
-            else
-            {
-                settings.Add(Key, value);
-                valueChanged = true;
-            }
-            return valueChanged;
-        }
-
-
-        public void RemoveValue(string Key)
-        {
-            // If the key exists 
-            if (settings.Contains(Key))
-            {
-                settings.Remove(Key);
-            }
-        }
-        public void SaveCurrentTime()
-        {
-            if (AddOrUpdateValue("DeactivateTime", DateTimeOffset.Now))
-            {
-                settings.Save();
-            }
-        }
-
-        public void RemoveCurrentTimeSetting()
-        {
-            RemoveValue("DeactivateTime");
-            settings.Save();
-        }
-
-        bool CheckDeactivationTimeStamp()
-        {
-            DateTimeOffset lastDeactivated;
-
-            if (settings.Contains("DeactivateTime"))
-            {
-                lastDeactivated = (DateTimeOffset)settings["DeactivateTime"];
-            }
-
-            var currentDuration = DateTimeOffset.Now.Subtract(lastDeactivated);
-
-            return TimeSpan.FromSeconds(currentDuration.TotalSeconds) > TimeSpan.FromSeconds(30);
-        } 
-        #endregion
+			return TimeSpan.FromSeconds(currentDuration.TotalSeconds) > expired;
+		} 
+		#endregion
 
 		private void CompleteInitializePhoneApplication(object sender, NavigationEventArgs e)
 		{

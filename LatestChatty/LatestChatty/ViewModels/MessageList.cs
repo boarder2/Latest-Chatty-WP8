@@ -41,7 +41,7 @@ namespace LatestChatty.ViewModels
             try
             {
                 var ObjMessages = from x in response.Descendants("message")
-                                select new Message(x);
+                                  select new Message(x);
 
                 Messages.Clear();
                 foreach (Message singleMessage in ObjMessages)
@@ -64,8 +64,7 @@ namespace LatestChatty.ViewModels
         {
             NetworkCredential nc = CoreServices.Instance.Credentials;
             string request = Locations.ServiceHost + "Messages/?username=" + nc.UserName + "&password=" + nc.Password + "&box=" + _box.ToString() + "&page=1";
-
-						CoreServices.Instance.QueueDownload(request, GetMessagesCallback);
+            CoreServices.Instance.QueueDownload(request, GetMessagesCallback);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

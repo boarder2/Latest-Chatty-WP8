@@ -127,7 +127,7 @@ namespace LatestChatty.Classes
 			var client = new WebClient();
 
 			//1 if Tile only, 2 if Tile and Toast
-			var notificationType = LatestChattySettings.Instance.NotificationType == NotificationType.Tile ? 1 : 2;
+			var notificationType = LatestChattySettings.Instance.NotificationType == NotificationType.Tile ? 4 : 5;
 
 			client.Encoding = System.Text.Encoding.UTF8;
 			var uriBuilder = new UriBuilder(
