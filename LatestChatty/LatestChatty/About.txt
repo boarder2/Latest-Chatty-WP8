@@ -1,5 +1,4 @@
 Latest Chatty for Windows Phone 8
-Created by: boarder2, fleabix
 
 [ Version 1.0 ]
 This version diverges from the previous release for Windows Phone 7 to provide features for Windows Phone 8 and forward.
@@ -10,5 +9,7 @@ Added:
 - Dates will be shown in local time
 - Expired posts will have a red background on the date
 - Original poster will have their posts highlighted in blue in the thread view
+- Live tile supports new styles and all three sizes
+- Fast App Resuming support
 
 This application is meant to be as a standalone client for the comments system on www.shacknews.com.  It is not affiliated with Shacknews LTD or its associates.  It is created independently by fans of the website.
