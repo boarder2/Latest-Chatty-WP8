@@ -63,21 +63,21 @@ namespace LatestChatty.Pages
 			//this.loaded = true;
 		}
 
-		private void AddChatty_Click(object sender, RoutedEventArgs e)
-		{
-			ShellTile tile = ShellTile.ActiveTiles.FirstOrDefault(x => x.NavigationUri.ToString().Contains("ChattyPage"));
+        //private void AddChatty_Click(object sender, RoutedEventArgs e)
+        //{
+        //    ShellTile tile = ShellTile.ActiveTiles.FirstOrDefault(x => x.NavigationUri.ToString().Contains("ChattyPage"));
 
-			if (tile == null)
-			{
-				StandardTileData data = new StandardTileData
-				{
-					BackgroundImage = new Uri("Background.png", UriKind.Relative),
-					Title = "GoToChatty"
-				};
+        //    if (tile == null)
+        //    {
+        //        StandardTileData data = new StandardTileData
+        //        {
+        //            BackgroundImage = new Uri("Background.png", UriKind.Relative),
+        //            Title = "GoToChatty"
+        //        };
 
-				ShellTile.Create(new Uri("/Pages/ChattyPage.xaml", UriKind.Relative), data);
-			}
-		}
+        //        ShellTile.Create(new Uri("/Pages/ChattyPage.xaml", UriKind.Relative), data);
+        //    }
+        //}
 
 		private void NotificationTypePickerChanged(object sender, SelectionChangedEventArgs e)
 		{

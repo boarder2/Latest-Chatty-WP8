@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Deployment xmlns="http://schemas.microsoft.com/windowsphone/2012/deployment" AppPlatformVersion="8.0">
   <DefaultLanguage xmlns="" code="en-US" />
-  <App xmlns="" ProductID="{A3CC8C4D-DC46-4146-8A9A-E508DD72EDDB}" Title="Latest Chatty 8" RuntimeType="Silverlight" Version="1.0.0.6" Genre="apps.normal" Author="Willie Zutz" Description="Shacknews Reader" Publisher="Bit Shift Software, LLC" BitsPerPixel="32" PublisherID="{063a1720-130f-401d-8969-fc93738c3e11}">
+  <App xmlns="" ProductID="{A3CC8C4D-DC46-4146-8A9A-E508DD72EDDB}" Title="Latest Chatty 8" RuntimeType="Silverlight" Version="1.0.0.7" Genre="apps.normal" Author="Willie Zutz" Description="Shacknews Reader" Publisher="Bit Shift Software, LLC" BitsPerPixel="32" PublisherID="{063a1720-130f-401d-8969-fc93738c3e11}">
     <IconPath IsRelative="true" IsResource="false">Images\ApplicationIcon.png</IconPath>
     <Capabilities>
       <Capability Name="ID_CAP_IDENTITY_DEVICE" />

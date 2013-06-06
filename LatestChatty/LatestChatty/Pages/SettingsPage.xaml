@@ -17,122 +17,124 @@
                             shell:SystemTray.IsVisible="True"
                             shell:SystemTray.Opacity="1.0"
                             mc:Ignorable="d">
-	<Grid x:Name="LayoutRoot">
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="*" />
-		</Grid.RowDefinitions>
+    <Grid x:Name="LayoutRoot">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
 
-		<StackPanel x:Name="TitlePanel"
-		            Grid.Row="0"
-		            Margin="12,17,0,10">
-			<TextBlock Style="{StaticResource PhoneTextNormalStyle}" Text="LATESTCHATTY - SETTINGS" />
-		</StackPanel>
-		<controls:Panorama Grid.Row="1">
-			<controls:PanoramaItem>
-				<StackPanel Orientation="Vertical">
-					<TextBlock Margin="9,-7,0,0"
-					           Style="{StaticResource PhoneTextTitle1Style}"
-					           Text="filters" />
-					<TextBlock Padding="0, 0, 0, 15" Text="Auto Collapse" />
-					<toolkit:ToggleSwitch Header="nws"
-					                      IsChecked="{Binding AutoCollapseNws,
-					                                          Mode=TwoWay}"
-					                      Style="{StaticResource SettingsToggleSwitch}" />
-					<toolkit:ToggleSwitch Header="stupid"
-					                      IsChecked="{Binding AutoCollapseStupid,
-					                                          Mode=TwoWay}"
-					                      Style="{StaticResource SettingsToggleSwitch}" />
-					<toolkit:ToggleSwitch Header="offtopic"
-					                      IsChecked="{Binding AutoCollapseOffTopic,
-					                                          Mode=TwoWay}"
-					                      Style="{StaticResource SettingsToggleSwitch}" />
-					<toolkit:ToggleSwitch Header="political"
-					                      IsChecked="{Binding AutoCollapsePolitical,
-					                                          Mode=TwoWay}"
-					                      Style="{StaticResource SettingsToggleSwitch}" />
-					<toolkit:ToggleSwitch Header="interesting"
-					                      IsChecked="{Binding AutoCollapseInteresting,
-					                                          Mode=TwoWay}"
-					                      Style="{StaticResource SettingsToggleSwitch}" />
-					<toolkit:ToggleSwitch Header="informative"
-					                      IsChecked="{Binding AutoCollapseInformative,
-					                                          Mode=TwoWay}"
-					                      Style="{StaticResource SettingsToggleSwitch}" />
-				</StackPanel>
-			</controls:PanoramaItem>
-			<controls:PanoramaItem>
-				<StackPanel Orientation="Vertical">
-					<TextBlock Margin="9,-7,0,6"
-					           Style="{StaticResource PhoneTextTitle1Style}"
-					           Text="pinning" />
-					<toolkit:ToggleSwitch x:Name="autoPinOnReply"
-					                      Header="auto pin on reply"
-					                      IsChecked="{Binding AutoPinOnReply,
-					                                          Mode=TwoWay}"
-					                      Style="{StaticResource SettingsToggleSwitch}" />
-					<toolkit:ToggleSwitch x:Name="autoRemoveOnExpire"
-					                      Header="auto remove on expire"
-					                      IsChecked="{Binding AutoRemoveOnExpire,
-					                                          Mode=TwoWay}"
-					                      Style="{StaticResource SettingsToggleSwitch}" />
-				</StackPanel>
-			</controls:PanoramaItem>
-			<controls:PanoramaItem>
-				<StackPanel Orientation="Vertical">
-					<TextBlock Margin="9,-7,0,0"
-					           Style="{StaticResource PhoneTextTitle1Style}"
-					           Text="thread" />
-					<StackPanel>
-						<TextBlock Text="View Size" />
-						<toolkit:ListPicker x:Name="sizePicker" SelectionChanged="CommentSizePickerChanged">
-							<toolkit:ListPickerItem Tag="Small">Small</toolkit:ListPickerItem>
-							<toolkit:ListPickerItem Tag="Half">Medium</toolkit:ListPickerItem>
-							<toolkit:ListPickerItem Tag="Huge">Huge</toolkit:ListPickerItem>
-						</toolkit:ListPicker>
-						<TextBlock Text="Comment Navigation" />
-						<toolkit:ListPicker x:Name="navigationPicker" SelectionChanged="NextBehaviorPickerChanged">
-							<toolkit:ListPickerItem Tag="True">By Date</toolkit:ListPickerItem>
-							<toolkit:ListPickerItem Tag="False">Top Down</toolkit:ListPickerItem>
-						</toolkit:ListPicker>
-						<TextBlock Text="Show Embedded Images" />
-						<toolkit:ListPicker x:Name="showEmbeddedImagesPicker" SelectionChanged="ShowEmbeddedImagesPickerChanged">
-							<toolkit:ListPickerItem Tag="Always">Always</toolkit:ListPickerItem>
-							<toolkit:ListPickerItem Tag="OnWiFi">Only on WiFi</toolkit:ListPickerItem>
-							<toolkit:ListPickerItem Tag="Never">Never</toolkit:ListPickerItem>
-						</toolkit:ListPicker>
-					</StackPanel>
-				</StackPanel>
-			</controls:PanoramaItem>
-			<controls:PanoramaItem>
-				<StackPanel Orientation="Vertical">
-					<TextBlock Margin="9,-7,0,0"
-					           Style="{StaticResource PhoneTextTitle1Style}"
-					           Text="notifications" />
-					<TextBlock Foreground="{StaticResource PhoneForegroundBrush}" Text="Reply Notifications" />
-					<toolkit:ListPicker x:Name="notificationTypePicker" SelectionChanged="NotificationTypePickerChanged">
-						<toolkit:ListPickerItem Tag="None">None</toolkit:ListPickerItem>
-						<toolkit:ListPickerItem Tag="Tile">Tile Only</toolkit:ListPickerItem>
-						<toolkit:ListPickerItem Tag="TileAndToast">Tile and Toasts</toolkit:ListPickerItem>
-					</toolkit:ListPicker>
-					<TextBlock Foreground="{StaticResource PhoneForegroundBrush}" Text="Add Shortcuts to Start Menu" />
-					<Button Click="AddChatty_Click" Content="Shortcut to Chatty" />
-				</StackPanel>
-			</controls:PanoramaItem>
-			<controls:PanoramaItem>
-				<StackPanel Orientation="Vertical">
-					<TextBlock Margin="9,-7,0,0"
-					           Style="{StaticResource PhoneTextTitle1Style}"
-					           Text="cloud" />
-					<toolkit:ToggleSwitch x:Name="cloudSync"
-					                      Margin="0,0,0,0"
-					                      Click="CloudSettingsClicked"
-					                      Header="sync settings to cloud"
-					                      IsChecked="{Binding CloudSync,
-					                                          Mode=TwoWay}"
-					                      Style="{StaticResource SettingsToggleSwitch}" />
-				</StackPanel>
-			</controls:PanoramaItem>
-		</controls:Panorama>
-	</Grid>
+        <StackPanel x:Name="TitlePanel"
+                    Grid.Row="0"
+                    Margin="12,17,0,10">
+            <TextBlock Style="{StaticResource PhoneTextNormalStyle}" Text="LATESTCHATTY - SETTINGS" />
+        </StackPanel>
+        <controls:Panorama Grid.Row="1">
+            <controls:PanoramaItem>
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Margin="9,-7,0,0"
+                               Style="{StaticResource PhoneTextTitle1Style}"
+                               Text="filters" />
+                    <TextBlock Padding="0, 0, 0, 15" Text="Auto Collapse" />
+                    <toolkit:ToggleSwitch Header="nws"
+                                          IsChecked="{Binding AutoCollapseNws,
+                                                              Mode=TwoWay}"
+                                          Style="{StaticResource SettingsToggleSwitch}" />
+                    <toolkit:ToggleSwitch Header="stupid"
+                                          IsChecked="{Binding AutoCollapseStupid,
+                                                              Mode=TwoWay}"
+                                          Style="{StaticResource SettingsToggleSwitch}" />
+                    <toolkit:ToggleSwitch Header="offtopic"
+                                          IsChecked="{Binding AutoCollapseOffTopic,
+                                                              Mode=TwoWay}"
+                                          Style="{StaticResource SettingsToggleSwitch}" />
+                    <toolkit:ToggleSwitch Header="political"
+                                          IsChecked="{Binding AutoCollapsePolitical,
+                                                              Mode=TwoWay}"
+                                          Style="{StaticResource SettingsToggleSwitch}" />
+                    <toolkit:ToggleSwitch Header="interesting"
+                                          IsChecked="{Binding AutoCollapseInteresting,
+                                                              Mode=TwoWay}"
+                                          Style="{StaticResource SettingsToggleSwitch}" />
+                    <toolkit:ToggleSwitch Header="informative"
+                                          IsChecked="{Binding AutoCollapseInformative,
+                                                              Mode=TwoWay}"
+                                          Style="{StaticResource SettingsToggleSwitch}" />
+                </StackPanel>
+            </controls:PanoramaItem>
+            <controls:PanoramaItem>
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Margin="9,-7,0,6"
+                               Style="{StaticResource PhoneTextTitle1Style}"
+                               Text="pinning" />
+                    <toolkit:ToggleSwitch x:Name="autoPinOnReply"
+                                          Header="auto pin on reply"
+                                          IsChecked="{Binding AutoPinOnReply,
+                                                              Mode=TwoWay}"
+                                          Style="{StaticResource SettingsToggleSwitch}" />
+                    <toolkit:ToggleSwitch x:Name="autoRemoveOnExpire"
+                                          Header="auto remove on expire"
+                                          IsChecked="{Binding AutoRemoveOnExpire,
+                                                              Mode=TwoWay}"
+                                          Style="{StaticResource SettingsToggleSwitch}" />
+                </StackPanel>
+            </controls:PanoramaItem>
+            <controls:PanoramaItem>
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Margin="9,-7,0,0"
+                               Style="{StaticResource PhoneTextTitle1Style}"
+                               Text="thread" />
+                    <StackPanel>
+                        <TextBlock Text="View Size" />
+                        <toolkit:ListPicker x:Name="sizePicker" SelectionChanged="CommentSizePickerChanged">
+                            <toolkit:ListPickerItem Tag="Small">Small</toolkit:ListPickerItem>
+                            <toolkit:ListPickerItem Tag="Half">Medium</toolkit:ListPickerItem>
+                            <toolkit:ListPickerItem Tag="Huge">Huge</toolkit:ListPickerItem>
+                        </toolkit:ListPicker>
+                        <TextBlock Text="Comment Navigation" />
+                        <toolkit:ListPicker x:Name="navigationPicker" SelectionChanged="NextBehaviorPickerChanged">
+                            <toolkit:ListPickerItem Tag="True">By Date</toolkit:ListPickerItem>
+                            <toolkit:ListPickerItem Tag="False">Top Down</toolkit:ListPickerItem>
+                        </toolkit:ListPicker>
+                        <TextBlock Text="Show Embedded Images" />
+                        <toolkit:ListPicker x:Name="showEmbeddedImagesPicker" SelectionChanged="ShowEmbeddedImagesPickerChanged">
+                            <toolkit:ListPickerItem Tag="Always">Always</toolkit:ListPickerItem>
+                            <toolkit:ListPickerItem Tag="OnWiFi">Only on WiFi</toolkit:ListPickerItem>
+                            <toolkit:ListPickerItem Tag="Never">Never</toolkit:ListPickerItem>
+                        </toolkit:ListPicker>
+                    </StackPanel>
+                </StackPanel>
+            </controls:PanoramaItem>
+            <controls:PanoramaItem>
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Margin="9,-7,0,0"
+                               Style="{StaticResource PhoneTextTitle1Style}"
+                               Text="notifications" />
+                    <TextBlock Foreground="{StaticResource PhoneForegroundBrush}" Text="Reply Notifications" />
+                    <toolkit:ListPicker x:Name="notificationTypePicker" SelectionChanged="NotificationTypePickerChanged">
+                        <toolkit:ListPickerItem Tag="None">None</toolkit:ListPickerItem>
+                        <toolkit:ListPickerItem Tag="Tile">Tile Only</toolkit:ListPickerItem>
+                        <toolkit:ListPickerItem Tag="TileAndToast">Tile and Toasts</toolkit:ListPickerItem>
+                    </toolkit:ListPicker>
+                    <!--
+                        <TextBlock Foreground="{StaticResource PhoneForegroundBrush}" Text="Add Shortcuts to Start Menu" />
+                        <Button Click="AddChatty_Click" Content="Shortcut to Chatty" />
+                    -->
+                </StackPanel>
+            </controls:PanoramaItem>
+            <controls:PanoramaItem>
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Margin="9,-7,0,0"
+                               Style="{StaticResource PhoneTextTitle1Style}"
+                               Text="cloud" />
+                    <toolkit:ToggleSwitch x:Name="cloudSync"
+                                          Margin="0,0,0,0"
+                                          Click="CloudSettingsClicked"
+                                          Header="sync settings to cloud"
+                                          IsChecked="{Binding CloudSync,
+                                                              Mode=TwoWay}"
+                                          Style="{StaticResource SettingsToggleSwitch}" />
+                </StackPanel>
+            </controls:PanoramaItem>
+        </controls:Panorama>
+    </Grid>
 </phone:PhoneApplicationPage>
