@@ -104,7 +104,7 @@
                     </StackPanel>
                 </StackPanel>
             </controls:PanoramaItem>
-            <controls:PanoramaItem>
+            <!--<controls:PanoramaItem>
                 <StackPanel Orientation="Vertical">
                     <TextBlock Margin="9,-7,0,0"
                                Style="{StaticResource PhoneTextTitle1Style}"
@@ -115,10 +115,6 @@
                         <toolkit:ListPickerItem Tag="Tile">Tile Only</toolkit:ListPickerItem>
                         <toolkit:ListPickerItem Tag="TileAndToast">Tile and Toasts</toolkit:ListPickerItem>
                     </toolkit:ListPicker>
-                    <!--
-                        <TextBlock Foreground="{StaticResource PhoneForegroundBrush}" Text="Add Shortcuts to Start Menu" />
-                        <Button Click="AddChatty_Click" Content="Shortcut to Chatty" />
-                    -->
                 </StackPanel>
             </controls:PanoramaItem>
             <controls:PanoramaItem>
@@ -134,7 +130,7 @@
                                                               Mode=TwoWay}"
                                           Style="{StaticResource SettingsToggleSwitch}" />
                 </StackPanel>
-            </controls:PanoramaItem>
+            </controls:PanoramaItem>-->
         </controls:Panorama>
     </Grid>
 </phone:PhoneApplicationPage>

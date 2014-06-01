@@ -13,6 +13,8 @@ using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using System.IO.IsolatedStorage;
+using BugSense;
+using BugSense.Core.Model;
 
 namespace LatestChatty
 {
@@ -53,8 +55,9 @@ namespace LatestChatty
 		/// </summary>
 		public App()
 		{
+			BugSenseHandler.Instance.InitAndStartSession(new ExceptionManager(Current), RootFrame, "4b208f0f");
 			// Global handler for uncaught exceptions. 
-			UnhandledException += Application_UnhandledException;
+			//UnhandledException += Application_UnhandledException;
 
 			// Show graphics profiling information while debugging.
 			if (System.Diagnostics.Debugger.IsAttached)

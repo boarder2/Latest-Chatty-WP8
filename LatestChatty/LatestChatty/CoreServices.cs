@@ -31,7 +31,7 @@ namespace LatestChatty
 		{
 			SetCommentBrowserString();
 			LoadReplyCounts();
-            CoreServices.Instance.ClearTile();
+			CoreServices.Instance.ClearTile();
 		}
 
 		#region Singleton
@@ -218,20 +218,20 @@ namespace LatestChatty
 			((Page)((App)App.Current).RootFrame.Content).NavigationService.Navigate(uri);
 		}
 
-        public ReplyToContext ReplyContext;
+		public ReplyToContext ReplyContext;
 
-        public class ReplyToContext
-        {
-            public ReplyToContext(Comment rootComment, Comment replyToComment)
-            {
-                this.RootComment = rootComment;
-                this.ReplyToComment = replyToComment;
-            }
+		public class ReplyToContext
+		{
+			public ReplyToContext(Comment rootComment, Comment replyToComment)
+			{
+				this.RootComment = rootComment;
+				this.ReplyToComment = replyToComment;
+			}
 
-            public Comment RootComment { get; set; }
+			public Comment RootComment { get; set; }
 
-            public Comment ReplyToComment { get; set; }
-        }
+			public Comment ReplyToComment { get; set; }
+		}
 		#endregion
 
 		#region API Helper
@@ -290,7 +290,7 @@ namespace LatestChatty
 
 			Stream requestStream = request.EndGetRequestStream(result);
 			StreamWriter streamWriter = new StreamWriter(requestStream);
-            streamWriter.Write(String.Format("user-identifier={0}&supplied-pass={1}&get_fields[]=result", HttpUtility.UrlEncode(this.userCredentials.UserName), HttpUtility.UrlEncode(this.userCredentials.Password)));
+			streamWriter.Write(String.Format("user-identifier={0}&supplied-pass={1}&get_fields[]=result", HttpUtility.UrlEncode(this.userCredentials.UserName), HttpUtility.UrlEncode(this.userCredentials.Password)));
 			streamWriter.Flush();
 			streamWriter.Close();
 
@@ -314,11 +314,12 @@ namespace LatestChatty
 						var responseBytes = new byte[responseStream.Length];
 						responseStream.Read(responseBytes, 0, responseBytes.Length);
 						var responseString = System.Text.Encoding.UTF8.GetString(responseBytes, 0, responseBytes.Length);
-                        success = responseString.Contains("{\"result\":{\"valid\":\"true\"");
+						success = responseString.Contains("{\"result\":{\"valid\":\"true\"");
 					}
 				}
 			}
-			catch (Exception ex) {
+			catch (Exception ex)
+			{
 				System.Diagnostics.Debug.WriteLine("problem logging in {0}", ex.ToString());
 			}
 
@@ -342,14 +343,14 @@ namespace LatestChatty
 		public void Logout()
 		{
 			//Unregister notifications first
-			NotificationHelper.UnRegisterNotifications(); 
+			//NotificationHelper.UnRegisterNotifications();
 
 			//Clear out all the information for the user
 			LatestChattySettings.Instance.Username = this.userCredentials.UserName = string.Empty;
 			LatestChattySettings.Instance.Password = this.userCredentials.Password = string.Empty;
 			LatestChattySettings.Instance.NotificationType = NotificationType.None;
-			LatestChattySettings.Instance.CloudSync = false;
-			
+			//LatestChattySettings.Instance.CloudSync = false;
+
 			//Clear MyPosts, MyReplies, and refresh the watchlist so the participation flag goes away
 			this.MyPosts.Logout();
 			this.MyReplies.Logout();
@@ -359,10 +360,10 @@ namespace LatestChatty
 
 		#region Tombstone
 
-        //Occurs when the application is brought back to the foreground from a non-clean launch.
+		//Occurs when the application is brought back to the foreground from a non-clean launch.
 		public void Activated()
 		{
-            CoreServices.Instance.ClearTile();
+			CoreServices.Instance.ClearTile();
 			LoadCurrentStoryComments();
 			LoadCurrentCommentThread();
 			//Should already be loaded, no?
@@ -516,31 +517,31 @@ namespace LatestChatty
 		public MyRepliesList MyReplies = new MyRepliesList();
 		#endregion
 
-        #region Tile Notifications
-        public void ClearTile()
-        {
-            //Clear the tile since we're loading everything now.
-            var tileToUpdate =
-                 ShellTile.ActiveTiles.FirstOrDefault(x => x.NavigationUri.ToString().Contains("ChattyPage"))
-                 ?? ShellTile.ActiveTiles.FirstOrDefault();
+		#region Tile Notifications
+		public void ClearTile()
+		{
+			//Clear the tile since we're loading everything now.
+			var tileToUpdate =
+				  ShellTile.ActiveTiles.FirstOrDefault(x => x.NavigationUri.ToString().Contains("ChattyPage"))
+				  ?? ShellTile.ActiveTiles.FirstOrDefault();
 
-            if (tileToUpdate != null)
-            {
-                //Get rid of tile data that's now old.
-                var tileData = new IconicTileData
-                {
-                    SmallIconImage = new Uri("Images/TileIconSmall.png", UriKind.Relative),
-                    IconImage = new Uri("Images/TileIconMedium.png", UriKind.Relative),
-                    Count = 0,
-                    Title = "Latest Chatty 8",
-                    WideContent1 = "",
-                    WideContent2 = "",
-                    WideContent3 = ""
-                };
+			if (tileToUpdate != null)
+			{
+				//Get rid of tile data that's now old.
+				var tileData = new IconicTileData
+				{
+					SmallIconImage = new Uri("Images/TileIconSmall.png", UriKind.Relative),
+					IconImage = new Uri("Images/TileIconMedium.png", UriKind.Relative),
+					Count = 0,
+					Title = "Latest Chatty 8",
+					WideContent1 = "",
+					WideContent2 = "",
+					WideContent3 = ""
+				};
 
-                tileToUpdate.Update(tileData);
-            }
-        }
-        #endregion
-    }
+				tileToUpdate.Update(tileData);
+			}
+		}
+		#endregion
+	}
 }

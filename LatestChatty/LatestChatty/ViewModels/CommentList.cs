@@ -15,7 +15,7 @@ using System.Xml.Linq;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 using System.Collections.Generic;
-using Microsoft.Expression.Interactivity.Core;
+//using Microsoft.Expression.Interactivity.Core;
 using LatestChatty.Settings;
 
 namespace LatestChatty.ViewModels
@@ -30,7 +30,7 @@ namespace LatestChatty.ViewModels
 		[DataMember]
 		public ObservableCollection<Comment> Comments { get; set; }
 		
-		public ICommand LoadMoreComments { get; set; }
+		//public ICommand LoadMoreComments { get; set; }
 
 		public bool isLoading;
 		public bool IsLoading
@@ -43,7 +43,7 @@ namespace LatestChatty.ViewModels
 		{
 			_story = story;
 			_page = startPage;
-			this.LoadMoreComments = new ActionCommand(() => this.LoadMore());
+			//this.LoadMoreComments = new ActionCommand(() => this.LoadMore());
 			this.Comments = new ObservableCollection<Comment>();
 			Refresh();
 		}

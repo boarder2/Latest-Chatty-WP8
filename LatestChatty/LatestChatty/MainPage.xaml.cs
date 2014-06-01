@@ -20,7 +20,7 @@ namespace LatestChatty
 {
 	public partial class MainPage : PhoneApplicationPage
 	{
-		LoginControl _login;
+		//LoginControl _login;
 		private int _refreshing = 0;
 
 		// Constructor
@@ -31,7 +31,7 @@ namespace LatestChatty
 			var maintenanceWorker = new System.ComponentModel.BackgroundWorker();
 			maintenanceWorker.DoWork += (sender, args) =>
 			{
-				NotificationHelper.RegisterForNotifications();
+				//NotificationHelper.RegisterForNotifications();
 
 				//Sync settings.  When this is finished, we'll try to load replies and whatnot.
 				IncrementRefresher();

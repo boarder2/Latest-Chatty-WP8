@@ -21,7 +21,7 @@ namespace LatestChatty.Pages
 	public partial class SettingsPage : PhoneApplicationPage
 	{
         private bool loaded = false;
-        NotificationType loadedNotificationType;
+        //NotificationType loadedNotificationType;
 
 		public SettingsPage()
 		{
@@ -40,17 +40,17 @@ namespace LatestChatty.Pages
                 item => ((ListPickerItem)item).Tag.ToString().Equals(
                     Enum.GetName(typeof(ShowInlineImages), LatestChattySettings.Instance.ShowInlineImages), StringComparison.InvariantCultureIgnoreCase));
 
-            this.notificationTypePicker.SelectedItem = this.notificationTypePicker.Items.First(
-                item => ((ListPickerItem)item).Tag.ToString().Equals(
-                    Enum.GetName(typeof(NotificationType), LatestChattySettings.Instance.NotificationType), StringComparison.InvariantCultureIgnoreCase));
-            this.loadedNotificationType = LatestChattySettings.Instance.NotificationType;
+				//this.notificationTypePicker.SelectedItem = this.notificationTypePicker.Items.First(
+				//	 item => ((ListPickerItem)item).Tag.ToString().Equals(
+				//		  Enum.GetName(typeof(NotificationType), LatestChattySettings.Instance.NotificationType), StringComparison.InvariantCultureIgnoreCase));
+				//this.loadedNotificationType = LatestChattySettings.Instance.NotificationType;
 
             this.navigationPicker.SelectedIndex = LatestChattySettings.Instance.ThreadNavigationByDate ? 0 : 1;
             this.DataContext = LatestChattySettings.Instance;
 				if (!CoreServices.Instance.LoginVerified)
 				{
-					this.cloudSync.IsEnabled = false;
-					this.notificationTypePicker.IsEnabled = false;
+					//this.cloudSync.IsEnabled = false;
+					//this.notificationTypePicker.IsEnabled = false;
 					this.autoPinOnReply.IsEnabled = false;
 					this.autoRemoveOnExpire.IsEnabled = false;
 				}
@@ -79,33 +79,33 @@ namespace LatestChatty.Pages
         //    }
         //}
 
-		private void NotificationTypePickerChanged(object sender, SelectionChangedEventArgs e)
-		{
-			if (!this.loaded) return;
+		//private void NotificationTypePickerChanged(object sender, SelectionChangedEventArgs e)
+		//{
+		//	if (!this.loaded) return;
 
 
-			var picker = sender as ListPicker;
-			if (picker != null)
-			{
-				var notificationType = (NotificationType)Enum.Parse(typeof(NotificationType), ((ListPickerItem)picker.SelectedItem).Tag as string, true);
-				if (this.loadedNotificationType != notificationType)
-				{
-					LatestChattySettings.Instance.NotificationType = notificationType;
-					//Set it to the current type so we make sure we get back here.
-					this.loadedNotificationType = notificationType;
-					switch (notificationType)
-					{
-						case NotificationType.Tile:
-						case NotificationType.TileAndToast:
-							NotificationHelper.ReRegisterForNotifications();
-							break;
-						default:
-							NotificationHelper.UnRegisterNotifications();
-							break;
-					}
-				}
-			}
-		}
+		//	var picker = sender as ListPicker;
+		//	if (picker != null)
+		//	{
+		//		var notificationType = (NotificationType)Enum.Parse(typeof(NotificationType), ((ListPickerItem)picker.SelectedItem).Tag as string, true);
+		//		if (this.loadedNotificationType != notificationType)
+		//		{
+		//			LatestChattySettings.Instance.NotificationType = notificationType;
+		//			//Set it to the current type so we make sure we get back here.
+		//			this.loadedNotificationType = notificationType;
+		//			switch (notificationType)
+		//			{
+		//				case NotificationType.Tile:
+		//				case NotificationType.TileAndToast:
+		//					NotificationHelper.ReRegisterForNotifications();
+		//					break;
+		//				default:
+		//					NotificationHelper.UnRegisterNotifications();
+		//					break;
+		//			}
+		//		}
+		//	}
+		//}
 		private void CommentSizePickerChanged(object sender, SelectionChangedEventArgs e)
 		{
 			if (!this.loaded) return;

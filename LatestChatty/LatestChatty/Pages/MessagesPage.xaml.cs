@@ -17,7 +17,7 @@ namespace LatestChatty.Pages
 {
 	public partial class MessagesPage : PhoneApplicationPage
 	{
-		LoginControl _login;
+		//LoginControl _login;
 		public MessagesPage()
 		{
 			InitializeComponent();

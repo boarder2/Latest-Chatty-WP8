@@ -42,7 +42,7 @@ namespace LatestChatty.Settings
 		private static readonly string cloudsync = "cloudsync";
 
 		private int commentsLeftToLoad;
-		private bool loadingSettingsInternal;
+		//private bool loadingSettingsInternal;
 		private JObject cloudSettings = null;
 
 		public readonly IsolatedStorageSettings isoStore;
@@ -147,25 +147,26 @@ namespace LatestChatty.Settings
 
 		public bool CloudSync
 		{
-			get
-			{
-				bool v;
-				this.isoStore.TryGetValue<bool>(cloudsync, out v);
-				return v;
-			}
-			set
-			{
-				this.isoStore[cloudsync] = value;
-                if (this.PropertyChanged != null)
-                {
-                    this.PropertyChanged(this, new PropertyChangedEventArgs("CloudSync"));
-                }
-				this.isoStore.Save();
-                if (value)
-                {
-                    this.LoadLongRunningSettings();
-                }
-			}
+			get { return false; }
+			//get
+			//{
+			//	bool v;
+			//	this.isoStore.TryGetValue<bool>(cloudsync, out v);
+			//	return v;
+			//}
+			//set
+			//{
+			//	this.isoStore[cloudsync] = value;
+			//		 if (this.PropertyChanged != null)
+			//		 {
+			//			  this.PropertyChanged(this, new PropertyChangedEventArgs("CloudSync"));
+			//		 }
+			//	this.isoStore.Save();
+			//		 if (value)
+			//		 {
+			//			  this.LoadLongRunningSettings();
+			//		 }
+			//}
 		}
 
 		public bool AutoCollapseNws
@@ -180,11 +181,11 @@ namespace LatestChatty.Settings
 			{
 				this.isoStore[autocollapsenws] = value;
 				this.isoStore.Save();
-                if (this.PropertyChanged != null)
-                {
-                    this.PropertyChanged(this, new PropertyChangedEventArgs("AutoCollapseNws"));
-                }
-				this.SaveToCloud();
+				if (this.PropertyChanged != null)
+				{
+					this.PropertyChanged(this, new PropertyChangedEventArgs("AutoCollapseNws"));
+				}
+				//this.SaveToCloud();
 			}
 		}
 
@@ -200,11 +201,11 @@ namespace LatestChatty.Settings
 			{
 				this.isoStore[autocollapsestupid] = value;
 				this.isoStore.Save();
-                if (this.PropertyChanged != null)
-                {
-                    this.PropertyChanged(this, new PropertyChangedEventArgs("AutoCollapseStupid"));
-                }
-				this.SaveToCloud();
+				if (this.PropertyChanged != null)
+				{
+					this.PropertyChanged(this, new PropertyChangedEventArgs("AutoCollapseStupid"));
+				}
+				//this.SaveToCloud();
 			}
 		}
 
@@ -220,11 +221,11 @@ namespace LatestChatty.Settings
 			{
 				this.isoStore[autocollapseofftopic] = value;
 				this.isoStore.Save();
-                if (this.PropertyChanged != null)
-                {
-                    this.PropertyChanged(this, new PropertyChangedEventArgs("AutoCollapseOffTopic"));
-                }
-				this.SaveToCloud();
+				if (this.PropertyChanged != null)
+				{
+					this.PropertyChanged(this, new PropertyChangedEventArgs("AutoCollapseOffTopic"));
+				}
+				//this.SaveToCloud();
 			}
 		}
 
@@ -240,11 +241,11 @@ namespace LatestChatty.Settings
 			{
 				this.isoStore[autocollapsepolitical] = value;
 				this.isoStore.Save();
-                if (this.PropertyChanged != null)
-                {
-                    this.PropertyChanged(this, new PropertyChangedEventArgs("AutoCollapsePolitical"));
-                }
-				this.SaveToCloud();
+				if (this.PropertyChanged != null)
+				{
+					this.PropertyChanged(this, new PropertyChangedEventArgs("AutoCollapsePolitical"));
+				}
+				//this.SaveToCloud();
 			}
 		}
 
@@ -260,11 +261,11 @@ namespace LatestChatty.Settings
 			{
 				this.isoStore[autocollapseinformative] = value;
 				this.isoStore.Save();
-                if (this.PropertyChanged != null)
-                {
-                    this.PropertyChanged(this, new PropertyChangedEventArgs("AutoCollapseInformative"));
-                }
-				this.SaveToCloud();
+				if (this.PropertyChanged != null)
+				{
+					this.PropertyChanged(this, new PropertyChangedEventArgs("AutoCollapseInformative"));
+				}
+				//this.SaveToCloud();
 			}
 		}
 
@@ -280,11 +281,11 @@ namespace LatestChatty.Settings
 			{
 				this.isoStore[autocollapseinteresting] = value;
 				this.isoStore.Save();
-                if (this.PropertyChanged != null)
-                {
-                    this.PropertyChanged(this, new PropertyChangedEventArgs("AutoCollapseInteresting"));
-                }
-				this.SaveToCloud();
+				if (this.PropertyChanged != null)
+				{
+					this.PropertyChanged(this, new PropertyChangedEventArgs("AutoCollapseInteresting"));
+				}
+				//this.SaveToCloud();
 			}
 		}
 
@@ -300,10 +301,10 @@ namespace LatestChatty.Settings
 			{
 				this.isoStore[autopinonreply] = value;
 				this.isoStore.Save();
-                if (this.PropertyChanged != null)
-                {
-                    this.PropertyChanged(this, new PropertyChangedEventArgs("AutoPinOnReply"));
-                }
+				if (this.PropertyChanged != null)
+				{
+					this.PropertyChanged(this, new PropertyChangedEventArgs("AutoPinOnReply"));
+				}
 				this.SaveToCloud();
 			}
 		}
@@ -320,10 +321,10 @@ namespace LatestChatty.Settings
 			{
 				this.isoStore[autoremoveonexpire] = value;
 				this.isoStore.Save();
-                if (this.PropertyChanged != null)
-                {
-                    this.PropertyChanged(this, new PropertyChangedEventArgs("AutoRemoveOnExpire"));
-                }
+				if (this.PropertyChanged != null)
+				{
+					this.PropertyChanged(this, new PropertyChangedEventArgs("AutoRemoveOnExpire"));
+				}
 				this.SaveToCloud();
 			}
 		}
@@ -355,10 +356,10 @@ namespace LatestChatty.Settings
 			{
 				this.isoStore[notificationType] = value;
 				this.isoStore.Save();
-                if (this.PropertyChanged != null)
-                {
-                    this.PropertyChanged(this, new PropertyChangedEventArgs("NotificationType"));
-                }
+				if (this.PropertyChanged != null)
+				{
+					this.PropertyChanged(this, new PropertyChangedEventArgs("NotificationType"));
+				}
 			}
 		}
 
@@ -374,10 +375,10 @@ namespace LatestChatty.Settings
 			{
 				this.isoStore[commentSize] = value;
 				this.isoStore.Save();
-                if (this.PropertyChanged != null)
-                {
-                    this.PropertyChanged(this, new PropertyChangedEventArgs("CommentSize"));
-                }
+				if (this.PropertyChanged != null)
+				{
+					this.PropertyChanged(this, new PropertyChangedEventArgs("CommentSize"));
+				}
 			}
 		}
 
@@ -393,11 +394,11 @@ namespace LatestChatty.Settings
 			{
 				this.isoStore[showInlineImages] = value;
 				this.isoStore.Save();
-                if (this.PropertyChanged != null)
-                {
-                    this.PropertyChanged(this, new PropertyChangedEventArgs("ShowInlineImages"));
-                }
-				this.SaveToCloud();
+				if (this.PropertyChanged != null)
+				{
+					this.PropertyChanged(this, new PropertyChangedEventArgs("ShowInlineImages"));
+				}
+				//this.SaveToCloud();
 			}
 		}
 
@@ -412,10 +413,10 @@ namespace LatestChatty.Settings
 			{
 				this.isoStore[threadNavigationByDate] = value;
 				this.isoStore.Save();
-                if (this.PropertyChanged != null)
-                {
-                    this.PropertyChanged(this, new PropertyChangedEventArgs("ThreadNavigationByDate"));
-                }
+				if (this.PropertyChanged != null)
+				{
+					this.PropertyChanged(this, new PropertyChangedEventArgs("ThreadNavigationByDate"));
+				}
 			}
 		}
 
@@ -497,7 +498,7 @@ namespace LatestChatty.Settings
 
 		public void LoadLongRunningSettings()
 		{
-			this.loadingSettingsInternal = true;
+			//this.loadingSettingsInternal = true;
 			this.pinnedCommentsCollection.Clear();
 			if (!this.CloudSync)
 			{
@@ -517,7 +518,7 @@ namespace LatestChatty.Settings
 				catch { }
 
 				this.GetPinnedComments();
-				this.loadingSettingsInternal = false;
+				//this.loadingSettingsInternal = false;
 				this.OnRefreshCompleted();
 			}
 			else
@@ -555,37 +556,37 @@ namespace LatestChatty.Settings
 					var storyId = int.Parse(response.Element("comments").Attribute("story_id").Value);
 					//Don't save the counts when we load these posts.
 					var comment = new Comment(x, storyId, false, 0, string.Empty);
-                    if (LatestChattySettings.Instance.AutoRemoveOnExpire && comment.IsExpired)
-                    {
-                        this.pinnedCommentIds.Remove(comment.id);
-                    }
-                    else
-                    {
-                        var insertAt = 0;
-                        //Sort them the same all the time.
-                        for (insertAt = 0; insertAt < this.pinnedCommentsCollection.Count; insertAt++)
-                        {
-                            //Keep looking
-                            if (comment.id > this.pinnedCommentsCollection[insertAt].id)
-                            {
-                                continue;
-                            }
-                            //Already exists... don't add it twice.  (This could happen if they click refresh fast)
-                            if (comment.id == this.pinnedCommentsCollection[insertAt].id)
-                            {
-                                return;
-                            }
-                            //We belong before this one.
-                            if (comment.id < this.pinnedCommentsCollection[insertAt].id)
-                            {
-                                break;
-                            }
-                        }
-                        this.pinnedCommentsCollection.Insert(insertAt, comment);
-                    }
+					if (LatestChattySettings.Instance.AutoRemoveOnExpire && comment.IsExpired)
+					{
+						this.pinnedCommentIds.Remove(comment.id);
+					}
+					else
+					{
+						var insertAt = 0;
+						//Sort them the same all the time.
+						for (insertAt = 0; insertAt < this.pinnedCommentsCollection.Count; insertAt++)
+						{
+							//Keep looking
+							if (comment.id > this.pinnedCommentsCollection[insertAt].id)
+							{
+								continue;
+							}
+							//Already exists... don't add it twice.  (This could happen if they click refresh fast)
+							if (comment.id == this.pinnedCommentsCollection[insertAt].id)
+							{
+								return;
+							}
+							//We belong before this one.
+							if (comment.id < this.pinnedCommentsCollection[insertAt].id)
+							{
+								break;
+							}
+						}
+						this.pinnedCommentsCollection.Insert(insertAt, comment);
+					}
 				}
 			}
-			catch (Exception ex)
+			catch 
 			{
 				MessageBox.Show("Problem refreshing pinned comments.");
 			}
@@ -616,51 +617,69 @@ namespace LatestChatty.Settings
 				this.GetPinnedComments();
 			}
 
-			this.loadingSettingsInternal = false;
+			//this.loadingSettingsInternal = false;
 			this.OnRefreshCompleted();
 		}
 
-		async public void SaveToCloud()
+		public void SaveToCloud()
 		{
 			try
 			{
-				//If cloud sync is enabled
-				if (!this.loadingSettingsInternal && LatestChattySettings.Instance.CloudSync)
+				if (!this.CloudSync)
 				{
-					System.Diagnostics.Debug.WriteLine("Syncing to cloud...");
-					//If we don't have settings already, create them.
-					if (this.cloudSettings == null)
+					try
 					{
-						this.cloudSettings = new JObject(
-								  new JProperty("watched",
-										new JArray(this.pinnedCommentIds)
-										),
-								  new JProperty(showInlineImages, Enum.GetName(typeof(ShowInlineImages), this.ShowInlineImages)),
-								  new JProperty(autocollapseinformative, this.AutoCollapseInformative),
-								  new JProperty(autocollapseinteresting, this.AutoCollapseInteresting),
-								  new JProperty(autocollapsenws, this.AutoCollapseNws),
-								  new JProperty(autocollapseofftopic, this.AutoCollapseOffTopic),
-								  new JProperty(autocollapsepolitical, this.AutoCollapsePolitical),
-								  new JProperty(autocollapsestupid, this.AutoCollapseStupid),
-								  new JProperty(autopinonreply, this.AutoPinOnReply),
-								  new JProperty(autoremoveonexpire, this.AutoRemoveOnExpire));
+						DataContractSerializer ser = new DataContractSerializer(typeof(List<int>));
+
+						using (IsolatedStorageFile isf = IsolatedStorageFile.GetUserStoreForApplication())
+						{
+							using (IsolatedStorageFileStream stream = new IsolatedStorageFileStream("watchlist.txt", FileMode.OpenOrCreate, isf))
+							{
+								ser.WriteObject(stream, this.pinnedCommentIds);
+							}
+						}
 					}
-					else
-					{
-						//If we do have settings, use them.
-						this.cloudSettings.CreateOrSet("watched", new JArray(this.pinnedCommentIds));
-						this.cloudSettings.CreateOrSet(showInlineImages, Enum.GetName(typeof(ShowInlineImages), this.ShowInlineImages));
-						this.cloudSettings.CreateOrSet(autocollapseinformative, this.AutoCollapseInformative);
-						this.cloudSettings.CreateOrSet(autocollapseinteresting, this.AutoCollapseInteresting);
-						this.cloudSettings.CreateOrSet(autocollapsenws, this.AutoCollapseNws);
-						this.cloudSettings.CreateOrSet(autocollapseofftopic, this.AutoCollapseOffTopic);
-						this.cloudSettings.CreateOrSet(autocollapsepolitical, this.AutoCollapsePolitical);
-						this.cloudSettings.CreateOrSet(autocollapsestupid, this.AutoCollapseStupid);
-						this.cloudSettings.CreateOrSet(autopinonreply, this.AutoPinOnReply);
-						this.cloudSettings.CreateOrSet(autoremoveonexpire, this.AutoRemoveOnExpire);
-					}
-					var post = new POSTHandler(Locations.MyCloudSettings, this.cloudSettings.ToString(), null);
+
+					catch { }
 				}
+
+				//If cloud sync is enabled
+				//if (!this.loadingSettingsInternal && LatestChattySettings.Instance.CloudSync)
+				//{
+				//	System.Diagnostics.Debug.WriteLine("Syncing to cloud...");
+				//	//If we don't have settings already, create them.
+				//	if (this.cloudSettings == null)
+				//	{
+				//		this.cloudSettings = new JObject(
+				//				  new JProperty("watched",
+				//						new JArray(this.pinnedCommentIds)
+				//						),
+				//				  new JProperty(showInlineImages, Enum.GetName(typeof(ShowInlineImages), this.ShowInlineImages)),
+				//				  new JProperty(autocollapseinformative, this.AutoCollapseInformative),
+				//				  new JProperty(autocollapseinteresting, this.AutoCollapseInteresting),
+				//				  new JProperty(autocollapsenws, this.AutoCollapseNws),
+				//				  new JProperty(autocollapseofftopic, this.AutoCollapseOffTopic),
+				//				  new JProperty(autocollapsepolitical, this.AutoCollapsePolitical),
+				//				  new JProperty(autocollapsestupid, this.AutoCollapseStupid),
+				//				  new JProperty(autopinonreply, this.AutoPinOnReply),
+				//				  new JProperty(autoremoveonexpire, this.AutoRemoveOnExpire));
+				//	}
+				//	else
+				//	{
+				//		//If we do have settings, use them.
+				//		this.cloudSettings.CreateOrSet("watched", new JArray(this.pinnedCommentIds));
+				//		this.cloudSettings.CreateOrSet(showInlineImages, Enum.GetName(typeof(ShowInlineImages), this.ShowInlineImages));
+				//		this.cloudSettings.CreateOrSet(autocollapseinformative, this.AutoCollapseInformative);
+				//		this.cloudSettings.CreateOrSet(autocollapseinteresting, this.AutoCollapseInteresting);
+				//		this.cloudSettings.CreateOrSet(autocollapsenws, this.AutoCollapseNws);
+				//		this.cloudSettings.CreateOrSet(autocollapseofftopic, this.AutoCollapseOffTopic);
+				//		this.cloudSettings.CreateOrSet(autocollapsepolitical, this.AutoCollapsePolitical);
+				//		this.cloudSettings.CreateOrSet(autocollapsestupid, this.AutoCollapseStupid);
+				//		this.cloudSettings.CreateOrSet(autopinonreply, this.AutoPinOnReply);
+				//		this.cloudSettings.CreateOrSet(autoremoveonexpire, this.AutoRemoveOnExpire);
+				//	}
+				//	var post = new POSTHandler(Locations.MyCloudSettings, this.cloudSettings.ToString(), null);
+				//}
 			}
 			catch
 			{
@@ -693,8 +712,8 @@ namespace LatestChatty.Settings
 		{
 			if (this.commentsLeftToLoad == 0)
 			{
-                //In case we removed pinned threads, etc.
-                this.SaveToCloud();
+				//In case we removed pinned threads, etc.
+				this.SaveToCloud();
 				if (this.SettingsSynced != null)
 				{
 					this.SettingsSynced(this, EventArgs.Empty);
@@ -702,7 +721,7 @@ namespace LatestChatty.Settings
 			}
 		}
 
-        public event PropertyChangedEventHandler PropertyChanged;
+		public event PropertyChangedEventHandler PropertyChanged;
 	}
 
 	internal static class JSONExtensions
