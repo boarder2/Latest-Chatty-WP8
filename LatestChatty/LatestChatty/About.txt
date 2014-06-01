@@ -1,4 +1,7 @@
 Latest Chatty for Windows Phone 8
+[ Version 1.1 ]
+Removed cloud settings and notifications due to server changes.  They are no longer supported with the WP version.
+Added crash tracking.
 
 [ Version 1.0 ]
 This version diverges from the previous release for Windows Phone 7 to provide features for Windows Phone 8 and forward.
