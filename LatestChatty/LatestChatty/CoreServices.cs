@@ -200,7 +200,18 @@ namespace LatestChatty
 		#endregion
 
 		#region WebBrowserControlHelper
-		public string CommentBrowserString { get; private set; }
+		private string commentBrowserString;
+		public string CommentBrowserString
+		{
+			get
+			{
+				if(string.IsNullOrWhiteSpace(this.commentBrowserString))
+				{
+					this.SetCommentBrowserString();
+				}
+				return this.commentBrowserString;
+			}
+		}
 		private void SetCommentBrowserString()
 		{
 			var resource = Application.GetResourceStream(new Uri("stylesheet.css", UriKind.Relative));
@@ -208,7 +219,7 @@ namespace LatestChatty
 			string css = streamReader.ReadToEnd();
 			streamReader.Close();
 			//Without the scrolling in there, very weird rendering happens when you've scrolled down on a large post and then switch to a short post.
-			this.CommentBrowserString = "<html><head><meta name='viewport' content='user-scalable=no'/><script type=\"text/javascript\">function setContent(s) { document.body.scrollTop = 0; document.body.scrollLeft = 0; document.getElementById('commentBody').innerHTML = s; } </script><style type='text/css'>" + css + "</style><body><div id='commentBody' class='body'></div></body></html>";
+			this.commentBrowserString = "<html><head><meta name='viewport' content='user-scalable=no'/><script type=\"text/javascript\">function setContent(s) { document.body.scrollTop = 0; document.body.scrollLeft = 0; document.getElementById('commentBody').innerHTML = s; } </script><style type='text/css'>" + css + "</style><body><div id='commentBody' class='body'></div></body></html>";
 		}
 		#endregion
 

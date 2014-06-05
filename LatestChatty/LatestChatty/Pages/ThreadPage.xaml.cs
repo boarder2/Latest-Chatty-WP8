@@ -37,8 +37,19 @@ namespace LatestChatty.Pages
 			this.navigationModeButton = ApplicationBar.Buttons[1] as ApplicationBarIconButton;
 			this.navigateByDate = LatestChattySettings.Instance.ThreadNavigationByDate;
 			this.SetNavigationModeIcon();
-			
-			this.commentBrowser.NavigateToString(CoreServices.Instance.CommentBrowserString);
+
+			try
+			{
+				this.commentBrowser.NavigateToString(CoreServices.Instance.CommentBrowserString);
+			}
+			catch
+			{
+				//If there was a problem, navigate back in the stack if we can.
+				if(NavigationService.CanGoBack)
+				{
+					NavigationService.GoBack();
+				}
+			}
 		}
 
 		private void SelectComment(Comment c)

@@ -31,8 +31,19 @@ namespace LatestChatty.Pages
 		public CommentPost()
 		{
 			InitializeComponent();
-			CommentViewer.NavigateToString(CoreServices.Instance.CommentBrowserString);
 			Loaded += new RoutedEventHandler(CommentPost_Loaded);
+			try
+			{
+				this.CommentViewer.NavigateToString(CoreServices.Instance.CommentBrowserString);
+			}
+			catch
+			{
+				//If there was a problem, navigate back in the stack if we can.
+				if (NavigationService.CanGoBack)
+				{
+					NavigationService.GoBack();
+				}
+			}
 		}
 
 		void CommentPost_Loaded(object sender, RoutedEventArgs e)
